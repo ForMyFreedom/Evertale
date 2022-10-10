@@ -1,4 +1,4 @@
-# Evertale
+# Evertale API
 
 *Stories... They have been since the beginning of our times and will be until the end of them... The act of telling stories is the greatest faculty of any human being, even though it is almost as innate as eating.*
 > So... What about create stories in a decentralized way?
@@ -15,5 +15,5 @@ And just like its beginning and middle, all stories end by the hands of the comm
 
 But despite the 'game', in which Users will interact and build their tales, the great magic does not reside in it. In fact, the great transforming power of such an application occurs through the Prompts and Proposals `Comments` tabs, a place where all Users will be able to give their opinions and criticisms about the writing of such author, as well as being able to send images (Such as fanarts of stories!). Forming a strong community in which many great stories can have their beginnings...
 
-But know that we do not close our eyes to the evil of the world... Through the social boycott of incidents `Reports`, Comments / Prompts / Proposals can be deleted by the hands of the community itself. And as game theory says, it is more than inevitable that a majority of good actors will suffocate the public existence of bad actors...
+But know that we do not close our eyes to the evil of the world... Through the social boycott of incidents `Reports`, Comments / Prompts / Proposals can be deleted by the hands of the community itself, what garants a `Flag` to that User... And as game theory says, it is more than inevitable that a majority of good actors will suffocate the public existence of bad actors...
 
