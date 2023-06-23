@@ -5,6 +5,7 @@ import { v4 as uuid } from 'uuid'
 import ExceptionHandler from 'App/Exceptions/Handler'
 import { RequestContract } from '@ioc:Adonis/Core/Request'
 import { ResponseContract } from '@ioc:Adonis/Core/Response'
+import fs from 'fs'
 
 export default class ImageService {
   private static imageValidation: FileValidationOptions = {
@@ -24,5 +25,11 @@ export default class ImageService {
     }else{
       throw ExceptionHandler.ImageError(response)
     }
+  }
+
+  public static async deleteImage(imageName: string): Promise<void> {
+    try{
+      fs.unlinkSync(`${Application.tmpPath('uploads')}\\${imageName}`)
+    } catch { }
   }
 }
