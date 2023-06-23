@@ -17,12 +17,15 @@
 | import './routes/customer'
 |
 */
-
+import Env from '@ioc:Adonis/Core/Env'
 import Route from '@ioc:Adonis/Core/Route'
+import GenreRoute from './routes/genre'
+
+Route.where('id', Route.matchers.number())
+
 Route.group(() => {
   Route.get('/', async () => {
     return { response: 'welcome' }
   })
-
-  Route.resource('/genre', 'GenresController').apiOnly()
-}).prefix('/api')
+  GenreRoute()
+}).prefix(Env.get('BASE_ROUTE_PREFIX'))
