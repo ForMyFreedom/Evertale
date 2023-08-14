@@ -1,7 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import UserValidator from 'App/Validators/UserValidator'
 import User from 'App/Models/User'
-import ImageService from 'App/Services/ImageService'
 import ExceptionHandler from 'App/Exceptions/Handler'
 
 export default class UsersController {
@@ -39,7 +38,6 @@ export default class UsersController {
     const user = await User.find(params.id)
     if (user) {
       await user.delete()
-      await ImageService.deleteImage(user.image, UsersController.FOLDER_NAME)
       ExceptionHandler.SucessfullyDestroyed(response, user)
     } else {
       ExceptionHandler.UndefinedId(response)

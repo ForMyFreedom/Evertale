@@ -1,30 +1,17 @@
 import { schema, rules, CustomMessages } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { NUMBER_REGEX, STRING_ARRAY_REGEX } from 'App/Utils/regex'
-import { MyParserValidator } from './MyValidators'
+import { MyValidator } from './MyValidator'
 
 const GenreValidatorSchema = schema.create({
   name: schema.string({}, [rules.unique({ table: 'genres', column: 'name' })]),
-  popularity: schema.string({}, [rules.regex(NUMBER_REGEX)]),
-  thematicWords: schema.string({}, [rules.regex(STRING_ARRAY_REGEX)]),
+  popularity: schema.number(),
+  image: schema.string({}, [rules.url()]),
+  thematicWords: schema.array().members(schema.string()),
 })
 
-type GenreInputType = { name: string; popularity: number; thematicWords: string[] }
-
-export default class GenreValidator extends MyParserValidator<
-  typeof GenreValidatorSchema,
-  GenreInputType
-> {
+export default class GenreValidator extends MyValidator<typeof GenreValidatorSchema> {
   constructor(protected ctx: HttpContextContract) {
     super(ctx)
-  }
-
-  public TrueCast(validatedBody: (typeof GenreValidatorSchema)['props']): GenreInputType {
-    return {
-      name: validatedBody.name,
-      popularity: Number(validatedBody.popularity ?? 0),
-      thematicWords: JSON.parse(validatedBody.thematicWords ?? '[]'),
-    }
   }
 
   public GetSchema(): typeof GenreValidatorSchema {
@@ -32,9 +19,6 @@ export default class GenreValidator extends MyParserValidator<
   }
 
   protected GetMessages(): CustomMessages {
-    return {
-      'thematicWords.regex': 'Is not an valid array',
-      'popularity.regex': 'Is not a valid number',
-    }
+    return {}
   }
 }

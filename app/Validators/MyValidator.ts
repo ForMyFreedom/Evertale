@@ -3,22 +3,22 @@ import { validator, ParsedTypedSchema, TypedSchema, CustomMessages } from '@ioc:
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import schemaAsOptional from 'App/Utils/schema';
 
-export abstract class MyParserValidator<TSchema extends ParsedTypedSchema<TypedSchema>, TTrue extends object> {
+export abstract class MyValidator<TSchema extends ParsedTypedSchema<TypedSchema>> {
     protected body: any
 
     constructor(protected ctx: HttpContextContract) {
         this.body = ctx.request.body()
     }
 
-    public async validate(): Promise<TTrue> {
+    public async validate(): Promise<TSchema['props']> {
       const schema = this.GetSchema()
-      return this.TrueCast(await validator.validate({ schema: schema, data: this.body, messages: this.messages }))
+      return await validator.validate({ schema: schema, data: this.body, messages: this.messages })
     }
 
-    public async validateAsOptional(): Promise<Partial<TTrue>> {
+    public async validateAsOptional(): Promise<Partial<TSchema['props']>> {
         const schema = schemaAsOptional(this.GetSchema())
         return removeUndefineds(
-            this.TrueCast(await validator.validate({ schema: schema, data: this.body, messages: this.messages }))
+            await validator.validate({ schema: schema, data: this.body, messages: this.messages })
         )
     }
 
@@ -27,26 +27,10 @@ export abstract class MyParserValidator<TSchema extends ParsedTypedSchema<TypedS
         ...this.GetMessages(),
     }
 
-    public abstract TrueCast(validatedBody: TSchema['props']): TTrue
     public abstract GetSchema(): TSchema
     protected abstract GetMessages(): CustomMessages
 
 }
-
-export abstract class MyBasicValidator<TSchema extends ParsedTypedSchema<TypedSchema>> extends MyParserValidator<TSchema, TSchema['props']> {
-    constructor(protected ctx: HttpContextContract) {
-        super(ctx)
-    }
-
-    public TrueCast(validatedBody: TSchema): TSchema['props'] {
-        return validatedBody
-    }
-
-    public abstract GetSchema(): TSchema
-    protected abstract GetMessages(): CustomMessages
-
-}
-
 
 function removeUndefineds<T extends object>(data: T): Partial<T>|T {
     for (const key of Object.keys(data)) {

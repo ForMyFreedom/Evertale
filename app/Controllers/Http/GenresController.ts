@@ -3,20 +3,16 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Genre from 'App/Models/Genre'
 import ExceptionHandler from 'App/Exceptions/Handler'
 import ThematicWord from 'App/Models/ThematicWord'
-import ImageService from '../../Services/ImageService'
 import GenreValidator from 'App/Validators/GenreValidator'
 import ThematicWordValidator from 'App/Validators/ThematicWordValidator'
 
 export default class GenresController {
-  private static FOLDER_NAME = 'genre'
-
   public async store(ctx: HttpContextContract): Promise<void> {
-    const { request, response } = ctx
+    const { response } = ctx
     const body = await new GenreValidator(ctx).validate()
     let { thematicWords, ...rest } = body
 
     const genre = await Genre.create(rest)
-    genre.image = await ImageService.uploadImage(request, response, GenresController.FOLDER_NAME)
     genre.save()
 
     await storeWordsToGenre(thematicWords, genre)
@@ -56,7 +52,7 @@ export default class GenresController {
         await storeWordsToGenre(thematicWords, genre)
       }
       await genre.load('thematicWords')
-      ExceptionHandler.SucessfullyUpdated(response, genre.$original)
+      ExceptionHandler.SucessfullyUpdated(response, genre)
     }
   }
 
@@ -67,7 +63,6 @@ export default class GenresController {
     } else {
       genre.delete()
       await genre.load('thematicWords')
-      ImageService.deleteImage(genre.image, GenresController.FOLDER_NAME)
       ExceptionHandler.SucessfullyDestroyed(response, genre)
     }
   }
