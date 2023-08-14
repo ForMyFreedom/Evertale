@@ -29,7 +29,7 @@ export default class UsersController {
   public async update(ctx: HttpContextContract): Promise<void> {
     const { response, params } = ctx
     const user = await User.find(params.id)
-    const body = await new UserValidator(ctx).validateAsOptional()
+    const { email, ...body } = await new UserValidator(ctx).validateAsOptional()
     if (user) {
       ExceptionHandler.SucessfullyUpdated(
         response,
