@@ -22,8 +22,8 @@ export default class GenreValidator extends MyParserValidator<
   public TrueCast(validatedBody: (typeof GenreValidatorSchema)['props']): GenreInputType {
     return {
       name: validatedBody.name,
-      popularity: Number(validatedBody.popularity),
-      thematicWords: JSON.parse(validatedBody.thematicWords),
+      popularity: Number(validatedBody.popularity ?? 0),
+      thematicWords: JSON.parse(validatedBody.thematicWords ?? '[]'),
     }
   }
 

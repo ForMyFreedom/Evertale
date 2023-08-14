@@ -8,13 +8,15 @@ import GenreValidator from 'App/Validators/GenreValidator'
 import ThematicWordValidator from 'App/Validators/ThematicWordValidator'
 
 export default class GenresController {
+  private static FOLDER_NAME = 'genre'
+
   public async store(ctx: HttpContextContract): Promise<void> {
     const { request, response } = ctx
     const body = await new GenreValidator(ctx).validate()
     let { thematicWords, ...rest } = body
 
     const genre = await Genre.create(rest)
-    genre.image = await ImageService.uploadImage(request, response)
+    genre.image = await ImageService.uploadImage(request, response, GenresController.FOLDER_NAME)
     genre.save()
 
     await storeWordsToGenre(thematicWords, genre)
@@ -36,8 +38,10 @@ export default class GenresController {
     }
   }
 
-  public async update({ request, response }: HttpContextContract): Promise<void> {
-    const { thematicWords, ...rest } = request.body()
+  public async update(ctx: HttpContextContract): Promise<void> {
+    const { request, response } = ctx
+    const body = await new GenreValidator(ctx).validateAsOptional()
+    const { thematicWords, ...rest } = body
 
     let genre = await Genre.find(request.param('id'))
     if (!genre) {
@@ -45,11 +49,14 @@ export default class GenresController {
     } else {
       genre.merge(rest)
       genre.save()
+
+      if (thematicWords) {
+        await genre.load('thematicWords')
+        await eraseAllWordsFromGenre(genre)
+        await storeWordsToGenre(thematicWords, genre)
+      }
       await genre.load('thematicWords')
-      await eraseAllWordsFromGenre(genre)
-      await storeWordsToGenre(thematicWords, genre)
-      await genre.load('thematicWords')
-      ExceptionHandler.SucessfullyUpdated(response, genre)
+      ExceptionHandler.SucessfullyUpdated(response, genre.$original)
     }
   }
 
@@ -60,8 +67,8 @@ export default class GenresController {
     } else {
       genre.delete()
       await genre.load('thematicWords')
-      ImageService.deleteImage(genre.image)
-      response.accepted(genre)
+      ImageService.deleteImage(genre.image, GenresController.FOLDER_NAME)
+      ExceptionHandler.SucessfullyDestroyed(response, genre)
     }
   }
 
