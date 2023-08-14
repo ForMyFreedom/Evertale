@@ -1,8 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ExceptionHandler from 'App/Exceptions/Handler'
-import User from 'App/Models/User'
 import AuthValidator from 'App/Validators/AuthValidator'
-import UserValidator from 'App/Validators/UserValidator'
 
 export default class AuthController {
   public async loguin(ctx: HttpContextContract): Promise<void> {
@@ -18,13 +16,5 @@ export default class AuthController {
     } catch (e) {
       ExceptionHandler.InvalidAuth(response)
     }
-  }
-
-  public async register(ctx: HttpContextContract): Promise<void> {
-    const { response } = ctx
-    const body = await new UserValidator(ctx).validate()
-    const user = await User.create(body)
-    user.save()
-    ExceptionHandler.SucessfullyCreated(response, user)
   }
 }

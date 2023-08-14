@@ -18,6 +18,14 @@ export default class UsersController {
     }
   }
 
+  public async store(ctx: HttpContextContract): Promise<void> {
+    const { response } = ctx
+    const body = await new UserValidator(ctx).validate()
+    const user = await User.create(body)
+    user.save()
+    ExceptionHandler.SucessfullyCreated(response, user)
+  }
+
   public async update(ctx: HttpContextContract): Promise<void> {
     const { response, request, params } = ctx
     const user = await User.find(params.id)
