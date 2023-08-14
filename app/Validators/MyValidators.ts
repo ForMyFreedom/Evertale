@@ -1,8 +1,9 @@
 /* eslint-disable prettier/prettier */
 import { validator, ParsedTypedSchema, TypedSchema, CustomMessages } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import schemaAsOptional from 'App/Utils/schema';
 
-export abstract class MyParserValidator<TSchema extends ParsedTypedSchema<TypedSchema>, TTrue> {
+export abstract class MyParserValidator<TSchema extends ParsedTypedSchema<TypedSchema>, TTrue extends object> {
     protected body: any
 
     constructor(protected ctx: HttpContextContract) {
@@ -10,11 +11,19 @@ export abstract class MyParserValidator<TSchema extends ParsedTypedSchema<TypedS
     }
 
     public async validate(): Promise<TTrue> {
-      return this.TrueCast(await validator.validate({ schema: this.GetSchema(), data: this.body, messages: this.messages }))
+      const schema = this.GetSchema()
+      return this.TrueCast(await validator.validate({ schema: schema, data: this.body, messages: this.messages }))
+    }
+
+    public async validateAsOptional(): Promise<Partial<TTrue>> {
+        const schema = schemaAsOptional(this.GetSchema())
+        return removeUndefineds(
+            this.TrueCast(await validator.validate({ schema: schema, data: this.body, messages: this.messages }))
+        )
     }
 
     public messages: CustomMessages = {
-        'thematicWords.regex': 'st',
+        'date.format': '{{field}} it is not a date',
         ...this.GetMessages(),
     }
 
@@ -36,4 +45,15 @@ export abstract class MyBasicValidator<TSchema extends ParsedTypedSchema<TypedSc
     public abstract GetSchema(): TSchema
     protected abstract GetMessages(): CustomMessages
 
+}
+
+
+function removeUndefineds<T extends object>(data: T): Partial<T>|T {
+    for (const key of Object.keys(data)) {
+        if (data[key] === undefined){
+            delete data[key]
+        }
+    }
+
+    return data
 }

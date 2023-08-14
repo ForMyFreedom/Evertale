@@ -34,11 +34,19 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     response.accepted({ message: 'Sucessfully recovered', data: body })
   }
 
+  public static SucessfullyDestroyed(response: ResponseContract, body: any): void {
+    response.accepted({ message: 'Sucessfully destroyed', data: body })
+  }
+
   public static UndefinedId(response: ResponseContract): void {
     response.notFound({ error: 'Id not Defined' })
   }
 
   public static ImageError(response: ResponseContract): void {
     response.badRequest({ error: 'Image error' })
+  }
+
+  public static FileNotFound(response: ResponseContract): void {
+    response.notFound({ error: 'File not found' })
   }
 }
