@@ -26,6 +26,10 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     response.created({ message: 'Sucessfully created', data: body })
   }
 
+  public static SuccessfullyAuthenticated(response: ResponseContract, body: any): void {
+    response.accepted({ message: 'Successfully authenticated', data: body })
+  }
+
   public static SucessfullyUpdated(response: ResponseContract, body: any): void {
     response.accepted({ message: 'Sucesfully updated', data: body })
   }
@@ -44,6 +48,10 @@ export default class ExceptionHandler extends HttpExceptionHandler {
 
   public static ImageError(response: ResponseContract): void {
     response.badRequest({ error: 'Image error' })
+  }
+
+  public static InvalidAuth(response: ResponseContract): void {
+    response.unauthorized({ error: 'Invalid Auth' })
   }
 
   public static FileNotFound(response: ResponseContract): void {

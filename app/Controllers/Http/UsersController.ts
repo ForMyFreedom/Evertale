@@ -5,16 +5,7 @@ import ImageService from 'App/Services/ImageService'
 import ExceptionHandler from 'App/Exceptions/Handler'
 
 export default class UsersController {
-  private static FOLDER_NAME = 'user'
-
-  public async store(ctx: HttpContextContract): Promise<void> {
-    const { request, response } = ctx
-    const body = await new UserValidator(ctx).validate()
-    const user = await User.create(body)
-    user.image = await ImageService.uploadImage(request, response, UsersController.FOLDER_NAME)
-    user.save()
-    ExceptionHandler.SucessfullyCreated(response, user)
-  }
+  public static FOLDER_NAME = 'user'
 
   public async index({ response }: HttpContextContract): Promise<void> {
     const users = await User.all()

@@ -22,4 +22,10 @@ export default Env.rules({
   DRIVE_DISK: Env.schema.enum(['local'] as const),
   NODE_ENV: Env.schema.enum(['development', 'production', 'test'] as const),
   BASE_ROUTE_PREFIX: Env.schema.string(),
+  REDIS_CONNECTION: Env.schema.enum(['local'] as const),
+  REDIS_HOST: Env.schema.string({ format: 'host' }),
+  REDIS_PORT: Env.schema.number(),
+  REDIS_PASSWORD: Env.schema.string.optional(),
+  USER_ROOT_EMAIL: Env.schema.string(),
+  USER_ROOT_PASSWORD: Env.schema.string(),
 })

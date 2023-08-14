@@ -26,10 +26,10 @@ Route.where('id', Route.matchers.number())
 
 Route.group(() => {
   Route.get('/', async () => {
-    return { response: 'welcome' }
+    return { response: 'welcome!' }
   })
 
-  Route.get('/image/:imageId', 'ImagesController.load')
   GenreRoute()
   UserRoute()
+  Route.post('/auth/loguin', 'AuthController.loguin')
 }).prefix(Env.get('BASE_ROUTE_PREFIX'))

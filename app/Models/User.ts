@@ -9,6 +9,13 @@ export default class User extends BaseModel {
   @column()
   public name: string
 
+  @column({
+    consume: (value) => {
+      return Boolean(value)
+    },
+  })
+  public isAdmin: boolean
+
   @column()
   public email: string
 
