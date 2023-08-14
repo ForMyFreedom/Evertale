@@ -3,18 +3,16 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Genre from 'App/Models/Genre'
 import ExceptionHandler from 'App/Exceptions/Handler'
 import ThematicWord from 'App/Models/ThematicWord'
-import ImageService from '../../Services/ImageService'
 import GenreValidator from 'App/Validators/GenreValidator'
 import ThematicWordValidator from 'App/Validators/ThematicWordValidator'
 
 export default class GenresController {
   public async store(ctx: HttpContextContract): Promise<void> {
-    const { request, response } = ctx
+    const { response } = ctx
     const body = await new GenreValidator(ctx).validate()
     let { thematicWords, ...rest } = body
 
     const genre = await Genre.create(rest)
-    genre.image = await ImageService.uploadImage(request, response)
     genre.save()
 
     await storeWordsToGenre(thematicWords, genre)
@@ -36,8 +34,10 @@ export default class GenresController {
     }
   }
 
-  public async update({ request, response }: HttpContextContract): Promise<void> {
-    const { thematicWords, ...rest } = request.body()
+  public async update(ctx: HttpContextContract): Promise<void> {
+    const { request, response } = ctx
+    const body = await new GenreValidator(ctx).validateAsOptional()
+    const { thematicWords, ...rest } = body
 
     let genre = await Genre.find(request.param('id'))
     if (!genre) {
@@ -45,9 +45,12 @@ export default class GenresController {
     } else {
       genre.merge(rest)
       genre.save()
-      await genre.load('thematicWords')
-      await eraseAllWordsFromGenre(genre)
-      await storeWordsToGenre(thematicWords, genre)
+
+      if (thematicWords) {
+        await genre.load('thematicWords')
+        await eraseAllWordsFromGenre(genre)
+        await storeWordsToGenre(thematicWords, genre)
+      }
       await genre.load('thematicWords')
       ExceptionHandler.SucessfullyUpdated(response, genre)
     }
@@ -60,8 +63,7 @@ export default class GenresController {
     } else {
       genre.delete()
       await genre.load('thematicWords')
-      ImageService.deleteImage(genre.image)
-      response.accepted(genre)
+      ExceptionHandler.SucessfullyDestroyed(response, genre)
     }
   }
 
