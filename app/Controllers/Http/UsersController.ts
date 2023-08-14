@@ -4,8 +4,6 @@ import User from 'App/Models/User'
 import ExceptionHandler from 'App/Exceptions/Handler'
 
 export default class UsersController {
-  public static FOLDER_NAME = 'user'
-
   public async index({ response }: HttpContextContract): Promise<void> {
     const users = await User.all()
     ExceptionHandler.SucessfullyRecovered(response, users)
