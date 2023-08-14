@@ -27,14 +27,14 @@ export default class UsersController {
   }
 
   public async update(ctx: HttpContextContract): Promise<void> {
-    const { response, request, params } = ctx
+    const { response, params } = ctx
     const user = await User.find(params.id)
-    await new UserValidator(ctx).validateAsOptional()
+    const body = await new UserValidator(ctx).validateAsOptional()
     if (user) {
-      const { name } = request.only(['name'])
-      user.merge({ name: name })
-      user.save()
-      ExceptionHandler.SucessfullyUpdated(response, user)
+      ExceptionHandler.SucessfullyUpdated(
+        response,
+        await User.updateOrCreate({ id: user.id }, body)
+      )
     } else {
       ExceptionHandler.UndefinedId(response)
     }
