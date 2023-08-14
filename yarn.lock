@@ -53,6 +53,15 @@
     "picomatch" "^2.3.1"
     "slash" "^3.0.0"
 
+"@adonisjs/auth@^8.2.3":
+  "integrity" "sha512-js9e8AHEsNC/8MGvho6MgL+uXr8SlhTg9MJJDWQBBiqsKkT7+H7NMP/pLbuSzYaaf40t2u/OXfq6wXuIC5ZYvw=="
+  "resolved" "https://registry.npmjs.org/@adonisjs/auth/-/auth-8.2.3.tgz"
+  "version" "8.2.3"
+  dependencies:
+    "@poppinss/hooks" "^5.0.3"
+    "@poppinss/utils" "^5.0.0"
+    "luxon" "^3.0.4"
+
 "@adonisjs/bodyparser@^8.0.0", "@adonisjs/bodyparser@^8.1.7":
   "integrity" "sha512-Tct3NJwkC+uCU05K9FWLRhuh+T2xW28Oj1wtcl3TugaiUW0ZiBLPvfB2fZZuBuILNakSXGSxHFP0tr2Nl+f5/A=="
   "resolved" "https://registry.npmjs.org/@adonisjs/bodyparser/-/bodyparser-8.1.8.tgz"
@@ -74,7 +83,7 @@
   dependencies:
     "@poppinss/utils" "^5.0.0"
 
-"@adonisjs/core@^5.0.0", "@adonisjs/core@^5.1.0", "@adonisjs/core@^5.8.0":
+"@adonisjs/core@^5.0.0", "@adonisjs/core@^5.1.0", "@adonisjs/core@^5.7.1", "@adonisjs/core@^5.8.0":
   "integrity" "sha512-32zG9EW0t0Ck0cMzlwD0+z3GJG7k/gZz6P0+h+s8N1N7fHxGixrKs7W7lT3OcIvk0NsuIw1tUPAU7fAWytHEqA=="
   "resolved" "https://registry.npmjs.org/@adonisjs/core/-/core-5.9.0.tgz"
   "version" "5.9.0"
@@ -190,7 +199,7 @@
     "abstract-logging" "^2.0.1"
     "pino" "^6.14.0"
 
-"@adonisjs/lucid@^18.4.0":
+"@adonisjs/lucid@^18.0.0", "@adonisjs/lucid@^18.4.0":
   "integrity" "sha512-pSBhKFzqr6mWoeIiGdcW2OQIWAyCoLn+G7VmXXLqxHvGm+9SaioKJaSMmaJa0xgS5v64r/MVLeH/nw87Q4KpyQ=="
   "resolved" "https://registry.npmjs.org/@adonisjs/lucid/-/lucid-18.4.0.tgz"
   "version" "18.4.0"
@@ -3537,7 +3546,7 @@
   dependencies:
     "yallist" "^4.0.0"
 
-"luxon@^3.0.3", "luxon@^3.3.0":
+"luxon@^3.0.3", "luxon@^3.0.4", "luxon@^3.3.0":
   "integrity" "sha512-An0UCfG/rSiqtAIiBPO0Y9/zAnHUZxAMiCpTd5h2smgsj7GGmcenvrvww2cqNA8/4A5ZrD1gJpHN2mIHZQF+Mg=="
   "resolved" "https://registry.npmjs.org/luxon/-/luxon-3.3.0.tgz"
   "version" "3.3.0"
