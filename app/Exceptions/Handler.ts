@@ -26,8 +26,8 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     response.created({ message: 'Sucessfully created', data: body })
   }
 
-  public static SuccessfullyAuthenticated(response: ResponseContract, body: any): void {
-    response.accepted({ message: 'Successfully authenticated', data: body })
+  public static SuccessfullyAuthenticated(response: ResponseContract): void {
+    response.accepted({ message: 'Successfully authenticated' })
   }
 
   public static SucessfullyUpdated(response: ResponseContract, body: any): void {

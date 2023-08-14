@@ -12,7 +12,7 @@ export default class AuthController {
     const uid = name ? name : email
     try {
       await auth.verifyCredentials(uid ?? '', password)
-      ExceptionHandler.SuccessfullyAuthenticated(response, { cookie: 'cookie' })
+      ExceptionHandler.SuccessfullyAuthenticated(response)
     } catch (e) {
       ExceptionHandler.InvalidAuth(response)
     }
