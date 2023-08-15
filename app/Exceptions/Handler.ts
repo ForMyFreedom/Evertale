@@ -46,12 +46,24 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     response.notFound({ error: 'Id not Defined' })
   }
 
+  public static CantDeleteOthersPrompt(response: ResponseContract): void {
+    response.badRequest({ error: "You can't delete others prompt!" })
+  }
+
+  public static CantEditOthersPrompt(response: ResponseContract): void {
+    response.badRequest({ error: "You can't edit others prompt!" })
+  }
+
   public static ImageError(response: ResponseContract): void {
     response.badRequest({ error: 'Image error' })
   }
 
   public static InvalidAuth(response: ResponseContract): void {
     response.unauthorized({ error: 'Invalid Auth' })
+  }
+
+  public static InvalidUser(response: ResponseContract): void {
+    response.badRequest({ message: 'There is no user with that userId' })
   }
 
   public static FileNotFound(response: ResponseContract): void {
