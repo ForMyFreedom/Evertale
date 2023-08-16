@@ -66,6 +66,10 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     response.badRequest({ message: 'There is no user with that userId' })
   }
 
+  public static InvalidGenre(response: ResponseContract): void {
+    response.badRequest({ message: 'There is no genre with that genreId' })
+  }
+
   public static FileNotFound(response: ResponseContract): void {
     response.notFound({ error: 'File not found' })
   }

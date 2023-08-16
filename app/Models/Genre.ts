@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, HasMany, column, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, HasMany, ManyToMany, column, hasMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
 import ThematicWord from './ThematicWord'
+import Prompt from './Prompt'
 
 export default class Genre extends BaseModel {
   @column({ isPrimary: true })
@@ -14,6 +15,9 @@ export default class Genre extends BaseModel {
 
   @column()
   public image: string
+
+  @manyToMany(() => Prompt)
+  public prompts: ManyToMany<typeof Prompt>
 
   @hasMany(() => ThematicWord)
   public thematicWords: HasMany<typeof ThematicWord>

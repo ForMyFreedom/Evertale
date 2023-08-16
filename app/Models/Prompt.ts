@@ -1,6 +1,14 @@
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel,
+  BelongsTo,
+  ManyToMany,
+  belongsTo,
+  column,
+  manyToMany,
+} from '@ioc:Adonis/Lucid/Orm'
 import User from './User'
+import Genre from './Genre'
 
 export default class Prompt extends BaseModel {
   @column({ isPrimary: true })
@@ -11,6 +19,9 @@ export default class Prompt extends BaseModel {
 
   @column()
   public text: string
+
+  @manyToMany(() => Genre)
+  public genres: ManyToMany<typeof Genre>
 
   @belongsTo(() => User, { foreignKey: 'authorId' })
   public author: BelongsTo<typeof User>
