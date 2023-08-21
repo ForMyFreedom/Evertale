@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { validator, ParsedTypedSchema, TypedSchema, CustomMessages } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import schemaAsOptional from 'App/Utils/schema';
+import { schemaAsOptional } from 'App/Utils/schema';
 
 export abstract class MyValidator<TSchema extends ParsedTypedSchema<TypedSchema>> {
     protected body: any
