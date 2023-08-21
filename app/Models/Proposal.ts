@@ -3,6 +3,7 @@ import { BaseModel, BelongsTo, HasMany, belongsTo, column, hasMany } from '@ioc:
 import User from './User'
 import Comment from './Comment'
 import Reaction from './Reaction'
+import Write from './Write'
 
 export default class Proposal extends BaseModel {
   @column({ isPrimary: true })
@@ -11,21 +12,30 @@ export default class Proposal extends BaseModel {
   @column()
   public authorId: number
 
-  @belongsTo(() => User, { foreignKey: 'authorId' })
-  public author: BelongsTo<typeof User>
+  @column()
+  public writeId: number
 
   @column()
-  public text: string
+  public isDefinitive: boolean
 
-  @hasMany(() => Comment)
-  public comments: HasMany<typeof Comment>
-
-  @hasMany(() => Reaction)
-  public reactions: HasMany<typeof Reaction>
+  @column()
+  public orderInHistory: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @belongsTo(() => User, { foreignKey: 'authorId' })
+  public author: BelongsTo<typeof User>
+
+  @belongsTo(() => Write)
+  public write: BelongsTo<typeof Write>
+
+  @hasMany(() => Comment)
+  public comments: HasMany<typeof Comment>
+
+  @hasMany(() => Reaction)
+  public reactions: HasMany<typeof Reaction>
 }
