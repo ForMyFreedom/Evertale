@@ -23,6 +23,7 @@ import GenreRoute from './routes/genre'
 import UserRoute from './routes/user'
 import PromptRoute from './routes/prompt'
 import ProposalRoute from './routes/proposal'
+import CommentRoute from './routes/comment'
 
 Route.where('id', Route.matchers.number())
 
@@ -35,5 +36,6 @@ Route.group(() => {
   UserRoute()
   PromptRoute()
   ProposalRoute()
+  CommentRoute()
   Route.post('/auth/loguin', 'AuthController.loguin')
 }).prefix(Env.get('BASE_ROUTE_PREFIX'))

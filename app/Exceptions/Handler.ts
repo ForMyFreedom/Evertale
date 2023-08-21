@@ -46,6 +46,14 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     response.notFound({ error: 'Id not Defined' })
   }
 
+  public static UndefinedWrite(response: ResponseContract): void {
+    response.notFound({ error: 'Write not Defined' })
+  }
+
+  public static UndefinedComment(response: ResponseContract): void {
+    response.notFound({ error: 'Comment not Defined' })
+  }
+
   public static CantDeleteOthersWrite(response: ResponseContract): void {
     response.badRequest({ error: "You can't delete others write!" })
   }
@@ -75,6 +83,10 @@ export default class ExceptionHandler extends HttpExceptionHandler {
   }
 
   public static CantProposeToClosedHistory(response: ResponseContract): void {
-    response.badRequest({ error: "Cant' propose to closed history" })
+    response.badRequest({ error: "Can't propose to closed fable" })
+  }
+
+  public static IncompatibleWriteAndAnswer(response: ResponseContract): void {
+    response.badRequest({ error: 'The comment you want to reply to does not belong to this write' })
   }
 }
