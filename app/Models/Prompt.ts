@@ -25,6 +25,9 @@ export default class Prompt extends BaseModel {
   @column()
   public currentIndex: number
 
+  @column({ serialize: (value) => Boolean(value) })
+  public concluded: boolean
+
   @column()
   public writeId: number
 

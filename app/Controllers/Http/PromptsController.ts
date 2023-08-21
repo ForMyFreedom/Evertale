@@ -28,7 +28,9 @@ export default class PromptsController {
 
   public async store(ctx: HttpContextContract): Promise<void> {
     const { response, auth } = ctx
-    const { genreIds, text, popularity, ...body } = await new PromptValidator(ctx).validate()
+    const { genreIds, text, concluded, popularity, ...body } = await new PromptValidator(
+      ctx
+    ).validate()
     const authorId = auth?.user?.id
     if (authorId) {
       const write = await Write.create({ text: text, popularity: 0, authorId: authorId })

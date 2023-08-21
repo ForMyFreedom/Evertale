@@ -30,6 +30,9 @@ export default class ProposalsController {
     const authorId = auth?.user?.id
     if (authorId) {
       const prompt = await Prompt.findOrFail(promptId)
+      if (prompt.concluded) {
+        return ExceptionHandler.CantProposeToClosedHistory(response)
+      }
       const write = await Write.create({ text: text, popularity: 0, authorId: authorId })
       const proposal = await Proposal.create({
         ...body,

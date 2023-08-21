@@ -73,4 +73,8 @@ export default class ExceptionHandler extends HttpExceptionHandler {
   public static FileNotFound(response: ResponseContract): void {
     response.notFound({ error: 'File not found' })
   }
+
+  public static CantProposeToClosedHistory(response: ResponseContract): void {
+    response.badRequest({ error: "Cant' propose to closed history" })
+  }
 }
