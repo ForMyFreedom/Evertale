@@ -1,14 +1,16 @@
-import { DateTime } from 'luxon'
 import {
   BaseModel,
   BelongsTo,
   ManyToMany,
+  ModelQueryBuilderContract,
+  beforeFetch,
+  beforeFind,
   belongsTo,
   column,
   manyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
-import User from './User'
 import Genre from './Genre'
+import Write from './Write'
 
 export default class Prompt extends BaseModel {
   @column({ isPrimary: true })
@@ -18,19 +20,16 @@ export default class Prompt extends BaseModel {
   public title: string
 
   @column()
-  public text: string
+  public isDaily: boolean
+
+  @column()
+  public writeId: number
+
+  @belongsTo(() => Write)
+  public write: BelongsTo<typeof Write>
 
   @manyToMany(() => Genre)
   public genres: ManyToMany<typeof Genre>
-
-  @belongsTo(() => User, { foreignKey: 'authorId' })
-  public author: BelongsTo<typeof User>
-
-  @column()
-  public authorId: number
-
-  @column()
-  public isDaily: boolean
 
   @column()
   public maxSizePerExtension: number
@@ -38,12 +37,9 @@ export default class Prompt extends BaseModel {
   @column()
   public limitOfExtensions: number
 
-  @column()
-  public popularity: number
-
-  @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
-
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  public updatedAt: DateTime
+  @beforeFind()
+  @beforeFetch()
+  public static loadWrite(query: ModelQueryBuilderContract<typeof Prompt>) {
+    query.preload('write')
+  }
 }
