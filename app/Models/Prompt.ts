@@ -19,8 +19,11 @@ export default class Prompt extends BaseModel {
   @column()
   public title: string
 
-  @column()
+  @column({ serialize: (value) => Boolean(value) })
   public isDaily: boolean
+
+  @column()
+  public currentIndex: number
 
   @column()
   public writeId: number

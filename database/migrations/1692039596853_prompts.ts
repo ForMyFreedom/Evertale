@@ -9,6 +9,7 @@ export default class extends BaseSchema {
       table.integer('write_id').unsigned().references('writes.id')
 
       table.string('title').notNullable()
+      table.integer('current_index').defaultTo(0)
       table.boolean('is_daily').notNullable().defaultTo(false)
       table.integer('max_size_per_extension').notNullable()
       table.integer('limit_of_extensions').notNullable()

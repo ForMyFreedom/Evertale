@@ -12,6 +12,9 @@ export default class Write extends BaseModel {
   @column()
   public popularity: number
 
+  @column({ serialize: (value) => Boolean(value) })
+  public edited: boolean
+
   @belongsTo(() => User, { foreignKey: 'authorId' })
   public author: BelongsTo<typeof User>
 
