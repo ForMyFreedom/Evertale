@@ -89,4 +89,8 @@ export default class ExceptionHandler extends HttpExceptionHandler {
   public static IncompatibleWriteAndAnswer(response: ResponseContract): void {
     response.badRequest({ error: 'The comment you want to reply to does not belong to this write' })
   }
+
+  public static CantUseConclusiveReactionInComment(response: ResponseContract): void {
+    response.badRequest({ error: "Can't use conclusive reaction in comment" })
+  }
 }
