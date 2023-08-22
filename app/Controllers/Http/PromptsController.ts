@@ -28,14 +28,16 @@ export default class PromptsController {
 
   public async store(ctx: HttpContextContract): Promise<void> {
     const { response, auth } = ctx
-    const { genreIds, text, popularity, ...body } = await new PromptValidator(ctx).validate()
+    const { genreIds, text, concluded, popularity, ...body } = await new PromptValidator(
+      ctx
+    ).validate()
     const authorId = auth?.user?.id
     if (authorId) {
       const write = await Write.create({ text: text, popularity: 0, authorId: authorId })
       const prompt = await Prompt.create({ ...body, writeId: write.id })
       if (await replaceGenres(response, prompt, genreIds)) {
-        ExceptionHandler.SucessfullyCreated(response, prompt)
         prompt.save()
+        ExceptionHandler.SucessfullyCreated(response, prompt)
       }
     } else {
       ExceptionHandler.InvalidUser(response)
@@ -50,11 +52,14 @@ export default class PromptsController {
     ).validateAsOptional()
     if (prompt) {
       if (prompt.write.authorId !== auth?.user?.id) {
-        ExceptionHandler.CantEditOthersPrompt(response)
+        ExceptionHandler.CantEditOthersWrite(response)
         return
       }
 
-      await Write.updateOrCreate({ id: prompt.write.id }, { text: text, popularity: popularity })
+      await Write.updateOrCreate(
+        { id: prompt.write.id },
+        { text: text, popularity: popularity, edited: true }
+      )
       prompt.merge(body)
       await prompt.save()
 
@@ -79,7 +84,7 @@ export default class PromptsController {
         await prompt.delete()
         ExceptionHandler.SucessfullyDestroyed(response, prompt)
       } else {
-        ExceptionHandler.CantDeleteOthersPrompt(response)
+        ExceptionHandler.CantDeleteOthersWrite(response)
       }
     } else {
       ExceptionHandler.UndefinedId(response)

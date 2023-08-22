@@ -22,6 +22,7 @@ import Route from '@ioc:Adonis/Core/Route'
 import GenreRoute from './routes/genre'
 import UserRoute from './routes/user'
 import PromptRoute from './routes/prompt'
+import ProposalRoute from './routes/proposal'
 
 Route.where('id', Route.matchers.number())
 
@@ -33,5 +34,6 @@ Route.group(() => {
   GenreRoute()
   UserRoute()
   PromptRoute()
+  ProposalRoute()
   Route.post('/auth/loguin', 'AuthController.loguin')
 }).prefix(Env.get('BASE_ROUTE_PREFIX'))
