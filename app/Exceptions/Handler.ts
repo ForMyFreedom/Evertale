@@ -28,7 +28,7 @@ export default class ExceptionHandler extends HttpExceptionHandler {
 
   private basicHandlers: ErrorHandler = {
     E_ROUTE_NOT_FOUND: (_error) => ({ error: 'Route not found' }),
-    E_VALIDATION_FAILURE: (error) => ({ error: 'Route not found', failures: error.messages }),
+    E_VALIDATION_FAILURE: (error) => ({ error: 'Validation failure', failures: error.messages }),
   }
 
   public async handle(error: any, { response }: HttpContextContract): Promise<any> {
