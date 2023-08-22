@@ -16,10 +16,30 @@
 import Logger from '@ioc:Adonis/Core/Logger'
 import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
 import type { ResponseContract } from '@ioc:Adonis/Core/Response'
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+
+type MyError = { error: string }
+type ErrorHandler = { [key: string]: (error: any) => MyError }
 
 export default class ExceptionHandler extends HttpExceptionHandler {
   constructor() {
     super(Logger)
+  }
+
+  private basicHandlers: ErrorHandler = {
+    E_ROUTE_NOT_FOUND: (_error) => ({ error: 'Route not found' }),
+    E_VALIDATION_FAILURE: (error) => ({ error: 'Route not found', failures: error.messages }),
+  }
+
+  public async handle(error: any, { response }: HttpContextContract): Promise<any> {
+    if (error && error.code) {
+      const basicResponse = this.basicHandlers[error.code]
+      if (basicResponse) {
+        response.badRequest(basicResponse(error))
+      } else {
+        response.badRequest(error)
+      }
+    }
   }
 
   public static SucessfullyCreated(response: ResponseContract, body: any): void {
