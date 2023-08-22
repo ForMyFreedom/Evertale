@@ -113,4 +113,8 @@ export default class ExceptionHandler extends HttpExceptionHandler {
   public static CantUseConclusiveReactionInComment(response: ResponseContract): void {
     response.badRequest({ error: "Can't use conclusive reaction in comment" })
   }
+
+  public static CantUseConclusiveReactionInPrompt(response: ResponseContract): void {
+    response.badRequest({ error: "Can't use conclusive reaction in prompt" })
+  }
 }

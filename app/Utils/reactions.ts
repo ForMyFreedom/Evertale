@@ -30,3 +30,6 @@ export function cleanReactions(reactions: CommentReaction[]|WriteReaction[]): an
   return cleanReactions
 }
 
+export function reactionIsConclusive(type: ReactionType): boolean {
+  return type === ReactionType.CONCLUSIVE || type === ReactionType.POSITIVE_CONCLUSIVE
+}

@@ -1,8 +1,8 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ExceptionHandler from 'App/Exceptions/Handler'
 import Comment from 'App/Models/Comment'
-import { CommentReaction, ReactionType } from 'App/Models/Reaction'
-import { cleanReactions } from 'App/Utils/reactions'
+import { CommentReaction } from 'App/Models/Reaction'
+import { cleanReactions, reactionIsConclusive } from 'App/Utils/reactions'
 import CommentReactionValidator from 'App/Validators/CommentReactionValidator'
 
 export default class ReactCommentsController {
@@ -28,7 +28,7 @@ export default class ReactCommentsController {
     if (authorId) {
       const body = await new CommentReactionValidator(ctx).validate()
 
-      if (body.type === ReactionType.CONCLUSIVE || body.type === ReactionType.POSITIVE_CONCLUSIVE) {
+      if (reactionIsConclusive(body.type)) {
         return ExceptionHandler.CantUseConclusiveReactionInComment(response)
       }
 

@@ -1,8 +1,9 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ExceptionHandler from 'App/Exceptions/Handler'
+import Prompt from 'App/Models/Prompt'
 import { WriteReaction } from 'App/Models/Reaction'
 import Write from 'App/Models/Write'
-import { cleanReactions } from 'App/Utils/reactions'
+import { cleanReactions, reactionIsConclusive } from 'App/Utils/reactions'
 import WriteReactionValidator from 'App/Validators/WriteReactionValidator'
 
 export default class ReactWritesController {
@@ -28,6 +29,10 @@ export default class ReactWritesController {
     if (authorId) {
       const body = await new WriteReactionValidator(ctx).validate()
 
+      if (reactionIsConclusive(body.type) && (await writeIsPrompt(body.writeId))) {
+        return ExceptionHandler.CantUseConclusiveReactionInPrompt(response)
+      }
+
       const couldFind = await WriteReaction.query()
         .where('userId', '=', authorId)
         .where('writeId', '=', body.writeId)
@@ -52,4 +57,9 @@ export default class ReactWritesController {
       ExceptionHandler.UndefinedId(response)
     }
   }
+}
+
+async function writeIsPrompt(writeId: number): Promise<boolean> {
+  const prompts = await Prompt.query().where('writeId', '=', writeId)
+  return prompts.length > 0
 }
