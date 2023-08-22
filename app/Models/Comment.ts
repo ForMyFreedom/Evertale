@@ -2,7 +2,7 @@ import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, HasMany, belongsTo, column, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import Write from './Write'
 import User from './User'
-import Reaction from './Reaction'
+import { CommentReaction } from './Reaction'
 
 export default class Comment extends BaseModel {
   @column({ isPrimary: true })
@@ -38,8 +38,8 @@ export default class Comment extends BaseModel {
   @belongsTo(() => User, { foreignKey: 'authorId' })
   public author: BelongsTo<typeof User>
 
-  @hasMany(() => Reaction)
-  public reactions: HasMany<typeof Reaction>
+  @hasMany(() => CommentReaction)
+  public reactions: HasMany<typeof CommentReaction>
 
   @hasMany(() => Comment, { foreignKey: 'answerToId' })
   public answers: HasMany<typeof Comment>
