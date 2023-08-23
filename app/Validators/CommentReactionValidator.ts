@@ -5,7 +5,7 @@ import { ReactionType } from 'App/Models/Reaction'
 
 const CommentReactionValidatorSchema = schema.create({
   commentId: schema.number([rules.unsigned(), rules.exists({ table: 'comments', column: 'id' })]),
-  type: schema.enum(Object.values(ReactionType) as ReactionType[]),
+  type: schema.enum(Object.values(ReactionType) as string[]),
 })
 
 export default class CommentReactionValidator extends MyValidator<

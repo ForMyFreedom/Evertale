@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table.increments('id')
       table.integer('user_id').unsigned().references('users.id').onDelete('CASCADE')
       table.integer('comment_id').unsigned().references('comments.id').onDelete('CASCADE')
-      table.enum('type', Object.values(ReactionType))
+      table.integer('type').unsigned().checkIn(Object.keys(ReactionType))
 
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })

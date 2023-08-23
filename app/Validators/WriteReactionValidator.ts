@@ -5,7 +5,7 @@ import { ReactionType } from 'App/Models/Reaction'
 
 const WriteReactionValidatorSchema = schema.create({
   writeId: schema.number([rules.unsigned(), rules.exists({ table: 'writes', column: 'id' })]),
-  type: schema.enum(Object.values(ReactionType) as ReactionType[]),
+  type: schema.enum(Object.values(ReactionType) as string[]),
 })
 
 export default class WriteReactionValidator extends MyValidator<

@@ -1,7 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ExceptionHandler from 'App/Exceptions/Handler'
 import Comment from 'App/Models/Comment'
-import { CommentReaction } from 'App/Models/Reaction'
+import { CommentReaction, ReactionType } from 'App/Models/Reaction'
 import { cleanReactions, reactionIsConclusive } from 'App/Utils/reactions'
 import CommentReactionValidator from 'App/Validators/CommentReactionValidator'
 
@@ -27,8 +27,9 @@ export default class ReactCommentsController {
     const authorId = auth?.user?.id
     if (authorId) {
       const body = await new CommentReactionValidator(ctx).validate()
+      const type = ReactionType[body.type] as ReactionType
 
-      if (reactionIsConclusive(body.type)) {
+      if (reactionIsConclusive(type)) {
         return ExceptionHandler.CantUseConclusiveReactionInComment(response)
       }
 
@@ -39,7 +40,7 @@ export default class ReactCommentsController {
       if (couldFind.length > 0) {
         couldFind[0].delete()
       }
-      const reaction = await CommentReaction.create({ ...body, userId: authorId })
+      const reaction = await CommentReaction.create({ ...body, type: type, userId: authorId })
       reaction.save()
       ExceptionHandler.SucessfullyCreated(response, reaction)
     } else {

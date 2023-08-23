@@ -4,7 +4,7 @@ import { CommentReaction, ReactionType, WriteReaction } from "App/Models/Reactio
 
 export function cleanReactions(reactions: CommentReaction[]|WriteReaction[]): any[] {
   let cleanReactions = reactions.map((value: CommentReaction|WriteReaction) => {
-    return { type: value.type, amount: value.id }
+    return { type: ReactionType[value.type] as unknown as ReactionType, amount: value.id }
   })
 
   let positiveConclusive = cleanReactions.find((value)=>value.type === ReactionType.POSITIVE_CONCLUSIVE)?.amount || 0
@@ -26,8 +26,7 @@ export function cleanReactions(reactions: CommentReaction[]|WriteReaction[]): an
   }
 
   cleanReactions = cleanReactions.filter((value)=> value.amount > 0)
-
-  return cleanReactions
+  return cleanReactions.map((value) => {return {...value, type: ReactionType[value.type]}})
 }
 
 export function reactionIsConclusive(type: ReactionType): boolean {

@@ -5,11 +5,20 @@ import Comment from './Comment'
 import Write from './Write'
 
 export enum ReactionType {
-  'POSITIVE' = 'POSITIVE',
-  'NEGATIVE' = 'NEGATIVE',
-  'CONCLUSIVE' = 'CONCLUSIVE',
-  'COMPLAINT' = 'COMPLAINT',
-  'POSITIVE_CONCLUSIVE' = 'POSITIVE_CONCLUSIVE',
+  'POSITIVE',
+  'NEGATIVE',
+  'CONCLUSIVE',
+  'COMPLAINT',
+  'POSITIVE_CONCLUSIVE',
+}
+
+const TYPE_SERIAL = {
+  consume: (value) => {
+    return ReactionType[value]
+  },
+  serialize: (value) => {
+    return ReactionType[value]
+  },
 }
 
 export class CommentReaction extends BaseModel {
@@ -22,7 +31,7 @@ export class CommentReaction extends BaseModel {
   @column()
   public commentId: number
 
-  @column()
+  @column(TYPE_SERIAL)
   public type: ReactionType
 
   @column.dateTime({ autoCreate: true })
@@ -48,7 +57,7 @@ export class WriteReaction extends BaseModel {
   @column()
   public writeId: number
 
-  @column({ serialize: (value) => ReactionType[value] })
+  @column(TYPE_SERIAL)
   public type: ReactionType
 
   @column.dateTime({ autoCreate: true })
