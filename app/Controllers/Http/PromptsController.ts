@@ -102,7 +102,6 @@ const replaceGenres = async (
     await prompt.load('genres')
     return true
   } catch (e) {
-    console.log(e)
     ExceptionHandler.InvalidGenre(response)
     return false
   }

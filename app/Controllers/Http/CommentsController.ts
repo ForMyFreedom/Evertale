@@ -20,7 +20,6 @@ export default class CommentsController {
       await comment.load('answers')
       ExceptionHandler.SucessfullyRecovered(response, comment)
     } catch (e) {
-      console.log(e)
       ExceptionHandler.UndefinedId(response)
     }
   }

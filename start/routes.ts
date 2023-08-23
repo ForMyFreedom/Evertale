@@ -19,11 +19,12 @@
 */
 import Env from '@ioc:Adonis/Core/Env'
 import Route from '@ioc:Adonis/Core/Route'
-import GenreRoute from './routes/genre'
-import UserRoute from './routes/user'
-import PromptRoute from './routes/prompt'
-import ProposalRoute from './routes/proposal'
-import CommentRoute from './routes/comment'
+import GenreRoutes from './routes/genre'
+import UserRoutes from './routes/user'
+import PromptRoutes from './routes/prompt'
+import ProposalRoutes from './routes/proposal'
+import CommentRoutes from './routes/comment'
+import ReactionRoutes from './routes/reactions'
 
 Route.where('id', Route.matchers.number())
 
@@ -32,10 +33,11 @@ Route.group(() => {
     return { response: 'welcome!' }
   })
 
-  GenreRoute()
-  UserRoute()
-  PromptRoute()
-  ProposalRoute()
-  CommentRoute()
+  GenreRoutes()
+  UserRoutes()
+  PromptRoutes()
+  ProposalRoutes()
+  CommentRoutes()
+  ReactionRoutes()
   Route.post('/auth/loguin', 'AuthController.loguin')
 }).prefix(Env.get('BASE_ROUTE_PREFIX'))

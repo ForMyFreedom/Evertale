@@ -19,7 +19,6 @@ export default class ProposalsController {
       delete proposal.write.$attributes.authorId
       ExceptionHandler.SucessfullyRecovered(response, proposal)
     } catch (e) {
-      console.log(e)
       ExceptionHandler.UndefinedId(response)
     }
   }

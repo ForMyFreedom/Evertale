@@ -10,7 +10,6 @@ import {
   hasMany,
 } from '@ioc:Adonis/Lucid/Orm'
 import Comment from './Comment'
-import Reaction from './Reaction'
 import Write from './Write'
 import Prompt from './Prompt'
 
@@ -35,9 +34,6 @@ export default class Proposal extends BaseModel {
 
   @hasMany(() => Comment)
   public comments: HasMany<typeof Comment>
-
-  @hasMany(() => Reaction)
-  public reactions: HasMany<typeof Reaction>
 
   @beforeFind()
   @beforeFetch()
