@@ -18,24 +18,35 @@ import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
 import type { ResponseContract } from '@ioc:Adonis/Core/Response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-type MyError = { error: string }
-type ErrorHandler = { [key: string]: (error: any) => MyError }
+type ErrorTreater = { response: object; errorTreater: (body: any) => void }
+type ErrorHandlers = { [key: string]: (error: any, response: ResponseContract) => ErrorTreater }
 
 export default class ExceptionHandler extends HttpExceptionHandler {
   constructor() {
     super(Logger)
   }
 
-  private basicHandlers: ErrorHandler = {
-    E_ROUTE_NOT_FOUND: (_error) => ({ error: 'Route not found' }),
-    E_VALIDATION_FAILURE: (error) => ({ error: 'Validation failure', failures: error.messages }),
+  private basicHandlers: ErrorHandlers = {
+    E_ROUTE_NOT_FOUND: (_error, r) => ({
+      response: { error: 'Route not found' },
+      errorTreater: r.badRequest.bind(r),
+    }),
+    E_VALIDATION_FAILURE: (error, r) => ({
+      response: { error: 'Validation failure', failures: error.messages },
+      errorTreater: r.badRequest.bind(r),
+    }),
+    E_AUTHORIZATION_FAILURE: (_error, r) => ({
+      response: { error: 'Unauthorized' },
+      errorTreater: r.unauthorized.bind(r),
+    }),
   }
 
   public async handle(error: any, { response }: HttpContextContract): Promise<any> {
     if (error && error.code) {
       const basicResponse = this.basicHandlers[error.code]
       if (basicResponse) {
-        response.badRequest(basicResponse(error))
+        const responseHandler = basicResponse(error, response)
+        responseHandler.errorTreater(responseHandler.response)
       } else {
         response.badRequest(error)
       }
