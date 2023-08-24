@@ -1,5 +1,15 @@
 import { DateTime } from 'luxon'
-import { BaseModel, HasMany, ManyToMany, column, hasMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel,
+  HasMany,
+  ManyToMany,
+  afterFetch,
+  afterFind,
+  column,
+  computed,
+  hasMany,
+  manyToMany,
+} from '@ioc:Adonis/Lucid/Orm'
 import ThematicWord from './ThematicWord'
 import Prompt from './Prompt'
 
@@ -13,6 +23,9 @@ export default class Genre extends BaseModel {
   @column()
   public image: string
 
+  @computed()
+  public popularity: number
+
   @manyToMany(() => Prompt)
   public prompts: ManyToMany<typeof Prompt>
 
@@ -24,4 +37,22 @@ export default class Genre extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @afterFind()
+  public static async calculateGenrePopularity(genre: Genre) {
+    await genre.loadCount('prompts')
+    const amountOfPrompts = genre.$extras.prompts_count
+    const startDate = genre.createdAt
+    const actualDate = DateTime.now()
+    const daysOfExistence = startDate.diff(actualDate).days
+
+    genre.popularity = amountOfPrompts / (daysOfExistence + 1)
+  }
+
+  @afterFetch()
+  public static async calculateGenreArrayPopularity(genresArray: Genre[]) {
+    for (const genre of genresArray) {
+      await Genre.calculateGenrePopularity(genre)
+    }
+  }
 }

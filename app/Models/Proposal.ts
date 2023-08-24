@@ -3,15 +3,19 @@ import {
   BelongsTo,
   HasMany,
   ModelQueryBuilderContract,
+  afterFetch,
+  afterFind,
   beforeFetch,
   beforeFind,
   belongsTo,
   column,
+  computed,
   hasMany,
 } from '@ioc:Adonis/Lucid/Orm'
 import Comment from './Comment'
 import Write from './Write'
 import Prompt from './Prompt'
+import { calculatePointsThrowReactions } from 'App/Utils/reactions'
 
 export default class Proposal extends BaseModel {
   @column({ isPrimary: true })
@@ -26,6 +30,9 @@ export default class Proposal extends BaseModel {
   @column()
   public orderInHistory: number
 
+  @computed()
+  public popularity: number
+
   @belongsTo(() => Write)
   public write: BelongsTo<typeof Write>
 
@@ -39,5 +46,18 @@ export default class Proposal extends BaseModel {
   @beforeFetch()
   public static loadWrite(query: ModelQueryBuilderContract<typeof Prompt>) {
     query.preload('write')
+  }
+
+  @afterFind()
+  public static async calculateProposalPopularity(proposal: Proposal) {
+    await proposal.write.load('reactions')
+    proposal.popularity = calculatePointsThrowReactions(proposal.write.reactions)
+  }
+
+  @afterFetch()
+  public static async calculateGenreArrayPopularity(proposalArray: Proposal[]) {
+    for (const proposal of proposalArray) {
+      await Proposal.calculateProposalPopularity(proposal)
+    }
   }
 }
