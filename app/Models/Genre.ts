@@ -11,9 +11,6 @@ export default class Genre extends BaseModel {
   public name: string
 
   @column()
-  public popularity: number
-
-  @column()
   public image: string
 
   @manyToMany(() => Prompt)
