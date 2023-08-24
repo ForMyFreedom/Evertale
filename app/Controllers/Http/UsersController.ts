@@ -43,7 +43,7 @@ export default class UsersController {
   public async destroy({ response, params }: HttpContextContract): Promise<void> {
     const user = await User.find(params.id)
     if (user) {
-      await user.delete()
+      await user.softDelete()
       ExceptionHandler.SucessfullyDestroyed(response, user)
     } else {
       ExceptionHandler.UndefinedId(response)
