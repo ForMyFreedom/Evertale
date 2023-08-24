@@ -49,11 +49,19 @@ export default class ReactWritesController {
     }
   }
 
-  public async destroy({ response, params }: HttpContextContract): Promise<void> {
+  public async destroy({ response, params, auth }: HttpContextContract): Promise<void> {
+    const responserId = auth?.user?.id
+    if (!responserId) {
+      return ExceptionHandler.InvalidAuth(response)
+    }
     const reaction = await WriteReaction.find(params.id)
     if (reaction) {
-      await reaction.delete()
-      ExceptionHandler.SucessfullyDestroyed(response, reaction)
+      if (responserId === reaction.userId) {
+        await reaction.delete()
+        ExceptionHandler.SucessfullyDestroyed(response, reaction)
+      } else {
+        ExceptionHandler.CantDeleteOthersReaction(response)
+      }
     } else {
       ExceptionHandler.UndefinedId(response)
     }

@@ -48,11 +48,19 @@ export default class ReactCommentsController {
     }
   }
 
-  public async destroy({ response, params }: HttpContextContract): Promise<void> {
+  public async destroy({ response, params, auth }: HttpContextContract): Promise<void> {
+    const requesterId = auth?.user?.id
+    if (!requesterId) {
+      return ExceptionHandler.InvalidAuth(response)
+    }
     const reaction = await CommentReaction.find(params.id)
     if (reaction) {
-      await reaction.delete()
-      ExceptionHandler.SucessfullyDestroyed(response, reaction)
+      if (requesterId === reaction.userId) {
+        await reaction.delete()
+        ExceptionHandler.SucessfullyDestroyed(response, reaction)
+      } else {
+        ExceptionHandler.CantDeleteOthersReaction(response)
+      }
     } else {
       ExceptionHandler.UndefinedId(response)
     }

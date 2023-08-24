@@ -93,6 +93,14 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     response.badRequest({ error: "You can't edit others write!" })
   }
 
+  public static CantEditOtherUser(response: ResponseContract): void {
+    response.badRequest({ error: "You can't edit others users!" })
+  }
+
+  public static CantDeleteOthersReaction(response: ResponseContract): void {
+    response.badRequest({ error: "You can't delete others reaction!" })
+  }
+
   public static ImageError(response: ResponseContract): void {
     response.badRequest({ error: 'Image error' })
   }
