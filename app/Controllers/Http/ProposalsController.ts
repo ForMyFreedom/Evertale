@@ -6,9 +6,13 @@ import Write from 'App/Models/Write'
 import ProposalValidator from 'App/Validators/ProposalValidator'
 
 export default class ProposalsController {
-  public async index({ response }: HttpContextContract): Promise<void> {
-    const proposals = await Proposal.all()
-    ExceptionHandler.SucessfullyRecovered(response, proposals)
+  public async indexByPrompt({ response, params }: HttpContextContract): Promise<void> {
+    if (await Prompt.find(params.id)) {
+      const proposals = await Proposal.query().where('promptId', '=', params.id)
+      ExceptionHandler.SucessfullyRecovered(response, proposals)
+    } else {
+      ExceptionHandler.UndefinedId(response)
+    }
   }
 
   public async show({ response, params }: HttpContextContract): Promise<void> {
