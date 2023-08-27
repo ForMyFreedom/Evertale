@@ -52,7 +52,7 @@ export default class ReactWritesController {
   public async destroy({ response, params, auth }: HttpContextContract): Promise<void> {
     const responserId = auth?.user?.id
     if (!responserId) {
-      return ExceptionHandler.InvalidAuth(response)
+      return ExceptionHandler.Unauthenticated(response)
     }
     const reaction = await WriteReaction.find(params.id)
     if (reaction) {

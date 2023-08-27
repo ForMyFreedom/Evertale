@@ -51,7 +51,7 @@ export default class ReactCommentsController {
   public async destroy({ response, params, auth }: HttpContextContract): Promise<void> {
     const requesterId = auth?.user?.id
     if (!requesterId) {
-      return ExceptionHandler.InvalidAuth(response)
+      return ExceptionHandler.Unauthenticated(response)
     }
     const reaction = await CommentReaction.find(params.id)
     if (reaction) {
