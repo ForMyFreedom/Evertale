@@ -10,9 +10,6 @@ export default class Write extends BaseModel {
   @column()
   public text: string
 
-  @column()
-  public popularity: number
-
   @column({ serialize: (value) => Boolean(value) })
   public edited: boolean
 

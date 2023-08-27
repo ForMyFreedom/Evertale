@@ -28,12 +28,10 @@ export default class PromptsController {
 
   public async store(ctx: HttpContextContract): Promise<void> {
     const { response, auth } = ctx
-    const { genreIds, text, concluded, popularity, ...body } = await new PromptValidator(
-      ctx
-    ).validate()
+    const { genreIds, text, concluded, ...body } = await new PromptValidator(ctx).validate()
     const authorId = auth?.user?.id
     if (authorId) {
-      const write = await Write.create({ text: text, popularity: 0, authorId: authorId })
+      const write = await Write.create({ text: text, authorId: authorId })
       const prompt = await Prompt.create({ ...body, writeId: write.id })
       if (await replaceGenres(response, prompt, genreIds)) {
         prompt.save()
@@ -47,19 +45,14 @@ export default class PromptsController {
   public async update(ctx: HttpContextContract): Promise<void> {
     const { response, params, auth } = ctx
     const prompt = await Prompt.find(params.id)
-    const { genreIds, text, popularity, ...body } = await new PromptValidator(
-      ctx
-    ).validateAsOptional()
+    const { genreIds, text, ...body } = await new PromptValidator(ctx).validateAsOptional()
     if (prompt) {
       if (prompt.write.authorId !== auth?.user?.id) {
         ExceptionHandler.CantEditOthersWrite(response)
         return
       }
 
-      await Write.updateOrCreate(
-        { id: prompt.write.id },
-        { text: text, popularity: popularity, edited: true }
-      )
+      await Write.updateOrCreate({ id: prompt.write.id }, { text: text, edited: true })
       prompt.merge(body)
       await prompt.save()
 

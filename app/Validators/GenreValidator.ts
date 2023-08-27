@@ -4,7 +4,6 @@ import { MyValidator } from './MyValidator'
 
 export const GenreValidatorSchema = schema.create({
   name: schema.string({}, [rules.unique({ table: 'genres', column: 'name' })]),
-  popularity: schema.number(),
   image: schema.string({}, [rules.url()]),
   thematicWords: schema.array().members(schema.string()),
 })

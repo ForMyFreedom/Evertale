@@ -5,7 +5,6 @@ import { MyValidator } from './MyValidator'
 export const ProposalValidatorSchema = schema.create({
   text: schema.string(),
   promptId: schema.number(),
-  popularity: schema.number.optional(),
 })
 
 export class ProposalValidator extends MyValidator<typeof ProposalValidatorSchema> {

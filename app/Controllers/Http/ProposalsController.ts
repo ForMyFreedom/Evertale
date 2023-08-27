@@ -29,14 +29,14 @@ export default class ProposalsController {
 
   public async store(ctx: HttpContextContract): Promise<void> {
     const { response, auth } = ctx
-    const { text, popularity, promptId, ...body } = await new ProposalValidator(ctx).validate()
+    const { text, promptId, ...body } = await new ProposalValidator(ctx).validate()
     const authorId = auth?.user?.id
     if (authorId) {
       const prompt = await Prompt.findOrFail(promptId)
       if (prompt.concluded) {
         return ExceptionHandler.CantProposeToClosedHistory(response)
       }
-      const write = await Write.create({ text: text, popularity: 0, authorId: authorId })
+      const write = await Write.create({ text: text, authorId: authorId })
       const proposal = await Proposal.create({
         ...body,
         writeId: write.id,
@@ -55,17 +55,14 @@ export default class ProposalsController {
   public async update(ctx: HttpContextContract): Promise<void> {
     const { response, params, auth } = ctx
     const proposal = await Proposal.find(params.id)
-    const { text, popularity } = await new ProposalValidator(ctx).validateAsOptional()
+    const { text } = await new ProposalValidator(ctx).validateAsOptional()
     if (proposal) {
       if (proposal.write.authorId !== auth?.user?.id) {
         ExceptionHandler.CantEditOthersWrite(response)
         return
       }
 
-      await Write.updateOrCreate(
-        { id: proposal.write.id },
-        { text: text, popularity: popularity, edited: true }
-      )
+      await Write.updateOrCreate({ id: proposal.write.id }, { text: text, edited: true })
 
       await proposal.load('write')
       ExceptionHandler.SucessfullyUpdated(response, proposal)
