@@ -3,7 +3,7 @@ import ExceptionHandler from 'App/Exceptions/Handler'
 import Prompt from 'App/Models/Prompt'
 import Proposal from 'App/Models/Proposal'
 import Write from 'App/Models/Write'
-import ProposalValidator from 'App/Validators/ProposalValidator'
+import { ProposalValidator } from 'App/Validators/ProposalValidator'
 
 export default class ProposalsController {
   public async indexByPrompt({ response, params }: HttpContextContract): Promise<void> {

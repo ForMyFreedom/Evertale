@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { CommentReaction, ReactionType, WriteReaction } from "App/Models/Reaction"
 
 export function cleanReactions(reactions: CommentReaction[]|WriteReaction[]): any[] {

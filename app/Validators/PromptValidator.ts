@@ -2,7 +2,7 @@ import { schema, CustomMessages, rules, ParsedTypedSchema } from '@ioc:Adonis/Co
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { MyValidator } from './MyValidator'
 
-const PromptValidatorSchema = schema.create({
+export const PromptValidatorSchema = schema.create({
   title: schema.string(),
   text: schema.string(),
   popularity: schema.number.optional(),
@@ -12,7 +12,7 @@ const PromptValidatorSchema = schema.create({
   genreIds: schema.array([rules.minLength(1)]).members(schema.number()),
 })
 
-export default class PromptValidator extends MyValidator<typeof PromptValidatorSchema> {
+export class PromptValidator extends MyValidator<typeof PromptValidatorSchema> {
   constructor(protected ctx: HttpContextContract) {
     super(ctx)
   }

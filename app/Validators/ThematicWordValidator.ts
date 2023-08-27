@@ -2,11 +2,11 @@ import { CustomMessages, schema, ParsedTypedSchema } from '@ioc:Adonis/Core/Vali
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { MyValidator } from './MyValidator'
 
-const ThematicWordValidatorSchema = schema.create({
+export const ThematicWordValidatorSchema = schema.create({
   words: schema.array().members(schema.string()),
 })
 
-export default class ThematicWordValidator extends MyValidator<typeof ThematicWordValidatorSchema> {
+export class ThematicWordValidator extends MyValidator<typeof ThematicWordValidatorSchema> {
   constructor(protected ctx: HttpContextContract) {
     super(ctx)
   }

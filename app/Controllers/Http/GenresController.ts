@@ -3,8 +3,8 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Genre from 'App/Models/Genre'
 import ExceptionHandler from 'App/Exceptions/Handler'
 import ThematicWord from 'App/Models/ThematicWord'
-import GenreValidator from 'App/Validators/GenreValidator'
-import ThematicWordValidator from 'App/Validators/ThematicWordValidator'
+import { GenreValidator } from 'App/Validators/GenreValidator'
+import { ThematicWordValidator } from 'App/Validators/ThematicWordValidator'
 
 export default class GenresController {
   public async store(ctx: HttpContextContract): Promise<void> {

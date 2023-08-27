@@ -4,7 +4,7 @@ import Prompt from 'App/Models/Prompt'
 import { ReactionType, WriteReaction } from 'App/Models/Reaction'
 import Write from 'App/Models/Write'
 import { cleanReactions, reactionIsConclusive } from 'App/Utils/reactions'
-import WriteReactionValidator from 'App/Validators/WriteReactionValidator'
+import { WriteReactionValidator } from 'App/Validators/WriteReactionValidator'
 
 export default class ReactWritesController {
   public async show({ response, params }: HttpContextContract): Promise<void> {

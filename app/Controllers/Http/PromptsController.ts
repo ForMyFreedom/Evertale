@@ -6,7 +6,7 @@ import ExceptionHandler from 'App/Exceptions/Handler'
 import Genre from 'App/Models/Genre'
 import Prompt from 'App/Models/Prompt'
 import Write from 'App/Models/Write'
-import PromptValidator from 'App/Validators/PromptValidator'
+import { PromptValidator } from 'App/Validators/PromptValidator'
 
 export default class PromptsController {
   public async index({ response }: HttpContextContract): Promise<void> {

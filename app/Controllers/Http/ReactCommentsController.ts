@@ -3,7 +3,7 @@ import ExceptionHandler from 'App/Exceptions/Handler'
 import Comment from 'App/Models/Comment'
 import { CommentReaction, ReactionType } from 'App/Models/Reaction'
 import { cleanReactions, reactionIsConclusive } from 'App/Utils/reactions'
-import CommentReactionValidator from 'App/Validators/CommentReactionValidator'
+import { CommentReactionValidator } from 'App/Validators/CommentReactionValidator'
 
 export default class ReactCommentsController {
   public async show({ response, params }: HttpContextContract): Promise<void> {

@@ -3,7 +3,7 @@ import ExceptionHandler from 'App/Exceptions/Handler'
 import Comment from 'App/Models/Comment'
 import User from 'App/Models/User'
 import Write from 'App/Models/Write'
-import CommentValidator from 'App/Validators/CommentValidator'
+import { CommentValidator } from 'App/Validators/CommentValidator'
 
 export default class CommentsController {
   public async indexByWrite({ response, params }: HttpContextContract): Promise<void> {

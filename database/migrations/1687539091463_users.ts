@@ -34,6 +34,13 @@ export default class extends BaseSchema {
         Env.get('USER_ROOT_PASSWORD')
       )}', true)`
     )
+
+    this.schema.raw(
+      `INSERT INTO ${this.tableName} (name, email, birth_date, password, is_admin)
+      VALUES ('non-root', '${Env.get('USER_ROOT_EMAIL')+'.br'}','1999-09-19','${await Hash.make(
+        Env.get('USER_ROOT_PASSWORD')
+      )}', false)`
+    )
   }
 
   public async down() {
