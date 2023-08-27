@@ -28,4 +28,6 @@ export default Env.rules({
   REDIS_PASSWORD: Env.schema.string.optional(),
   USER_ROOT_EMAIL: Env.schema.string(),
   USER_ROOT_PASSWORD: Env.schema.string(),
+  DATA_BANK_NAME: Env.schema.string(),
+  I18N: Env.schema.string()
 })
