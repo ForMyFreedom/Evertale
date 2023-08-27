@@ -56,7 +56,7 @@ export default class UsersController {
     const user = await User.find(params.id)
     if (user) {
       if (user.id === responserId) {
-        await user.delete()
+        await user.softDelete()
         ExceptionHandler.SucessfullyDestroyed(response, user)
       } else {
         ExceptionHandler.CantEditOtherUser(response)
