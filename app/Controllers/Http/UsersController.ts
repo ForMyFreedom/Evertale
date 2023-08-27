@@ -27,24 +27,40 @@ export default class UsersController {
   }
 
   public async update(ctx: HttpContextContract): Promise<void> {
-    const { response, params } = ctx
+    const { response, params, auth } = ctx
+    const responserId = auth?.user?.id
+    if (!responserId) {
+      return ExceptionHandler.InvalidAuth(response)
+    }
     const user = await User.find(params.id)
     const { email, ...body } = await new UserValidator(ctx).validateAsOptional()
     if (user) {
-      ExceptionHandler.SucessfullyUpdated(
-        response,
-        await User.updateOrCreate({ id: user.id }, body)
-      )
+      if (responserId === user.id) {
+        ExceptionHandler.SucessfullyUpdated(
+          response,
+          await User.updateOrCreate({ id: user.id }, body)
+        )
+      } else {
+        ExceptionHandler.CantEditOtherUser(response)
+      }
     } else {
       ExceptionHandler.UndefinedId(response)
     }
   }
 
-  public async destroy({ response, params }: HttpContextContract): Promise<void> {
+  public async destroy({ response, params, auth }: HttpContextContract): Promise<void> {
+    const responserId = auth?.user?.id
+    if (!responserId) {
+      return ExceptionHandler.InvalidAuth(response)
+    }
     const user = await User.find(params.id)
     if (user) {
-      await user.softDelete()
-      ExceptionHandler.SucessfullyDestroyed(response, user)
+      if (user.id === responserId) {
+        await user.softDelete()
+        ExceptionHandler.SucessfullyDestroyed(response, user)
+      } else {
+        ExceptionHandler.CantEditOtherUser(response)
+      }
     } else {
       ExceptionHandler.UndefinedId(response)
     }

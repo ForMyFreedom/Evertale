@@ -17,6 +17,9 @@ export default class User extends BaseModel {
   })
   public isAdmin: boolean
 
+  @column({ serialize: (value) => Boolean(value) })
+  public isPremium: boolean
+
   @column()
   public email: string
 
