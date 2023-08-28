@@ -5,7 +5,7 @@ import testUserShow from './show.spec'
 import testUserUpdate from './update.spec'
 import testUserDestroy from './destroy.spec'
 
-test.group('User', () => {
+test.group('1-User', () => {
   test('User-Index', testUserIndex)
   test('User-Store', testUserStore)
   test('User-Show', testUserShow)

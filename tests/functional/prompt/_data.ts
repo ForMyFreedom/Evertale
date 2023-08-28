@@ -12,8 +12,7 @@ export const SAMPLE_PROMPT: typeof PromptValidatorSchema.props = {
 	text: "Bom dia",
 	maxSizePerExtension: 50,
 	limitOfExtensions: 5,
-	genreIds: [1],
-	popularity: undefined,
+	genreIds: [2],
 	concluded: undefined
 }
 
@@ -22,12 +21,11 @@ export const EDIT_SAMPLE_PROMPT: Partial<typeof PromptValidatorSchema.props> = {
 	text: "Opa"
 }
 
-export const WRONG_SAMPLE_GENRE = {
+export const WRONG_SAMPLE_PROMPT = {
 	title: "O aaaa",
 	maxSizePerExtension: 50,
 	limitOfExtensions: 5,
 	genreIds: [1],
-	popularity: undefined,
 	concluded: undefined
 }
 

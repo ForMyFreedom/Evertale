@@ -23,6 +23,7 @@ async function testNonAdminAuthorized(client: ApiClient): Promise<void> {
 async function testBasicAccepted(client: ApiClient, isAdmin: boolean = true): Promise<void> {
   let response = await getWithAuth(BASE_URL, client, isAdmin)
   response.assertStatus(HTTP.ACCEPTED)
+  response.assertBodyContains({message: ExceptionContract.SucessfullyRecovered})
   response.assertBodyContains(DEFAULT_BANK)
 }
 

@@ -2,7 +2,7 @@ import { TestContext } from '@japa/runner'
 import { postWithAuth } from '../_utils/request'
 import HTTP from 'http-status-enum'
 import { serializate } from '../_utils/serializer'
-import { BASE_URL, ExceptionContract, NON_ADMIN_USER, RIGHT_USER, WRONG_USER } from './_data'
+import { BASE_URL, ExceptionContract, NON_ADMIN_USER, SAMPLE_USER, WRONG_USER } from './_data'
 import { ApiClient } from '@japa/api-client/build/src/client'
 
 async function testUserStore({ client }: TestContext): Promise<void> {
@@ -32,13 +32,13 @@ async function testBasicUnacceptedBody(client: ApiClient): Promise<void> {
 }
 
 async function testBasicAccepted(client: ApiClient): Promise<void> {
-  let response = await postWithAuth(BASE_URL, client, RIGHT_USER)
+  let response = await postWithAuth(BASE_URL, client, SAMPLE_USER)
   response.assertStatus(HTTP.CREATED)
   response.assertBodyContains({ message: ExceptionContract.SucessfullyCreated, data: serializate(NON_ADMIN_USER) })
 }
 
 async function testUniqueName(client: ApiClient): Promise<void> {
-  let response = await postWithAuth(BASE_URL, client, RIGHT_USER)
+  let response = await postWithAuth(BASE_URL, client, SAMPLE_USER)
   response.assertStatus(HTTP.BAD_REQUEST)
   response.assertBodyContains({ error: ExceptionContract.BodyValidationFailure })
 }

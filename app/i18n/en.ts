@@ -9,7 +9,7 @@ const englishExceptionContract: ExceptionContract = {
     SucessfullyCreated: 'Sucessfully created',
     SuccessfullyAuthenticated: 'Successfully authenticated',
     SucessfullyUpdated: 'Sucesfully updated',
-    SucessfullyRecovered: 'Sucesfully updated',
+    SucessfullyRecovered: 'Sucesfully recovered',
     SucessfullyDestroyed: 'Sucessfully destroyed',
     UndefinedId: 'Id not Defined',
     UndefinedWrite: 'Write not Defined',

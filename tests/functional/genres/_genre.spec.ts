@@ -6,7 +6,7 @@ import testGenreUpdate from './update.spec'
 import testGenreDestroy from './destroy.spec'
 import testGenreInsertWords from './insert-words.spec'
 
-test.group('Genre', () => {
+test.group('2-Genre', () => {
   test('Genre-Index', testGenreIndex)
   test('Genre-Store', testGenreStore)
   test('Genre-Show', testGenreShow)

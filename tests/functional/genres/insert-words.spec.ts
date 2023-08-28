@@ -4,42 +4,44 @@ import HTTP from 'http-status-enum'
 import { ApiResponse } from '@japa/api-client/build/src/response'
 import { BASE_URL, ExceptionContract, SAMPLE_GENRE, WORDS_SAMPLE } from './_data'
 import { ApiClient } from '@japa/api-client/build/src/client'
+import Genre from 'App/Models/Genre'
 
 async function testGenreInsertWords({ client }: TestContext): Promise<void> {
-  await postWithAuth(BASE_URL, client, SAMPLE_GENRE)
+  const toUseResponse = await postWithAuth(BASE_URL, client, SAMPLE_GENRE)
+  const genre = toUseResponse.body().data as Genre
 
-  await testBasicUnauthenticated(client)
-  await testBasicUnauthorized(client)
-  await testBasicUnacceptedBody(client)
+  await testBasicUnauthenticated(client, genre.id)
+  await testBasicUnauthorized(client, genre.id)
+  await testBasicUnacceptedBody(client, genre.id)
   await testBasicUndefinedId(client)
-  await testBasicAccepted(client)
+  await testBasicAccepted(client, genre.id)
 }
 
-async function testBasicUnauthenticated(client: ApiClient): Promise<void> {
-  let response = await client.post(`${BASE_URL}/1/word`).json(WORDS_SAMPLE)
+async function testBasicUnauthenticated(client: ApiClient, id: number): Promise<void> {
+  let response = await client.post(`${BASE_URL}/${id}/word`).json(WORDS_SAMPLE)
   response.assertStatus(HTTP.PROXY_AUTHENTICATION_REQUIRED)
   response.assertBody({error: ExceptionContract.Unauthenticated})
 }
 
-async function testBasicUnauthorized(client: ApiClient): Promise<void> {
-  let response = await postWithAuth(`${BASE_URL}/1/word`, client, WORDS_SAMPLE, false)
+async function testBasicUnauthorized(client: ApiClient, id: number): Promise<void> {
+  let response = await postWithAuth(`${BASE_URL}/${id}/word`, client, WORDS_SAMPLE, false)
   response.assertStatus(HTTP.UNAUTHORIZED)
   response.assertBodyContains({ error: ExceptionContract.Unauthorized })
 }
 
-async function testBasicUnacceptedBody(client: ApiClient): Promise<void> {
+async function testBasicUnacceptedBody(client: ApiClient, id: number): Promise<void> {
   let response: ApiResponse
-  response = await postWithAuth(`${BASE_URL}/1/word`, client, {})
+  response = await postWithAuth(`${BASE_URL}/${id}/word`, client, {})
   response.assertStatus(HTTP.BAD_REQUEST)
   response.assertBodyContains({error: ExceptionContract.BodyValidationFailure})
 
-  response = await postWithAuth(`${BASE_URL}/1/word`, client, {words: [1,2,3]})
+  response = await postWithAuth(`${BASE_URL}/${id}/word`, client, {words: [1,2,3]})
   response.assertStatus(HTTP.BAD_REQUEST)
   response.assertBodyContains({error: ExceptionContract.BodyValidationFailure})
 }
 
-async function testBasicAccepted(client: ApiClient): Promise<void> {
-  let response = await postWithAuth(`${BASE_URL}/1/word`, client, WORDS_SAMPLE)
+async function testBasicAccepted(client: ApiClient, id: number): Promise<void> {
+  let response = await postWithAuth(`${BASE_URL}/${id}/word`, client, WORDS_SAMPLE)
   response.assertStatus(HTTP.ACCEPTED)
   response.assertBodyContains({ message: ExceptionContract.SucessfullyUpdated })
 }

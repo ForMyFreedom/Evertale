@@ -9,7 +9,6 @@ export const DEFAULT_BANK = { data: [] }
 
 export const SAMPLE_GENRE: typeof GenreValidatorSchema.props = {
 	name: "Amor",
-	popularity: 0,
 	image: "https://cdn-icons-png.flaticon.com/512/3773/3773795.png",
 	thematicWords: ["Beijo", "Felicidade", "Companheiro"]
 }

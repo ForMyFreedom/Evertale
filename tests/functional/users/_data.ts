@@ -34,7 +34,7 @@ export const EDIT_NON_ADMIN_USER: Partial<typeof UserValidatorSchema.props> = {
   image: 'https://great-awesome-epic-incredible-image.wow/2',
 }
 
-export const RIGHT_USER: typeof UserValidatorSchema.props = {
+export const SAMPLE_USER: typeof UserValidatorSchema.props = {
   name: 'test-insert',
   email: 'test-insert@gmail.com',
   image: 'https://great-awesome-epic-incredible-image.wow/3',
