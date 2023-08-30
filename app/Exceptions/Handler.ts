@@ -140,4 +140,8 @@ export default class ExceptionHandler extends HttpExceptionHandler {
   public static TextLengthHigherThanAllowed(response: ResponseContract): void {
     response.badRequest({ error: 'Text length higher than allowed' })
   }
+
+  public static CantUseConclusiveReactionInConcludedHistory(response: ResponseContract): void {
+    response.badGateway({ error: "Can't use conclusive reaction in concluded history" })
+  }
 }
