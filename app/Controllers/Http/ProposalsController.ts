@@ -15,6 +15,18 @@ export default class ProposalsController {
     }
   }
 
+  public async actualIndexByPrompt({ response, params }: HttpContextContract): Promise<void> {
+    const prompt = await Prompt.find(params.id)
+    if (prompt) {
+      const proposals = await Proposal.query()
+        .where('promptId', '=', params.id)
+        .where('orderInHistory', '=', prompt.currentIndex)
+      ExceptionHandler.SucessfullyRecovered(response, proposals)
+    } else {
+      ExceptionHandler.UndefinedId(response)
+    }
+  }
+
   public async show({ response, params }: HttpContextContract): Promise<void> {
     try {
       const proposal = await Proposal.findByOrFail('id', params.id)
