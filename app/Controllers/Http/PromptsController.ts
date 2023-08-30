@@ -2,6 +2,7 @@
 
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import type { ResponseContract } from '@ioc:Adonis/Core/Response'
+import Event from '@ioc:Adonis/Core/Event'
 import ExceptionHandler from 'App/Exceptions/Handler'
 import Genre from 'App/Models/Genre'
 import Prompt from 'App/Models/Prompt'
@@ -35,7 +36,9 @@ export default class PromptsController {
       const prompt = await Prompt.create({ ...body, writeId: write.id })
       if (await replaceGenres(response, prompt, genreIds)) {
         prompt.save()
-        ExceptionHandler.SucessfullyCreated(response, prompt)
+        Event.emit('run:prompt', prompt)
+        await prompt.load('write')
+        return ExceptionHandler.SucessfullyCreated(response, prompt)
       }
     } else {
       ExceptionHandler.InvalidUser(response)

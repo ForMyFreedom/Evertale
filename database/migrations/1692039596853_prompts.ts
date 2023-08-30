@@ -14,6 +14,7 @@ export default class extends BaseSchema {
       table.boolean('is_daily').notNullable().defaultTo(false)
       table.integer('max_size_per_extension').notNullable()
       table.integer('limit_of_extensions').notNullable()
+      table.integer('time_for_avance_in_minutes').unsigned().notNullable()
     })
   }
 
