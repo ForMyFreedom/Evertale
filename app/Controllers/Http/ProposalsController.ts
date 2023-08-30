@@ -48,6 +48,11 @@ export default class ProposalsController {
       if (prompt.concluded) {
         return ExceptionHandler.CantProposeToClosedHistory(response)
       }
+
+      if (prompt.maxSizePerExtension < text.length) {
+        return ExceptionHandler.TextLengthHigherThanAllowed(response)
+      }
+
       const write = await Write.create({ text: text, authorId: authorId })
       const proposal = await Proposal.create({
         ...body,
