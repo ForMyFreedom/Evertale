@@ -20,6 +20,7 @@ export interface ExceptionContract {
   InvalidUser: string
   InvalidGenre: string
   FileNotFound: string
+  NotFound: string
   CantProposeToClosedHistory: string
   IncompatibleWriteAndAnswer: string
   CantUseConclusiveReactionInComment: string

@@ -36,7 +36,10 @@ export default class ProposalsController {
       if (prompt.concluded) {
         return ExceptionHandler.CantProposeToClosedHistory(response)
       }
-      const write = await Write.create({ text: text, authorId: authorId })
+
+      const finalText = insertSpaceInStartOfText(text)
+
+      const write = await Write.create({ text: finalText, authorId: authorId })
       const proposal = await Proposal.create({
         ...body,
         writeId: write.id,
@@ -84,4 +87,9 @@ export default class ProposalsController {
       ExceptionHandler.UndefinedId(response)
     }
   }
+}
+
+
+function insertSpaceInStartOfText(text: string): string {
+  return text[0] === ' ' ? text : ' ' + text
 }

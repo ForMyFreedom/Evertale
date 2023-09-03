@@ -77,7 +77,7 @@ export default class GenresController {
     } else {
       await storeWordsToGenre(words, genre)
       await genre.load('thematicWords')
-      ExceptionHandler.SucessfullyUpdated(response, genre)
+      ExceptionHandler.SucessfullyCreated(response, genre)
     }
   }
 }

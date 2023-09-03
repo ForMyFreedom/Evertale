@@ -23,6 +23,7 @@ const englishExceptionContract: ExceptionContract = {
     InvalidUser: 'There is no genre with that genreId',
     InvalidGenre: 'There is no genre with that genreId',
     FileNotFound: 'File not found',
+    NotFound: 'Something was not found',
     CantProposeToClosedHistory: "Can't propose to closed fable",
     IncompatibleWriteAndAnswer: 'The comment you want to reply to does not belong to this write',
     CantUseConclusiveReactionInComment: "Can't use conclusive reaction in comment",

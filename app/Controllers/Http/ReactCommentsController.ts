@@ -41,7 +41,7 @@ export default class ReactCommentsController {
         couldFind[0].delete()
       }
       const reaction = await CommentReaction.create({ ...body, type: type, userId: authorId })
-      reaction.save()
+      await reaction.save()
       ExceptionHandler.SucessfullyCreated(response, reaction)
     } else {
       ExceptionHandler.InvalidUser(response)

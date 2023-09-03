@@ -40,6 +40,10 @@ export default class ExceptionHandler extends HttpExceptionHandler {
       response: { error: ExceptionHandler.contract.RouteNotFounded },
       errorTreater: r.badRequest.bind(r),
     }),
+    E_ROW_NOT_FOUND: (_error, r) => ({
+      response: { error: ExceptionHandler.contract.NotFound },
+      errorTreater: r.badRequest.bind(r),
+    }),
     E_VALIDATION_FAILURE: (error, r) => ({
       response: { error: ExceptionHandler.contract.BodyValidationFailure, failures: error.messages },
       errorTreater: r.badRequest.bind(r),
