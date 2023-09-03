@@ -28,7 +28,7 @@ export default class PromptsController {
 
   public async store(ctx: HttpContextContract): Promise<void> {
     const { response, auth } = ctx
-    const { genreIds, text, concluded, ...body } = await new PromptValidator(ctx).validate()
+    const { genreIds, text, ...body } = await new PromptValidator(ctx).validate()
     const authorId = auth?.user?.id
     if (authorId) {
       const write = await Write.create({ text: text, authorId: authorId })
@@ -45,24 +45,34 @@ export default class PromptsController {
   public async update(ctx: HttpContextContract): Promise<void> {
     const { response, params, auth } = ctx
     const prompt = await Prompt.find(params.id)
-    const { genreIds, text, ...body } = await new PromptValidator(ctx).validateAsOptional()
+    const { genreIds, text, limitOfExtensions, ...body } = await new PromptValidator(
+      ctx
+    ).validateAsOptional()
     if (prompt) {
       if (prompt.write.authorId !== auth?.user?.id) {
-        ExceptionHandler.CantEditOthersWrite(response)
-        return
+        return ExceptionHandler.CantEditOthersWrite(response)
       }
 
-      await Write.updateOrCreate({ id: prompt.write.id }, { text: text, edited: true })
-      prompt.merge(body)
-      await prompt.save()
+      if (prompt.isDaily) {
+        return ExceptionHandler.CantEditDailyPrompt(response)
+      }
 
-      if (genreIds && genreIds.length > 0) {
-        await prompt.related('genres').detach()
-        if (!(await replaceGenres(response, prompt, genreIds))) {
-          return
+      if (prompt.currentIndex === 0) {
+        if (text) {
+          await Write.updateOrCreate({ id: prompt.write.id }, { text: text, edited: true })
+        }
+        if (limitOfExtensions) {
+          prompt.limitOfExtensions = limitOfExtensions
+        }
+        if (genreIds && genreIds.length > 0) {
+          await prompt.related('genres').detach()
+          if (!(await replaceGenres(response, prompt, genreIds))) {
+            return
+          }
         }
       }
-
+      prompt.merge(body)
+      await prompt.save()
       await prompt.load('write')
       ExceptionHandler.SucessfullyUpdated(response, prompt)
     } else {

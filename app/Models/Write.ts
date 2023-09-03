@@ -14,7 +14,7 @@ export default class Write extends BaseModel {
   public edited: boolean
 
   @column()
-  public authorId: number
+  public authorId: number | null
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

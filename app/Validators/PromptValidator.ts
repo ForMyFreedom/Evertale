@@ -5,7 +5,6 @@ import { MyValidator } from './MyValidator'
 const PromptValidatorSchema = schema.create({
   title: schema.string(),
   text: schema.string(),
-  concluded: schema.boolean.optional(),
   maxSizePerExtension: schema.number(),
   limitOfExtensions: schema.number(),
   genreIds: schema.array([rules.minLength(1)]).members(schema.number()),
