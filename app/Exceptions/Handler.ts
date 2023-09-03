@@ -137,14 +137,6 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     response.badRequest({ error: "Can't use conclusive reaction in prompt" })
   }
 
-  public static TextLengthHigherThanAllowed(response: ResponseContract): void {
-    response.badRequest({ error: 'Text length higher than allowed' })
-  }
-
-  public static CantUseConclusiveReactionInConcludedHistory(response: ResponseContract): void {
-    response.badGateway({ error: "Can't use conclusive reaction in concluded history" })
-  }
-
   public static NotAppropriablePrompt(response: ResponseContract): void {
     response.badRequest({ error: 'This is not an appropriable prompt!' })
   }
@@ -155,9 +147,5 @@ export default class ExceptionHandler extends HttpExceptionHandler {
 
   public static CantEditDailyPrompt(response: ResponseContract): void {
     response.badRequest({ error: "Can't edit a daily prompt!" })
-  }
-
-  public static CantProposeToUnappropriatedPrompt(response: ResponseContract): void {
-    response.badRequest({ error: "Can't proposoe to unappropriated prompt" })
   }
 }
