@@ -1,36 +1,27 @@
 import Event from '@ioc:Adonis/Core/Event'
-import { tryMakeStoreAdvance } from 'App/Controllers/Real-Time/story-advance/story-advance'
 import Prompt from 'App/Models/Prompt'
 import Env from '@ioc:Adonis/Core/Env'
 import { LiteralTime } from 'App/Utils/time'
 
 Event.on('refresh:daily-prompts', 'DailyPrompt.onRefreshDailyPrompts')
+Event.on('run:prompt', 'History.onRunPrompt')
 
 setTimeout(async () => {
   await Event.emit('refresh:daily-prompts', undefined)
-}, LiteralTime.MINUTE)
+}, 0.3 * LiteralTime.MINUTE)
 
 setInterval(() => {
   Event.emit('refresh:daily-prompts', undefined)
 }, Env.get('REFRESH_MINUTES_FOR_DAILY_PROMPTS') * LiteralTime.MINUTE)
 
-Event.on('run:prompt', (prompt: Prompt) => {
-  console.log(`Tentando avançar história ${prompt.id}`)
-  setTimeout(
-    async () => {
-      if ((await tryMakeStoreAdvance(prompt.id)).toContinueLoop) {
-        Event.emit('run:prompt', prompt)
-      } else {
-        console.log(`Fim da história ${prompt.id}`)
-      }
-    },
-    prompt.timeForAvanceInMinutes * 60000 // @TIME HELPER HERE
-  )
-})
-
-const promise = Prompt.query().where('concluded', '=', false)
-promise.exec().then((activePrompts) => {
-  for (const prompt of activePrompts) {
-    Event.emit('run:prompt', prompt)
-  }
-})
+setTimeout(async () => {
+  let promise = Prompt.query().where('concluded', '=', false)
+  promise.exec().then((activePrompts) => {
+    activePrompts = activePrompts.filter(
+      (prompt) => !prompt.isDaily || prompt.write.authorId !== null
+    )
+    for (const prompt of activePrompts) {
+      Event.emit('run:prompt', prompt)
+    }
+  })
+}, 0.3 * LiteralTime.MINUTE)
