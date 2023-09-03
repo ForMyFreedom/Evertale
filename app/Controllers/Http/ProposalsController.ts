@@ -49,6 +49,10 @@ export default class ProposalsController {
         return ExceptionHandler.CantProposeToClosedHistory(response)
       }
 
+      if (prompt.isDaily && prompt.write.authorId === null) {
+        return ExceptionHandler.CantProposeToUnappropriatedPrompt(response)
+      }
+
       if (prompt.maxSizePerExtension < text.length) {
         return ExceptionHandler.TextLengthHigherThanAllowed(response)
       }

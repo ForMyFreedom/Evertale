@@ -156,4 +156,8 @@ export default class ExceptionHandler extends HttpExceptionHandler {
   public static CantEditDailyPrompt(response: ResponseContract): void {
     response.badRequest({ error: "Can't edit a daily prompt!" })
   }
+
+  public static CantProposeToUnappropriatedPrompt(response: ResponseContract): void {
+    response.badRequest({ error: "Can't proposoe to unappropriated prompt" })
+  }
 }
