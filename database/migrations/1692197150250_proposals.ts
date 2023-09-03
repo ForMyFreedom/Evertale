@@ -8,8 +8,7 @@ export default class extends BaseSchema {
       table.increments('id')
       table.integer('write_id').unsigned().references('writes.id')
       table.integer('prompt_id').unsigned().references('prompts.id')
-      table.integer('order_in_history').unsigned().notNullable()
-      table.boolean('definitive').defaultTo(false)
+      table.integer('order_in_history').unsigned()
     })
   }
 

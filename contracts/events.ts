@@ -5,8 +5,6 @@
  * file.
  */
 
-import Prompt from 'App/Models/Prompt'
-
 declare module '@ioc:Adonis/Core/Event' {
   /*
   |--------------------------------------------------------------------------
@@ -28,7 +26,6 @@ declare module '@ioc:Adonis/Core/Event' {
   |
   */
   interface EventsList {
-    'run:prompt': Prompt
     'refresh:daily-prompts': void
   }
 }
