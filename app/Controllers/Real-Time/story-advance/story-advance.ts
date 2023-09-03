@@ -18,6 +18,7 @@ export async function tryMakeStoreAdvance(promptId: number): Promise<StoreAdvanc
 
   currentProposals.sort((a, b) => b.popularity - a.popularity)
   const chosenProposal = currentProposals[0]
+  if (chosenProposal.popularity <= 0) { return CONTINUE }
   chosenProposal.definitive = true
   prompt.currentIndex += 1
 
