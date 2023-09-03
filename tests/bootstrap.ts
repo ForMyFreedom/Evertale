@@ -8,6 +8,7 @@
 import type { Config } from '@japa/runner'
 import TestUtils from '@ioc:Adonis/Core/TestUtils'
 import { assert, runFailedTests, specReporter, apiClient } from '@japa/preset-adonis'
+import { createNonAdminUser } from './functional/_utils/setup'
 
 /*
 |--------------------------------------------------------------------------
@@ -47,7 +48,11 @@ export const reporters: Required<Config>['reporters'] = [specReporter()]
 |
 */
 export const runnerHooks: Pick<Required<Config>, 'setup' | 'teardown'> = {
-  setup: [() => TestUtils.ace().loadCommands(), () => TestUtils.db().migrate()],
+  setup: [
+    () => TestUtils.ace().loadCommands(),
+    () => TestUtils.db().migrate(),
+    () => createNonAdminUser()
+  ],
   teardown: [() => TestUtils.db().migrate(), () => TestUtils.db().migrate()],
 }
 
