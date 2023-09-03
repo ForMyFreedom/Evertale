@@ -28,4 +28,5 @@ export default Env.rules({
   REDIS_PASSWORD: Env.schema.string.optional(),
   USER_ROOT_EMAIL: Env.schema.string(),
   USER_ROOT_PASSWORD: Env.schema.string(),
+  REFRESH_MINUTES_FOR_DAILY_PROMPTS: Env.schema.number(),
 })

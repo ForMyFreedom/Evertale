@@ -1,6 +1,18 @@
 import Event from '@ioc:Adonis/Core/Event'
 import { tryMakeStoreAdvance } from 'App/Controllers/Real-Time/story-advance/story-advance'
 import Prompt from 'App/Models/Prompt'
+import Env from '@ioc:Adonis/Core/Env'
+import { LiteralTime } from 'App/Utils/time'
+
+Event.on('refresh:daily-prompts', 'DailyPrompt.onRefreshDailyPrompts')
+
+setTimeout(async () => {
+  await Event.emit('refresh:daily-prompts', undefined)
+}, LiteralTime.MINUTE)
+
+setInterval(() => {
+  Event.emit('refresh:daily-prompts', undefined)
+}, Env.get('REFRESH_MINUTES_FOR_DAILY_PROMPTS') * LiteralTime.MINUTE)
 
 Event.on('run:prompt', (prompt: Prompt) => {
   console.log(`Tentando avançar história ${prompt.id}`)

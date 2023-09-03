@@ -7,7 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('text').notNullable()
-      table.integer('author_id').notNullable().references('users.id').onDelete('NO ACTION')
+      table.integer('author_id').nullable().references('users.id').onDelete('NO ACTION')
       table.integer('popularity').notNullable().defaultTo(0)
       table.boolean('edited').defaultTo(false)
       table.timestamp('created_at', { useTz: true })
