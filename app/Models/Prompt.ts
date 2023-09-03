@@ -39,20 +39,8 @@ export default class Prompt extends BaseModel {
   @column()
   public writeId: number
 
-  @column()
-  public maxSizePerExtension: number
-
-  @column()
-  public limitOfExtensions: number
-
-  @column()
-  public timeForAvanceInMinutes: number
-
   @computed()
   public popularity: number
-
-  @computed()
-  public historyText: string
 
   @belongsTo(() => Write)
   public write: BelongsTo<typeof Write>
@@ -62,6 +50,12 @@ export default class Prompt extends BaseModel {
 
   @hasMany(() => Proposal)
   public proposals: HasMany<typeof Proposal>
+
+  @column()
+  public maxSizePerExtension: number
+
+  @column()
+  public limitOfExtensions: number
 
   @beforeFind()
   @beforeFetch()
@@ -87,20 +81,5 @@ export default class Prompt extends BaseModel {
     for (const prompt of promptArray) {
       await Prompt.calculatePromptPopularity(prompt)
     }
-  }
-
-  @afterFind()
-  public static async setHistoryText(prompt: Prompt) {
-    await prompt.load('proposals')
-    const definitiveProposals = prompt.proposals
-      .filter((proposal) => proposal.definitive)
-      .sort((a, b) => b.orderInHistory - a.orderInHistory)
-
-    prompt.historyText = prompt.write.text
-    for (const proposal of definitiveProposals) {
-      prompt.historyText += proposal.write.text
-    }
-
-    delete prompt.$preloaded.proposals
   }
 }

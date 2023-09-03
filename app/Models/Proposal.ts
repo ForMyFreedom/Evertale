@@ -30,9 +30,6 @@ export default class Proposal extends BaseModel {
   @column()
   public orderInHistory: number
 
-  @column({ serialize: (value) => Boolean(value) })
-  public definitive: boolean
-
   @computed()
   public popularity: number
 
