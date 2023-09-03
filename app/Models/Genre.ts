@@ -40,7 +40,7 @@ export default class Genre extends BaseModel {
 
   @afterFind()
   public static async calculateGenrePopularity(genre: Genre) {
-    await genre.loadCount('prompts')
+    await genre.loadCount('prompts') // @ IT'S IMPORTANT TO ONLY COUNT THE NON-DAILY!!!
     const amountOfPrompts = genre.$extras.prompts_count
     const startDate = genre.createdAt
     const actualDate = DateTime.now()

@@ -25,7 +25,6 @@ import PromptRoutes from './routes/prompt'
 import ProposalRoutes from './routes/proposal'
 import CommentRoutes from './routes/comment'
 import ReactionRoutes from './routes/reactions'
-import { DailyPromptGerenciator } from 'App/Controllers/Real-Time/daily-prompt/daily-prompt'
 
 Route.where('id', Route.matchers.number())
 
@@ -42,6 +41,3 @@ Route.group(() => {
   ReactionRoutes()
   Route.post('/auth/loguin', 'AuthController.loguin')
 }).prefix(Env.get('BASE_ROUTE_PREFIX'))
-
-const dailyPromptGerenciator = new DailyPromptGerenciator()
-setTimeout(() => dailyPromptGerenciator.operate(), 0)
