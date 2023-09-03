@@ -61,6 +61,7 @@ export default class DailyPromptsController {
           writeId: newWrite.id,
           maxSizePerExtension: this.getRandomMaxSizePerExtension(),
           limitOfExtensions: this.getRandomLimitOfExtensions(),
+          timeForAvanceInMinutes: this.getRandoTimeForAdvanceInMinutes(),
         })
         await newPrompt.related('genres').attach([genre.id])
       }
@@ -93,6 +94,10 @@ export default class DailyPromptsController {
     } else {
       return Math.floor(Math.random() * (2 + 3) + 2 + 3) // I like the 23 number...
     }
+  }
+
+  private getRandoTimeForAdvanceInMinutes(): number {
+    return Math.floor(2 + 3 + (2 + 3) * Math.random())
   }
 
   private textRespectPrompt(text: string, prompt: string): boolean {
