@@ -1,9 +1,17 @@
-export async function serializate(body: object): Promise<object> {
+import { string } from '@ioc:Adonis/Core/Helpers'
+
+export function serializate(body: object): object {
   const newBody = {}
   for(const prop of Object.keys(body)) {
-    newBody[camelToSnakeCase(prop)] = body[prop]
+    newBody[string.snakeCase(prop)] = body[prop]
   }
   return newBody
 }
 
-const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
+export function reverseSerializate(body: object): object {
+  const newBody = {}
+  for(const prop of Object.keys(body)) {
+    newBody[string.camelCase(prop)] = body[prop]
+  }
+  return newBody
+}
