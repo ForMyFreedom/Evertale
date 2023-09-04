@@ -87,7 +87,7 @@ export default class PromptsController {
     const prompt = await Prompt.find(params.id)
     if (prompt) {
       if (prompt.write.authorId === auth?.user?.id) {
-        await prompt.delete()
+        await prompt.write.delete()
         ExceptionHandler.SucessfullyDestroyed(response, prompt)
       } else {
         ExceptionHandler.CantDeleteOthersWrite(response)
