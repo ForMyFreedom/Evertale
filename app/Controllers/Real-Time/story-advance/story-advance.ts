@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 import Prompt from 'App/Models/Prompt'
 import Proposal from 'App/Models/Proposal'
-import { reactionIsConclusive } from 'App/Utils/reactions'
+import { ReactionType } from 'App/Models/Reaction'
+import Write from 'App/Models/Write'
 
 type StoreAdvanceResponse = { toContinueLoop: boolean }
 
@@ -22,8 +23,8 @@ export async function tryMakeStoreAdvance(promptId: number): Promise<StoreAdvanc
   chosenProposal.definitive = true
   prompt.currentIndex += 1
 
-  prompt.save()
-  chosenProposal.save()
+  await prompt.save()
+  await chosenProposal.save()
 
   console.log(`A História ${promptId} avançou com a Proposta ${chosenProposal.id}!`)
 
@@ -31,6 +32,7 @@ export async function tryMakeStoreAdvance(promptId: number): Promise<StoreAdvanc
     return CONTINUE
   } else {
     prompt.concluded = true
+    await prompt.save()
     return NOT_CONTINUE
   }
 }
@@ -38,20 +40,25 @@ export async function tryMakeStoreAdvance(promptId: number): Promise<StoreAdvanc
 
 async function storyWasConcluded(prompt: Prompt, chosenProposal: Proposal): Promise<Boolean> {
   return (
-    prompt.currentIndex === prompt.maxSizePerExtension ||
-    (await chosenProposalWasConclusive(chosenProposal))
+    prompt.currentIndex === prompt.limitOfExtensions ||
+    (await chosenProposalWasConclusive(prompt, chosenProposal))
   )
 }
 
-// @ Maybe create a query in future due to performance
-// @  const amountOfConclusiveReactions = Proposal.query().join('write_reactions', 'proposals.write_id', '=', 'write_reactions.write_id').where('type', ).countDistinct('id as id').count('* as total')
-async function chosenProposalWasConclusive(choosenProposal: Proposal): Promise<boolean> {
-  await choosenProposal.load('prompt')
-  const storyPopularity = choosenProposal.prompt.popularity
-  const write = choosenProposal.write
-  await write.load('reactions')
-  const amountOfConclusiveReactions = write.reactions.filter((reaction) =>
-    reactionIsConclusive(reaction.type)
-  ).length
-  return amountOfConclusiveReactions > storyPopularity * 2 // @ INSERT CONSTANT HERE
+async function chosenProposalWasConclusive(prompt: Prompt, proposal: Proposal): Promise<boolean> {
+  const storyPopularity = prompt.popularity
+  const amountOfConclusiveReactions = await getAmountOfConclusiveReactions(proposal)
+  return amountOfConclusiveReactions >= Math.ceil(storyPopularity * 0.333) // @ INSERT CONSTANT HERE
+}
+
+async function getAmountOfConclusiveReactions(proposal: Proposal): Promise<number> {
+  const response = await Write.query()
+    .join('write_reactions', 'writes.id', '=', 'write_reactions.write_id')
+    .where('writes.id', '=', proposal.write.id)
+    .where('write_reactions.type', '=', ReactionType.CONCLUSIVE)
+    .orWhere('write_reactions.type', '=', ReactionType.POSITIVE_CONCLUSIVE)
+    .countDistinct('writes.id as id')
+    .count('* as total')
+
+  return response[0].$extras.total
 }
