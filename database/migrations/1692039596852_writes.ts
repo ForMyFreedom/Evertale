@@ -1,15 +1,14 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'reactions'
+  protected tableName = 'writes'
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-
-      /**
-       * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
-       */
+      table.string('text').notNullable()
+      table.integer('author_id').nullable().references('users.id').onDelete('NO ACTION')
+      table.boolean('edited').defaultTo(false)
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

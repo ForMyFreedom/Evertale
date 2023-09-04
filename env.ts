@@ -33,5 +33,6 @@ export default Env.rules({
   USER_TEST_EMAIL: Env.schema.string(),
   USER_TEST_PASSWORD: Env.schema.string(),
   DATA_BANK_NAME: Env.schema.string(),
-  I18N: Env.schema.string()
+  I18N: Env.schema.string(),
+  REFRESH_MINUTES_FOR_DAILY_PROMPTS: Env.schema.number(),
 })
