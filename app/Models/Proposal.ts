@@ -34,7 +34,7 @@ export default class Proposal extends BaseModel {
   public definitive: boolean
 
   @computed()
-  public popularity: number
+  public popularity: number // Good Reactions - Bad Reactions
 
   @belongsTo(() => Write)
   public write: BelongsTo<typeof Write>

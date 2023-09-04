@@ -24,7 +24,7 @@ export default class Genre extends BaseModel {
   public image: string
 
   @computed()
-  public popularity: number
+  public popularity: number // Amount of Prompts per day
 
   @manyToMany(() => Prompt)
   public prompts: ManyToMany<typeof Prompt>

@@ -49,7 +49,7 @@ export default class Prompt extends BaseModel {
   public timeForAvanceInMinutes: number
 
   @computed()
-  public popularity: number
+  public popularity: number // The amount of Users that had interacted with
 
   @computed()
   public historyText: string
