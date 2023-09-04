@@ -18,7 +18,12 @@
     "./start/routes",
     "./start/kernel",
     "./start/bouncer",
-    "./start/events"
+    {
+      "file": "./start/events",
+      "environment": [
+        "web"
+      ]
+    }
   ],
   "providers": [
     "./providers/AppProvider",

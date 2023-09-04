@@ -30,8 +30,11 @@ export default class Proposal extends BaseModel {
   @column()
   public orderInHistory: number
 
+  @column({ serialize: (value) => Boolean(value) })
+  public definitive: boolean
+
   @computed()
-  public popularity: number
+  public popularity: number // Good Reactions - Bad Reactions
 
   @belongsTo(() => Write)
   public write: BelongsTo<typeof Write>

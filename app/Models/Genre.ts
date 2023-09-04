@@ -12,6 +12,7 @@ import {
 } from '@ioc:Adonis/Lucid/Orm'
 import ThematicWord from './ThematicWord'
 import Prompt from './Prompt'
+import Database from '@ioc:Adonis/Lucid/Database'
 
 export default class Genre extends BaseModel {
   @column({ isPrimary: true })
@@ -24,7 +25,7 @@ export default class Genre extends BaseModel {
   public image: string
 
   @computed()
-  public popularity: number
+  public popularity: number // Amount of Prompts per day
 
   @manyToMany(() => Prompt)
   public prompts: ManyToMany<typeof Prompt>
@@ -40,8 +41,7 @@ export default class Genre extends BaseModel {
 
   @afterFind()
   public static async calculateGenrePopularity(genre: Genre) {
-    await genre.loadCount('prompts') // @ IT'S IMPORTANT TO ONLY COUNT THE NON-DAILY!!!
-    const amountOfPrompts = genre.$extras.prompts_count
+    const amountOfPrompts = await getAmountOfNonDailyPrompts(genre)
     const startDate = genre.createdAt
     const actualDate = DateTime.now()
     const daysOfExistence = startDate.diff(actualDate).days
@@ -55,4 +55,15 @@ export default class Genre extends BaseModel {
       await Genre.calculateGenrePopularity(genre)
     }
   }
+}
+
+async function getAmountOfNonDailyPrompts(genre: Genre) {
+  const query = await Database.from('genres')
+    .join('genre_prompt', 'genres.id', '=', 'genre_prompt.genre_id')
+    .join('prompts', 'genre_prompt.prompt_id', '=', 'prompts.id')
+    .where('prompts.is_daily', '=', false)
+    .where('genres.id', '=', genre.id)
+    .count('* as total')
+
+  return query[0].total
 }
