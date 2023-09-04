@@ -17,12 +17,7 @@ export default class extends BaseSchema {
       table.timestamp('birth_date').notNullable()
       table.string('password', 180).notNullable()
       table.string('remember_me_token').nullable()
-      table.boolean('is_premium').defaultTo(false)
-      table.dateTime('deleted_at').defaultTo(null)
 
-      /**
-       * Uses timestampz for PostgreSQL and DATETIME2 for MSSQL
-       */
       table.dateTime('deleted_at').defaultTo(null)
       table
         .timestamp('created_at', { useTz: true })
