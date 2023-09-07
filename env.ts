@@ -29,4 +29,8 @@ export default Env.rules({
   USER_ROOT_EMAIL: Env.schema.string(),
   USER_ROOT_PASSWORD: Env.schema.string(),
   REFRESH_MINUTES_FOR_DAILY_PROMPTS: Env.schema.number(),
+  SMTP_HOST: Env.schema.string({ format: 'host' }),
+  SMTP_PORT: Env.schema.number(),
+  SMTP_USERNAME: Env.schema.string(),
+  SMTP_PASSWORD: Env.schema.string(),
 })
