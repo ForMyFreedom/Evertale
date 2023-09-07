@@ -2,13 +2,13 @@ import { schema, rules, CustomMessages } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { MyValidator } from './MyValidator'
 
-const GenreValidatorSchema = schema.create({
+export const GenreValidatorSchema = schema.create({
   name: schema.string({}, [rules.unique({ table: 'genres', column: 'name' })]),
   image: schema.string({}, [rules.url()]),
   thematicWords: schema.array().members(schema.string()),
 })
 
-export default class GenreValidator extends MyValidator<typeof GenreValidatorSchema> {
+export class GenreValidator extends MyValidator<typeof GenreValidatorSchema> {
   constructor(protected ctx: HttpContextContract) {
     super(ctx)
   }

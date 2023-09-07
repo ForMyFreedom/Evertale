@@ -3,7 +3,7 @@ import ExceptionHandler from 'App/Exceptions/Handler'
 import Prompt from 'App/Models/Prompt'
 import Proposal from 'App/Models/Proposal'
 import Write from 'App/Models/Write'
-import ProposalValidator from 'App/Validators/ProposalValidator'
+import { ProposalValidator } from 'App/Validators/ProposalValidator'
 
 export default class ProposalsController {
   public async indexByPrompt({ response, params }: HttpContextContract): Promise<void> {
@@ -57,7 +57,9 @@ export default class ProposalsController {
         return ExceptionHandler.TextLengthHigherThanAllowed(response)
       }
 
-      const write = await Write.create({ text: text, authorId: authorId })
+      const finalText = insertSpaceInStartOfText(text)
+      const write = await Write.create({ text: finalText, authorId: authorId })
+
       const proposal = await Proposal.create({
         ...body,
         writeId: write.id,
@@ -105,4 +107,9 @@ export default class ProposalsController {
       ExceptionHandler.UndefinedId(response)
     }
   }
+}
+
+
+function insertSpaceInStartOfText(text: string): string {
+  return text[0] === ' ' ? text : ' ' + text
 }

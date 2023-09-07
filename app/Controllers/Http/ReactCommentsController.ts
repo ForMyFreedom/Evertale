@@ -3,7 +3,7 @@ import ExceptionHandler from 'App/Exceptions/Handler'
 import Comment from 'App/Models/Comment'
 import { CommentReaction, ReactionType } from 'App/Models/Reaction'
 import { cleanReactions, reactionIsConclusive } from 'App/Utils/reactions'
-import CommentReactionValidator from 'App/Validators/CommentReactionValidator'
+import { CommentReactionValidator } from 'App/Validators/CommentReactionValidator'
 
 export default class ReactCommentsController {
   public async show({ response, params }: HttpContextContract): Promise<void> {
@@ -41,7 +41,7 @@ export default class ReactCommentsController {
         couldFind[0].delete()
       }
       const reaction = await CommentReaction.create({ ...body, type: type, userId: authorId })
-      reaction.save()
+      await reaction.save()
       ExceptionHandler.SucessfullyCreated(response, reaction)
     } else {
       ExceptionHandler.InvalidUser(response)
@@ -51,7 +51,7 @@ export default class ReactCommentsController {
   public async destroy({ response, params, auth }: HttpContextContract): Promise<void> {
     const requesterId = auth?.user?.id
     if (!requesterId) {
-      return ExceptionHandler.InvalidAuth(response)
+      return ExceptionHandler.Unauthenticated(response)
     }
     const reaction = await CommentReaction.find(params.id)
     if (reaction) {

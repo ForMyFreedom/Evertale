@@ -1,5 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import UserValidator from 'App/Validators/UserValidator'
+import { UserValidator } from 'App/Validators/UserValidator'
 import User from 'App/Models/User'
 import ExceptionHandler from 'App/Exceptions/Handler'
 
@@ -30,7 +30,7 @@ export default class UsersController {
     const { response, params, auth } = ctx
     const responserId = auth?.user?.id
     if (!responserId) {
-      return ExceptionHandler.InvalidAuth(response)
+      return ExceptionHandler.Unauthenticated(response)
     }
     const user = await User.find(params.id)
     const { email, ...body } = await new UserValidator(ctx).validateAsOptional()
@@ -51,7 +51,7 @@ export default class UsersController {
   public async destroy({ response, params, auth }: HttpContextContract): Promise<void> {
     const responserId = auth?.user?.id
     if (!responserId) {
-      return ExceptionHandler.InvalidAuth(response)
+      return ExceptionHandler.Unauthenticated(response)
     }
     const user = await User.find(params.id)
     if (user) {
@@ -59,7 +59,7 @@ export default class UsersController {
         await user.softDelete()
         ExceptionHandler.SucessfullyDestroyed(response, user)
       } else {
-        ExceptionHandler.CantEditOtherUser(response)
+        ExceptionHandler.CantDeleteOtherUser(response)
       }
     } else {
       ExceptionHandler.UndefinedId(response)
