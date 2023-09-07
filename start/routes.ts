@@ -25,6 +25,7 @@ import PromptRoutes from './routes/prompt'
 import ProposalRoutes from './routes/proposal'
 import CommentRoutes from './routes/comment'
 import ReactionRoutes from './routes/reactions'
+import ConstantRoutes from './routes/constants'
 
 Route.where('id', Route.matchers.number())
 
@@ -39,5 +40,6 @@ Route.group(() => {
   ProposalRoutes()
   CommentRoutes()
   ReactionRoutes()
+  ConstantRoutes()
   Route.post('/auth/loguin', 'AuthController.loguin')
 }).prefix(Env.get('BASE_ROUTE_PREFIX'))

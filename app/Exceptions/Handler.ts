@@ -159,26 +159,30 @@ export default class ExceptionHandler extends HttpExceptionHandler {
   }
 
   public static TextLengthHigherThanAllowed(response: ResponseContract): void {
-    response.badRequest({ error: 'Text length higher than allowed' })
+    response.badRequest({ error: this.contract.TextLengthHigherThanAllowed })
   }
 
   public static CantUseConclusiveReactionInConcludedHistory(response: ResponseContract): void {
-    response.badGateway({ error: "Can't use conclusive reaction in concluded history" })
+    response.badGateway({ error: this.contract.CantUseConclusiveReactionInConcludedHistory })
   }
 
   public static NotAppropriablePrompt(response: ResponseContract): void {
-    response.badRequest({ error: 'This is not an appropriable prompt!' })
+    response.badRequest({ error: this.contract.NotAppropriablePrompt })
   }
 
   public static TextDontRespectPrompt(response: ResponseContract): void {
-    response.badRequest({ error: "Your text don't respect prompt" })
+    response.badRequest({ error: this.contract.TextDontRespectPrompt })
   }
 
   public static CantEditDailyPrompt(response: ResponseContract): void {
-    response.badRequest({ error: "Can't edit a daily prompt!" })
+    response.badRequest({ error: this.contract.CantEditDailyPrompt })
   }
 
   public static CantProposeToUnappropriatedPrompt(response: ResponseContract): void {
-    response.badRequest({ error: "Can't proposoe to unappropriated prompt" })
+    response.badRequest({ error: this.contract.CantProposeToUnappropriatedPrompt })
+  }
+
+  public static ServerMisconfigured(response: ResponseContract): void {
+    response.internalServerError({ error: this.contract.ServerMisconfigured })
   }
 }

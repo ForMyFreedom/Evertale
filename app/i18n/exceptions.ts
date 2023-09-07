@@ -25,5 +25,12 @@ export interface ExceptionContract {
   IncompatibleWriteAndAnswer: string
   CantUseConclusiveReactionInComment: string
   CantUseConclusiveReactionInPrompt: string
+  ServerMisconfigured: string
+  CantProposeToUnappropriatedPrompt: string
+  CantEditDailyPrompt: string
+  TextDontRespectPrompt: string
+  NotAppropriablePrompt: string
+  CantUseConclusiveReactionInConcludedHistory: string
+  TextLengthHigherThanAllowed: string
 }
 

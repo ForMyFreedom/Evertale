@@ -17,7 +17,7 @@ export default class DailyPromptsController {
     const userId = auth?.user?.id
 
     if (!userId) {
-      return ExceptionHandler.InvalidAuth(response)
+      return ExceptionHandler.Unauthenticated(response)
     }
     if (!prompt) {
       return ExceptionHandler.UndefinedId(response)
