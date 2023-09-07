@@ -27,7 +27,14 @@ const englishExceptionContract: ExceptionContract = {
     CantProposeToClosedHistory: "Can't propose to closed fable",
     IncompatibleWriteAndAnswer: 'The comment you want to reply to does not belong to this write',
     CantUseConclusiveReactionInComment: "Can't use conclusive reaction in comment",
-    CantUseConclusiveReactionInPrompt: "Can't use conclusive reaction in prompt"
+    CantUseConclusiveReactionInPrompt: "Can't use conclusive reaction in prompt",
+    ServerMisconfigured: "The Server is Misconfigured!",
+    CantProposeToUnappropriatedPrompt: "Can't proposoe to unappropriated prompt",
+    CantEditDailyPrompt: "Can't edit a daily prompt!",
+    TextDontRespectPrompt: "Your text don't respect prompt",
+    NotAppropriablePrompt: "This is not an appropriable prompt!",
+    CantUseConclusiveReactionInConcludedHistory: "Can't use conclusive reaction in concluded history",
+    TextLengthHigherThanAllowed: "Text length higher than allowed"
 }
 
 export default englishExceptionContract
