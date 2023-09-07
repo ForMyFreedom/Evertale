@@ -35,4 +35,10 @@ export default Env.rules({
   DATA_BANK_NAME: Env.schema.string(),
   I18N: Env.schema.string(),
   REFRESH_MINUTES_FOR_DAILY_PROMPTS: Env.schema.number(),
+  DEFAULT_CONST___POSITIVE_STRENGTH: Env.schema.number(),
+  DEFAULT_CONST___NEGATIVE_STRENGTH: Env.schema.number(),
+  DEFAULT_CONST___DELETE_STRENGTH: Env.schema.number(),
+  DEFAULT_CONST___COMPLETION_PERCEN: Env.schema.number(),
+  DEFAULT_CONST___EXCLUSION_PERCEN: Env.schema.number(),
+  DEFAULT_CONST___BAN_LIMIT: Env.schema.number(),
 })
