@@ -34,7 +34,8 @@ const englishExceptionContract: ExceptionContract = {
     TextDontRespectPrompt: "Your text don't respect prompt",
     NotAppropriablePrompt: "This is not an appropriable prompt!",
     CantUseConclusiveReactionInConcludedHistory: "Can't use conclusive reaction in concluded history",
-    TextLengthHigherThanAllowed: "Text length higher than allowed"
+    TextLengthHigherThanAllowed: "Text length higher than allowed",
+    CantReactYourself: "You can't react yourself!"
 }
 
 export default englishExceptionContract

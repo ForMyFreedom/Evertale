@@ -32,5 +32,6 @@ export interface ExceptionContract {
   NotAppropriablePrompt: string
   CantUseConclusiveReactionInConcludedHistory: string
   TextLengthHigherThanAllowed: string
+  CantReactYourself: string
 }
 

@@ -29,6 +29,10 @@ export default class ReactCommentsController {
       const body = await new CommentReactionValidator(ctx).validate()
       const type = ReactionType[body.type] as ReactionType
 
+      if (await reactItself(body.commentId, authorId)) {
+        return ExceptionHandler.CantReactYourself(response)
+      }
+
       if (reactionIsConclusive(type)) {
         return ExceptionHandler.CantUseConclusiveReactionInComment(response)
       }
@@ -65,4 +69,9 @@ export default class ReactCommentsController {
       ExceptionHandler.UndefinedId(response)
     }
   }
+}
+
+async function reactItself(commentId: number, authorId: number): Promise<boolean> {
+  const comment = await Comment.findOrFail(commentId)
+  return comment.authorId == authorId
 }
