@@ -24,12 +24,14 @@ export default class AuthMiddleware {
   }
 
   public async handle(
-    { auth, response }: HttpContextContract,
+    { auth, response, bouncer }: HttpContextContract,
     next: () => Promise<void>,
     customGuards: (keyof GuardsList)[]
   ) {
     const guards = customGuards.length ? customGuards : [auth.name]
     const sucess = await this.authenticate(auth, response, guards)
+    
+    await bouncer.authorize('nonDeleted')
     if (sucess) {
       await next()
     }
