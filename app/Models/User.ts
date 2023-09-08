@@ -2,6 +2,7 @@ import { DateTime } from 'luxon'
 import Hash from '@ioc:Adonis/Core/Hash'
 import { column, beforeSave, BaseModel, beforeFind, beforeFetch } from '@ioc:Adonis/Lucid/Orm'
 import { softDelete, softDeleteQuery } from 'App/Utils/soft-delete'
+import Constant from './Constant'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -61,6 +62,21 @@ export default class User extends BaseModel {
   public static async hashPassword(user: User) {
     if (user.$dirty.password) {
       user.password = await Hash.make(user.password)
+    }
+  }
+
+  public async interactionBanned(this: User) {
+    const { deleteStrength }: Constant = await Constant.firstOrFail()
+    this.score -= deleteStrength
+    await this.save()
+    this.verifyBan()
+  }
+
+  public async verifyBan(this: User) {
+    const { banLimit } = await Constant.firstOrFail()
+    if (banLimit > this.score){
+      console.log(`The User ${this.id} was banned!`)
+      await this.softDelete()
     }
   }
 }

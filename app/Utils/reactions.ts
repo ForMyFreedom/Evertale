@@ -31,6 +31,10 @@ export function reactionIsConclusive(type: ReactionType): boolean {
   return type === ReactionType.CONCLUSIVE || type === ReactionType.POSITIVE_CONCLUSIVE
 }
 
+export function reactionPositive(type: ReactionType): boolean {
+  return type === ReactionType.POSITIVE || type === ReactionType.POSITIVE_CONCLUSIVE
+}
+
 
 export function calculatePointsThrowReactions(reactionsArray: WriteReaction[]|CommentReaction[]) {
   let points = 0
