@@ -8,7 +8,7 @@ export default class Constant extends BaseModel {
   @column()
   strengthOfPositiveOpinion: number // For every positive reaction, it will gain this in the User Score
   @column()
-  negativeOpinionStrength: number   // For each complaint, it will lose this in the User Score
+  strengthOfNegativeOpinion: number   // For each complaint, it will lose this in the User Score
   @column()
   deleteStrength: number            // For every automatically deleted comment, it will lose that in the User Score [Probably remove]
   @column()

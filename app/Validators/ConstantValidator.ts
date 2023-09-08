@@ -4,7 +4,7 @@ import { MyValidator } from './MyValidator'
 
 export const ConstantsValidatorSchema = schema.create({
   strengthOfPositiveOpinion: schema.number([rules.unsigned()]),
-  negativeOpinionStrength: schema.number([rules.unsigned()]),
+  strengthOfNegativeOpinion: schema.number([rules.unsigned()]),
   deleteStrength: schema.number([rules.unsigned()]),
   completionPercentage: schema.number([rules.percentage()]),
   exclusionPercentage: schema.number([rules.percentage()]),
