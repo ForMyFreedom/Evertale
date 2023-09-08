@@ -6,12 +6,12 @@ import { LiteralTime } from 'App/Utils/time'
 
 export default class History {
   public async onRunPrompt(prompt: EventsList['run:prompt']) {
-    console.log(`${DateTime.now()}  |  Tentando avançar história ${prompt.id}`)
+    console.log(`${DateTime.now()}  |  Try Advance History ${prompt.id}`)
     setTimeout(async () => {
       if ((await tryMakeStoreAdvance(prompt.id)).toContinueLoop) {
         Event.emit('run:prompt', prompt)
       } else {
-        console.log(`Fim da história ${prompt.id}`)
+        console.log(`End of History ${prompt.id}`)
       }
     }, prompt.timeForAvanceInMinutes * LiteralTime.MINUTE)
   }
