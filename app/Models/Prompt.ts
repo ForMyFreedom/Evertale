@@ -18,6 +18,7 @@ import Genre from './Genre'
 import Write from './Write'
 import Proposal from './Proposal'
 import { removeDuplicate } from 'App/Utils/arrays'
+import { BOOLEAN_SERIAL } from './_Base'
 
 export default class Prompt extends BaseModel {
   @column({ isPrimary: true })
@@ -26,13 +27,13 @@ export default class Prompt extends BaseModel {
   @column()
   public title: string
 
-  @column({ serialize: (value) => Boolean(value) })
+  @column(BOOLEAN_SERIAL)
   public isDaily: boolean
 
   @column()
   public currentIndex: number
 
-  @column({ serialize: (value) => Boolean(value) })
+  @column(BOOLEAN_SERIAL)
   public concluded: boolean
 
   @column()

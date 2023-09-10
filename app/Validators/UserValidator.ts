@@ -1,6 +1,7 @@
 import { schema, CustomMessages, ParsedTypedSchema, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { MyValidator } from './MyValidator'
+import { PasswordSchema } from 'App/Utils/secure'
 
 const UserValidatorSchema = schema.create({
   name: schema.string({}, [rules.unique({ table: 'users', column: 'name' })]),
@@ -9,7 +10,7 @@ const UserValidatorSchema = schema.create({
   score: schema.number(),
   isAdmin: schema.boolean(),
   birthDate: schema.date(),
-  password: schema.string(),
+  ...PasswordSchema,
 })
 
 export default class UserValidator extends MyValidator<typeof UserValidatorSchema> {

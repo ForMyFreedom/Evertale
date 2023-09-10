@@ -160,4 +160,12 @@ export default class ExceptionHandler extends HttpExceptionHandler {
   public static CantProposeToUnappropriatedPrompt(response: ResponseContract): void {
     response.badRequest({ error: "Can't proposoe to unappropriated prompt" })
   }
+
+  public static BadRequest(response: ResponseContract): void {
+    response.badRequest({ error: 'Bad Request' })
+  }
+
+  public static EmailSended(response: ResponseContract): void {
+    response.ok({ message: 'Email sended!' })
+  }
 }

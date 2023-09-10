@@ -2,6 +2,7 @@ import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, HasMany, belongsTo, column, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import User from './User'
 import { WriteReaction } from './Reaction'
+import { BOOLEAN_SERIAL } from './_Base'
 
 export default class Write extends BaseModel {
   @column({ isPrimary: true })
@@ -10,7 +11,7 @@ export default class Write extends BaseModel {
   @column()
   public text: string
 
-  @column({ serialize: (value) => Boolean(value) })
+  @column(BOOLEAN_SERIAL)
   public edited: boolean
 
   @column()

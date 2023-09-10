@@ -3,6 +3,7 @@ import { BaseModel, BelongsTo, HasMany, belongsTo, column, hasMany } from '@ioc:
 import Write from './Write'
 import User from './User'
 import { CommentReaction } from './Reaction'
+import { BOOLEAN_SERIAL } from './_Base'
 
 export default class Comment extends BaseModel {
   @column({ isPrimary: true })
@@ -23,7 +24,7 @@ export default class Comment extends BaseModel {
   @column()
   public imageUrl: string | null
 
-  @column({ serialize: (value) => Boolean(value) })
+  @column(BOOLEAN_SERIAL)
   public edited: boolean
 
   @column.dateTime({ autoCreate: true })

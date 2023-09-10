@@ -1,7 +1,14 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import type { ResponseContract } from '@ioc:Adonis/Core/Response'
+import Env from '@ioc:Adonis/Core/Env'
 import UserValidator from 'App/Validators/UserValidator'
 import User from 'App/Models/User'
 import ExceptionHandler from 'App/Exceptions/Handler'
+import MailController from './MailController'
+import Token from 'App/Models/Token'
+import RestartPasswordValidator from 'App/Validators/RestartPasswordValidator'
+import { SessionContract } from '@ioc:Adonis/Addons/Session'
+import { prettifyErrorList } from 'App/Utils/views'
 
 export default class UsersController {
   public async index({ response }: HttpContextContract): Promise<void> {
@@ -20,9 +27,13 @@ export default class UsersController {
 
   public async store(ctx: HttpContextContract): Promise<void> {
     const { response } = ctx
-    const body = await new UserValidator(ctx).validate()
-    const user = await User.create(body)
-    user.save()
+    const { repeatPassword, ...body } = await new UserValidator(ctx).validate()
+    const needToVerifyEmail = Env.get('NEED_TO_VERIFY_EMAIL')
+    const user = await User.create({ ...body, emailVerified: !needToVerifyEmail })
+    await user.save()
+    if (needToVerifyEmail) {
+      await MailController.sendUserVerificationMail(user)
+    }
     ExceptionHandler.SucessfullyCreated(response, user)
   }
 
@@ -65,4 +76,24 @@ export default class UsersController {
       ExceptionHandler.UndefinedId(response)
     }
   }
+
+  public async verifyEmail({ response, request }: HttpContextContract): Promise<void> {
+    const token = request.param('token')
+
+    if (!token) {
+      return ExceptionHandler.BadRequest(response)
+    }
+
+    const findToken = await Token.query().preload('user').where('token', token).first()
+    if (!findToken) {
+      return ExceptionHandler.BadRequest(response)
+    }
+
+    findToken.user.emailVerified = true
+    await findToken.user.save()
+    await findToken.delete()
+
+    return ExceptionHandler.SuccessfullyAuthenticated(response)
+  }
+
 }
