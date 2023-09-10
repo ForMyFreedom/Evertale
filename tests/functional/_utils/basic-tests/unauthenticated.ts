@@ -23,6 +23,6 @@ async function testREQUESTUnauthenticated(
   requestFunction: BasicRequestFunction, url: string, body?: object
 ): Promise<void> {
   let response = await requestFunction(url).json(body ?? {})
-  response.assertStatus(HTTP.PROXY_AUTHENTICATION_REQUIRED)
-  response.assertBodyContains({ error: ExceptionContract.Unauthenticated })
+  response.assertStatus(HTTP.UNAUTHORIZED)
+  response.assertBodyContains({ error: ExceptionContract.Unauthorized })
 }

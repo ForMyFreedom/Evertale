@@ -32,7 +32,8 @@ import User from 'App/Models/User'
 */
 export const { actions } = Bouncer
   .define('admin', (user: User) => { return user.isAdmin})
-  .define('nonDeleted', (user: User) => { return !user.deletedAt})
+  .define('userIsOk', (user: User) => { 
+    return !user.deletedAt && user.emailVerified})
 
 /*
 |--------------------------------------------------------------------------

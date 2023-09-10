@@ -30,8 +30,7 @@ export default class AuthMiddleware {
   ) {
     const guards = customGuards.length ? customGuards : [auth.name]
     const sucess = await this.authenticate(auth, response, guards)
-    
-    await bouncer.authorize('nonDeleted')
+    await bouncer.authorize('userIsOk')
     if (sucess) {
       await next()
     }

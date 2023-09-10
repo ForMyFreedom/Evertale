@@ -37,7 +37,7 @@ export default class User extends BaseModel {
   @column()
   public image: string
 
-  @column(BOOLEAN_SERIAL)
+  @column({ consume: (value) => Boolean(value) })
   public emailVerified: boolean
 
   @column()

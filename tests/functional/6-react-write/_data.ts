@@ -30,10 +30,10 @@ export const postReactWrite = async (client: ApiClient, isAdmin: boolean = true,
   let id: number
 
   if (isOnPrompt) {
-    const prompt = await postPrompt(client)
+    const prompt = await postPrompt(client, !isAdmin)
     id = prompt.writeId
   } else {
-    const proposal = await postProposal(client)
+    const proposal = await postProposal(client, !isAdmin)
     id = proposal.writeId
   }
 

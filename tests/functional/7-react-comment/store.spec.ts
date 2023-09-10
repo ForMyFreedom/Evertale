@@ -15,21 +15,29 @@ async function testReactCommentStore({ client }: TestContext): Promise<void> {
   await testPOSTUnauthenticated(client, BASE_URL, SAMPLE_REACT_COMMENT)
   await testPOSTUnacceptedBody(client, BASE_URL, WRONG_SAMPLE_REACT_COMMENT)
 
-  await testCantUseConclusiveReactionInComment(client, BASE_URL, CONCLUSIVE_REACT_COMMENT)
-  await testPOSTAccepted(client, BASE_URL, SAMPLE_REACT_COMMENT, ConnectionType.Admin)
+  await testCantUseConclusiveReactionInComment(client, BASE_URL, CONCLUSIVE_REACT_COMMENT, ConnectionType.NonAdmin)
+  await testCantReactYourself(client, BASE_URL, SAMPLE_REACT_COMMENT, ConnectionType.Admin)
   await testPOSTAccepted(client, BASE_URL, SAMPLE_REACT_COMMENT, ConnectionType.NonAdmin)
 
   await testOverReaction(
-    client, BASE_URL, 1, SAMPLE_REACT_COMMENT, OTHER_SAMPLE_REACT_COMMENT, ConnectionType.Admin
+    client, BASE_URL, 1, SAMPLE_REACT_COMMENT, OTHER_SAMPLE_REACT_COMMENT, ConnectionType.NonAdmin
   )
 }
 
 async function testCantUseConclusiveReactionInComment(
-  client: ApiClient, url: string, body: object, isAdmin: boolean = true
+  client: ApiClient, url: string, body: object, isAdmin: ConnectionType
 ): Promise<void> {
-  let response = await postWithAuth(url, client, isAdmin, body)
+  let response = await postWithAuth(url, client, Boolean(isAdmin), body)
   response.assertStatus(HTTP.BAD_REQUEST)
   response.assertBodyContains({ error: ExceptionContract.CantUseConclusiveReactionInComment })
+}
+
+async function testCantReactYourself(
+  client: ApiClient, url: string, body: object, isAdmin: ConnectionType
+): Promise<void> {
+  let response = await postWithAuth(url, client, Boolean(isAdmin), body)
+  response.assertStatus(HTTP.BAD_REQUEST)
+  response.assertBodyContains({ error: ExceptionContract.CantReactYourself })
 }
 
 export default testReactCommentStore

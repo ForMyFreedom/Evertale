@@ -197,4 +197,8 @@ export default class ExceptionHandler extends HttpExceptionHandler {
   public static EmailSended(response: ResponseContract): void {
     response.ok({ message: this.contract.EmailSended })
   }
+
+  public static CantComplaintToDailyWrite(response: ResponseContract): void {
+    response.badRequest({ message: this.contract.CantComplaintToDailyWrite })
+  }
 }

@@ -26,7 +26,8 @@ export const WRONG_SAMPLE_REACT_COMMENT = {
 }
 
 export const postReactComment = async (client: ApiClient, isAdmin: boolean = true) => {
-  await postComment(client)
-  const response = await postWithAuth(BASE_URL, client, isAdmin, SAMPLE_REACT_COMMENT)
+  const comment = await postComment(client, !isAdmin)
+  const body = {...SAMPLE_REACT_COMMENT, commentId: comment.id}
+  const response = await postWithAuth(BASE_URL, client, isAdmin, body)
   return response.body().data as CommentReaction
 }

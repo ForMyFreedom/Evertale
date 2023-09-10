@@ -41,5 +41,6 @@ export interface ExceptionContract {
   PasswordRegex: string
   BadRequest: string
   EmailSended: string
+  CantComplaintToDailyWrite: string
 }
 

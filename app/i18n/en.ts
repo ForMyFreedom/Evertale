@@ -37,13 +37,14 @@ const englishExceptionContract: ExceptionContract = {
     TextLengthHigherThanAllowed: "Text length higher than allowed",
     CantReactYourself: "You can't react yourself!",
     UndefinedToken: 'Undefined token',
-    PasswordsDontMatch:  "Password don't match",
+    PasswordsDontMatch: "Password don't match",
     TokenIsInvalid: 'Token is invalid',
     PasswordRequired: 'Please, insert your password',
     PasswordDontMatch: 'Password do not match',
     PasswordRegex: 'Please, insert a password of at least eight characters with digits, minuscule letter, maiscule letter, and special characters',
     BadRequest: 'Bad Request',
-    EmailSended: 'Email sended!'
+    EmailSended: 'Email sended!',
+    CantComplaintToDailyWrite: "You can't complaint to a daily write"
 }
 
 export default englishExceptionContract
