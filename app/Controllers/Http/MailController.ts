@@ -8,14 +8,19 @@ import User from 'App/Models/User'
 import { randomSalt } from 'App/Utils/secure'
 
 export default class MailController {
-  public async vapo({ response }: HttpContextContract) {
+  public static async sendUserResetPasswordMail(user: User): Promise<void> {
+    const token = await Token.create(createTokenFromUser(user, 'reset_password'))
+
     await Mail.sendLater((message) => {
-      message.htmlView('emails/verify-register', {
-        user: { fullName: 'Test' },
-        url: 'hets',
-      })
+      message
+        .from(Env.get('SMTP_USERNAME'))
+        .to(user.email)
+        .subject('Password change')
+        .htmlView('emails/restart-password', {
+          url: `${Env.get('VIEW_URL')}/restart-password/${token.token}`,
+        })
     })
-    response.ok({ message: 'nice!' })
+  }
 
   public static async sendUserVerificationMail(user: User): Promise<void> {
     const token = await Token.create(createTokenFromUser(user, 'email_verification'))

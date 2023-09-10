@@ -96,4 +96,58 @@ export default class UsersController {
     return ExceptionHandler.SuccessfullyAuthenticated(response)
   }
 
+  public async requestPasswordChange({ response, auth }: HttpContextContract): Promise<void> {
+    const user = auth.user
+    if (!user) {
+      return ExceptionHandler.InvalidAuth(response)
+    }
+    await MailController.sendUserResetPasswordMail(user)
+    return ExceptionHandler.EmailSended(response)
+  }
+
+  public async restartPasswordView({ request, view }: HttpContextContract): Promise<string> {
+    const token = request.param('token')
+    return await view.render('password-reset', { token: token })
+  }
+
+  public async restartPassword(ctx: HttpContextContract): Promise<void | string> {
+    const { request, response, session, view } = ctx
+    const token = request.param('token')
+    if (!token) {
+      return redirectToPasswordChange(session, response, token, 'Undefined token')
+    }
+
+    try {
+      const { password } = await new RestartPasswordValidator(ctx).validate()
+
+      const findToken = await Token.query().preload('user').where('token', token).first()
+
+      if (!findToken) {
+        return redirectToPasswordChange(session, response, token, 'Token is invalid')
+      }
+
+      findToken.user.password = password
+      await findToken.user.save()
+      await findToken.delete()
+
+      return await view.render('password-reset-sucess')
+    } catch (e) {
+      return redirectToPasswordChange(
+        session,
+        response,
+        token,
+        prettifyErrorList(e.messages.password)
+      )
+    }
+  }
+}
+
+const redirectToPasswordChange = async (
+  session: SessionContract,
+  response: ResponseContract,
+  token: string,
+  errorMessage: string
+) => {
+  session.flash('error', errorMessage)
+  response.redirect(`/restart-password/${token}`)
 }
