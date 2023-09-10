@@ -10,6 +10,8 @@ import RestartPasswordValidator from 'App/Validators/RestartPasswordValidator'
 import { SessionContract } from '@ioc:Adonis/Addons/Session'
 import { prettifyErrorList } from 'App/Utils/views'
 
+const langContract = ExceptionHandler.contract
+
 export default class UsersController {
   public async index({ response }: HttpContextContract): Promise<void> {
     const users = await User.all()
@@ -114,7 +116,7 @@ export default class UsersController {
     const { request, response, session, view } = ctx
     const token = request.param('token')
     if (!token) {
-      return redirectToPasswordChange(session, response, token, 'Undefined token')
+      return redirectToPasswordChange(session, response, token, langContract.UndefinedToken)
     }
 
     try {
@@ -123,7 +125,7 @@ export default class UsersController {
       const findToken = await Token.query().preload('user').where('token', token).first()
 
       if (!findToken) {
-        return redirectToPasswordChange(session, response, token, 'Token is invalid')
+        return redirectToPasswordChange(session, response, token, langContract.TokenIsInvalid)
       }
 
       findToken.user.password = password
@@ -132,11 +134,12 @@ export default class UsersController {
 
       return await view.render('password-reset-sucess')
     } catch (e) {
+      const messages = getMessageFromError(e)
       return redirectToPasswordChange(
         session,
         response,
         token,
-        prettifyErrorList(e.messages.password)
+        prettifyErrorList(messages)
       )
     }
   }
@@ -150,4 +153,19 @@ const redirectToPasswordChange = async (
 ) => {
   session.flash('error', errorMessage)
   response.redirect(`/restart-password/${token}`)
+}
+
+
+function getMessageFromError(e: { messages: any }): string[] {
+  const passwordMessages: string[] = e.messages.password
+  const repeatPasswordMessages: string[] = e.messages.repeatPassword
+  let messages: string[] = []
+  if(passwordMessages){
+    messages.push(...passwordMessages)
+  }
+  if(repeatPasswordMessages){
+    messages.push(...repeatPasswordMessages)
+  }
+
+  return messages
 }

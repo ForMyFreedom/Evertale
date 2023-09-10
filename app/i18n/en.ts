@@ -34,7 +34,13 @@ const englishExceptionContract: ExceptionContract = {
     TextDontRespectPrompt: "Your text don't respect prompt",
     NotAppropriablePrompt: "This is not an appropriable prompt!",
     CantUseConclusiveReactionInConcludedHistory: "Can't use conclusive reaction in concluded history",
-    TextLengthHigherThanAllowed: "Text length higher than allowed"
+    TextLengthHigherThanAllowed: "Text length higher than allowed",
+    UndefinedToken: 'Undefined token',
+    PasswordsDontMatch:  "Password don't match",
+    TokenIsInvalid: 'Token is invalid',
+    PasswordRequired: 'Please, insert your password',
+    PasswordDontMatch: 'Password do not match',
+    PasswordRegex: 'Please, insert a password of at least eight characters with digits, minuscule letter, maiscule letter, and special characters'
 }
 
 export default englishExceptionContract
