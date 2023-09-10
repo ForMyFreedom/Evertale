@@ -9,8 +9,8 @@ import { ConnectionType } from '../_utils/basic-tests/accepted'
 import User from 'App/Models/User'
 
 async function testUserDestroy({ client }: TestContext): Promise<void> {
-  const adminUser = await postUser(client, ADMIN_USER_SAMPLE)
-  const nonAdminUser = await postUser(client, NON_ADMIN_USER_SAMPLE)
+  const adminUser = await postUser(client, ADMIN_USER_SAMPLE, true)
+  const nonAdminUser = await postUser(client, NON_ADMIN_USER_SAMPLE, false)
 
   await testDELETEUndefinedId(client, BASE_URL)
   
