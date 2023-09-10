@@ -19,7 +19,7 @@ export default class AuthMiddleware {
       }
     }
 
-    ExceptionHandler.InvalidAuth(response)
+    ExceptionHandler.Unauthenticated(response)
     return false
   }
 

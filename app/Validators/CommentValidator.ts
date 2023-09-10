@@ -2,14 +2,14 @@ import { schema, CustomMessages, rules, ParsedTypedSchema } from '@ioc:Adonis/Co
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { MyValidator } from './MyValidator'
 
-const CommentValidatorSchema = schema.create({
+export const CommentValidatorSchema = schema.create({
   writeId: schema.number(),
   answerToId: schema.number.optional(),
   text: schema.string(),
   imageUrl: schema.string.nullableAndOptional([rules.url()]),
 })
 
-export default class CommentValidator extends MyValidator<typeof CommentValidatorSchema> {
+export class CommentValidator extends MyValidator<typeof CommentValidatorSchema> {
   constructor(protected ctx: HttpContextContract) {
     super(ctx)
   }

@@ -5,7 +5,7 @@ import Proposal from 'App/Models/Proposal'
 import { ReactionType, WriteReaction } from 'App/Models/Reaction'
 import Write from 'App/Models/Write'
 import { cleanReactions, reactionIsConclusive } from 'App/Utils/reactions'
-import WriteReactionValidator from 'App/Validators/WriteReactionValidator'
+import { WriteReactionValidator } from 'App/Validators/WriteReactionValidator'
 
 export default class ReactWritesController {
   public async show({ response, params }: HttpContextContract): Promise<void> {
@@ -63,7 +63,7 @@ export default class ReactWritesController {
   public async destroy({ response, params, auth }: HttpContextContract): Promise<void> {
     const responserId = auth?.user?.id
     if (!responserId) {
-      return ExceptionHandler.InvalidAuth(response)
+      return ExceptionHandler.Unauthenticated(response)
     }
     const reaction = await WriteReaction.find(params.id)
     if (reaction) {

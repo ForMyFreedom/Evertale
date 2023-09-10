@@ -3,12 +3,12 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { MyValidator } from './MyValidator'
 import { ReactionType } from 'App/Models/Reaction'
 
-const WriteReactionValidatorSchema = schema.create({
+export const WriteReactionValidatorSchema = schema.create({
   writeId: schema.number([rules.unsigned(), rules.exists({ table: 'writes', column: 'id' })]),
   type: schema.enum(Object.values(ReactionType) as string[]),
 })
 
-export default class WriteReactionValidator extends MyValidator<
+export class WriteReactionValidator extends MyValidator<
   typeof WriteReactionValidatorSchema
 > {
   constructor(protected ctx: HttpContextContract) {

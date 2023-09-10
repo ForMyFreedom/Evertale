@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+import Constant from 'App/Models/Constant'
 import Prompt from 'App/Models/Prompt'
 import Proposal from 'App/Models/Proposal'
 import { ReactionType } from 'App/Models/Reaction'
@@ -48,7 +49,8 @@ async function storyWasConcluded(prompt: Prompt, chosenProposal: Proposal): Prom
 async function chosenProposalWasConclusive(prompt: Prompt, proposal: Proposal): Promise<boolean> {
   const storyPopularity = prompt.popularity
   const amountOfConclusiveReactions = await getAmountOfConclusiveReactions(proposal)
-  return amountOfConclusiveReactions >= Math.ceil(storyPopularity * 0.333) // @ INSERT CONSTANT HERE
+  const config = await Constant.firstOrFail()
+  return amountOfConclusiveReactions >= Math.ceil(storyPopularity * config.completionPercentage)
 }
 
 async function getAmountOfConclusiveReactions(proposal: Proposal): Promise<number> {

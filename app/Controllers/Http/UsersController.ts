@@ -1,7 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import type { ResponseContract } from '@ioc:Adonis/Core/Response'
 import Env from '@ioc:Adonis/Core/Env'
-import UserValidator from 'App/Validators/UserValidator'
+import { UserValidator } from 'App/Validators/UserValidator'
 import User from 'App/Models/User'
 import ExceptionHandler from 'App/Exceptions/Handler'
 import MailController from './MailController'
@@ -41,7 +41,7 @@ export default class UsersController {
     const { response, params, auth } = ctx
     const responserId = auth?.user?.id
     if (!responserId) {
-      return ExceptionHandler.InvalidAuth(response)
+      return ExceptionHandler.Unauthenticated(response)
     }
     const user = await User.find(params.id)
     const { email, ...body } = await new UserValidator(ctx).validateAsOptional()
@@ -62,7 +62,7 @@ export default class UsersController {
   public async destroy({ response, params, auth }: HttpContextContract): Promise<void> {
     const responserId = auth?.user?.id
     if (!responserId) {
-      return ExceptionHandler.InvalidAuth(response)
+      return ExceptionHandler.Unauthenticated(response)
     }
     const user = await User.find(params.id)
     if (user) {
@@ -70,7 +70,7 @@ export default class UsersController {
         await user.softDelete()
         ExceptionHandler.SucessfullyDestroyed(response, user)
       } else {
-        ExceptionHandler.CantEditOtherUser(response)
+        ExceptionHandler.CantDeleteOtherUser(response)
       }
     } else {
       ExceptionHandler.UndefinedId(response)
@@ -99,7 +99,7 @@ export default class UsersController {
   public async requestPasswordChange({ response, auth }: HttpContextContract): Promise<void> {
     const user = auth.user
     if (!user) {
-      return ExceptionHandler.InvalidAuth(response)
+      return ExceptionHandler.Unauthenticated(response)
     }
     await MailController.sendUserResetPasswordMail(user)
     return ExceptionHandler.EmailSended(response)

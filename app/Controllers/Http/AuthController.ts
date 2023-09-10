@@ -7,14 +7,14 @@ export default class AuthController {
     const { response, auth } = ctx
     const { name, email, password } = await new AuthValidator(ctx).validate()
     if (!name && !email) {
-      ExceptionHandler.InvalidAuth(response)
+      ExceptionHandler.Unauthenticated(response)
     }
     const uid = name ? name : email
     try {
       await auth.verifyCredentials(uid ?? '', password)
       ExceptionHandler.SuccessfullyAuthenticated(response)
     } catch (e) {
-      ExceptionHandler.InvalidAuth(response)
+      ExceptionHandler.Unauthorized(response)
     }
   }
 }

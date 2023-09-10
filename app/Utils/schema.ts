@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { ParsedTypedSchema, TypedSchema } from '@ioc:Adonis/Core/Validator'
 
 export function schemaAsOptional(schemaObject: ParsedTypedSchema<TypedSchema>): ParsedTypedSchema<TypedSchema> {

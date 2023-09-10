@@ -17,26 +17,39 @@ import Logger from '@ioc:Adonis/Core/Logger'
 import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
 import type { ResponseContract } from '@ioc:Adonis/Core/Response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { ExceptionContract } from 'App/i18n/exceptions'
+import englishExceptionContract from 'App/i18n/en'
+import Env from '@ioc:Adonis/Core/Env'
 
 type ErrorTreater = { response: object; errorTreater: (body: any) => void }
 type ErrorHandlers = { [key: string]: (error: any, response: ResponseContract) => ErrorTreater }
 
+const contractsList: {[key: string]: ExceptionContract} = {
+  'en': englishExceptionContract
+}
+
 export default class ExceptionHandler extends HttpExceptionHandler {
+  public static contract: ExceptionContract = contractsList[Env.get('I18N')]
+  
   constructor() {
     super(Logger)
   }
 
   private basicHandlers: ErrorHandlers = {
     E_ROUTE_NOT_FOUND: (_error, r) => ({
-      response: { error: 'Route not found' },
+      response: { error: ExceptionHandler.contract.RouteNotFounded },
+      errorTreater: r.badRequest.bind(r),
+    }),
+    E_ROW_NOT_FOUND: (_error, r) => ({
+      response: { error: ExceptionHandler.contract.NotFound },
       errorTreater: r.badRequest.bind(r),
     }),
     E_VALIDATION_FAILURE: (error, r) => ({
-      response: { error: 'Validation failure', failures: error.messages },
+      response: { error: ExceptionHandler.contract.BodyValidationFailure, failures: error.messages },
       errorTreater: r.badRequest.bind(r),
     }),
     E_AUTHORIZATION_FAILURE: (_error, r) => ({
-      response: { error: 'Unauthorized' },
+      response: { error: ExceptionHandler.contract.Unauthorized },
       errorTreater: r.unauthorized.bind(r),
     }),
   }
@@ -54,111 +67,123 @@ export default class ExceptionHandler extends HttpExceptionHandler {
   }
 
   public static SucessfullyCreated(response: ResponseContract, body: any): void {
-    response.created({ message: 'Sucessfully created', data: body })
+    response.created({ message: this.contract.SucessfullyCreated, data: body })
   }
 
   public static SuccessfullyAuthenticated(response: ResponseContract): void {
-    response.accepted({ message: 'Successfully authenticated' })
+    response.accepted({ message: this.contract.SuccessfullyAuthenticated })
   }
 
   public static SucessfullyUpdated(response: ResponseContract, body: any): void {
-    response.accepted({ message: 'Sucesfully updated', data: body })
+    response.accepted({ message: this.contract.SucessfullyUpdated, data: body })
   }
 
   public static SucessfullyRecovered(response: ResponseContract, body: any): void {
-    response.accepted({ message: 'Sucessfully recovered', data: body })
+    response.accepted({ message: this.contract.SucessfullyRecovered, data: body })
   }
 
   public static SucessfullyDestroyed(response: ResponseContract, body: any): void {
-    response.accepted({ message: 'Sucessfully destroyed', data: body })
+    response.accepted({ message: this.contract.SucessfullyDestroyed, data: body })
   }
 
   public static UndefinedId(response: ResponseContract): void {
-    response.notFound({ error: 'Id not Defined' })
+    response.notFound({ error: this.contract.UndefinedId })
   }
 
   public static UndefinedWrite(response: ResponseContract): void {
-    response.notFound({ error: 'Write not Defined' })
+    response.notFound({ error: this.contract.UndefinedWrite })
   }
 
   public static UndefinedComment(response: ResponseContract): void {
-    response.notFound({ error: 'Comment not Defined' })
+    response.notFound({ error: this.contract.UndefinedComment })
   }
 
   public static CantDeleteOthersWrite(response: ResponseContract): void {
-    response.badRequest({ error: "You can't delete others write!" })
+    response.unauthorized({ error: this.contract.CantDeleteOthersWrite })
   }
 
   public static CantEditOthersWrite(response: ResponseContract): void {
-    response.badRequest({ error: "You can't edit others write!" })
+    response.unauthorized({ error: this.contract.CantEditOthersWrite })
   }
 
   public static CantEditOtherUser(response: ResponseContract): void {
-    response.badRequest({ error: "You can't edit others users!" })
+    response.unauthorized({ error: this.contract.CantEditOtherUser })
+  }
+
+  public static CantDeleteOtherUser(response: ResponseContract): void {
+    response.unauthorized({ error: this.contract.CantDeleteOtherUser })
   }
 
   public static CantDeleteOthersReaction(response: ResponseContract): void {
-    response.badRequest({ error: "You can't delete others reaction!" })
+    response.unauthorized({ error: this.contract.CantDeleteOthersReaction })
   }
 
   public static ImageError(response: ResponseContract): void {
-    response.badRequest({ error: 'Image error' })
+    response.badRequest({ error: this.contract.ImageError })
   }
 
-  public static InvalidAuth(response: ResponseContract): void {
-    response.unauthorized({ error: 'Invalid Auth' })
+  public static Unauthenticated(response: ResponseContract): void {
+    response.proxyAuthenticationRequired({ error: this.contract.Unauthenticated })
+  }
+
+  public static Unauthorized(response: ResponseContract): void {
+    response.unauthorized({ error: this.contract.Unauthorized })
   }
 
   public static InvalidUser(response: ResponseContract): void {
-    response.badRequest({ message: 'There is no user with that userId' })
+    response.badRequest({ message: this.contract.InvalidUser })
   }
 
   public static InvalidGenre(response: ResponseContract): void {
-    response.badRequest({ message: 'There is no genre with that genreId' })
+    response.badRequest({ message: this.contract.InvalidGenre })
   }
 
   public static FileNotFound(response: ResponseContract): void {
-    response.notFound({ error: 'File not found' })
+    response.notFound({ error: this.contract.FileNotFound })
   }
 
   public static CantProposeToClosedHistory(response: ResponseContract): void {
-    response.badRequest({ error: "Can't propose to closed fable" })
+    response.badRequest({ error: this.contract.CantProposeToClosedHistory })
   }
 
   public static IncompatibleWriteAndAnswer(response: ResponseContract): void {
-    response.badRequest({ error: 'The comment you want to reply to does not belong to this write' })
+    response.badRequest({ error: this.contract.IncompatibleWriteAndAnswer })
   }
 
   public static CantUseConclusiveReactionInComment(response: ResponseContract): void {
-    response.badRequest({ error: "Can't use conclusive reaction in comment" })
+    response.badRequest({ error: this.contract.CantUseConclusiveReactionInComment })
   }
 
   public static CantUseConclusiveReactionInPrompt(response: ResponseContract): void {
-    response.badRequest({ error: "Can't use conclusive reaction in prompt" })
+    response.badRequest({ error: this.contract.CantUseConclusiveReactionInPrompt })
   }
 
   public static TextLengthHigherThanAllowed(response: ResponseContract): void {
-    response.badRequest({ error: 'Text length higher than allowed' })
+    response.badRequest({ error: this.contract.TextLengthHigherThanAllowed })
   }
 
   public static CantUseConclusiveReactionInConcludedHistory(response: ResponseContract): void {
-    response.badGateway({ error: "Can't use conclusive reaction in concluded history" })
+    response.badGateway({ error: this.contract.CantUseConclusiveReactionInConcludedHistory })
   }
 
   public static NotAppropriablePrompt(response: ResponseContract): void {
-    response.badRequest({ error: 'This is not an appropriable prompt!' })
+    response.badRequest({ error: this.contract.NotAppropriablePrompt })
   }
 
   public static TextDontRespectPrompt(response: ResponseContract): void {
-    response.badRequest({ error: "Your text don't respect prompt" })
+    response.badRequest({ error: this.contract.TextDontRespectPrompt })
   }
 
   public static CantEditDailyPrompt(response: ResponseContract): void {
-    response.badRequest({ error: "Can't edit a daily prompt!" })
+    response.badRequest({ error: this.contract.CantEditDailyPrompt })
   }
 
   public static CantProposeToUnappropriatedPrompt(response: ResponseContract): void {
-    response.badRequest({ error: "Can't proposoe to unappropriated prompt" })
+    response.badRequest({ error: this.contract.CantProposeToUnappropriatedPrompt })
+  }
+
+  public static ServerMisconfigured(response: ResponseContract): void {
+    response.internalServerError({ error: this.contract.ServerMisconfigured })
   }
 
   public static BadRequest(response: ResponseContract): void {

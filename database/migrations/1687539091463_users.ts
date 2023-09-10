@@ -19,9 +19,6 @@ export default class extends BaseSchema {
       table.string('password', 180).notNullable()
       table.string('remember_me_token').nullable()
 
-      /**
-       * Uses timestampz for PostgreSQL and DATETIME2 for MSSQL
-       */
       table.dateTime('deleted_at').defaultTo(null)
       table
         .timestamp('created_at', { useTz: true })
@@ -35,7 +32,7 @@ export default class extends BaseSchema {
       `INSERT INTO ${this.tableName} (
         name, email, birth_date, password, is_admin, email_verified
       ) VALUES (
-        'root',
+        '${Env.get('USER_ROOT_NAME')}',
         '${Env.get('USER_ROOT_EMAIL')}',
         '1999-09-19',
         '${await Hash.make(Env.get('USER_ROOT_PASSWORD'))}',
