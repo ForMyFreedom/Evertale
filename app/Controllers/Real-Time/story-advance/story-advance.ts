@@ -27,7 +27,7 @@ export async function tryMakeStoreAdvance(promptId: number): Promise<StoreAdvanc
   await prompt.save()
   await chosenProposal.save()
 
-  console.log(`A História ${promptId} avançou com a Proposta ${chosenProposal.id}!`)
+  console.log(`The History ${promptId} advanced with the Proposal ${chosenProposal.id}!`)
 
   if (! await storyWasConcluded(prompt, chosenProposal)) {
     return CONTINUE
@@ -49,8 +49,8 @@ async function storyWasConcluded(prompt: Prompt, chosenProposal: Proposal): Prom
 async function chosenProposalWasConclusive(prompt: Prompt, proposal: Proposal): Promise<boolean> {
   const storyPopularity = prompt.popularity
   const amountOfConclusiveReactions = await getAmountOfConclusiveReactions(proposal)
-  const config = await Constant.firstOrFail()
-  return amountOfConclusiveReactions >= Math.ceil(storyPopularity * config.completionPercentage)
+  const { completionPercentage } = await Constant.firstOrFail()
+  return amountOfConclusiveReactions >= Math.ceil(storyPopularity * completionPercentage)
 }
 
 async function getAmountOfConclusiveReactions(proposal: Proposal): Promise<number> {

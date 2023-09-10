@@ -27,16 +27,20 @@ export default class UsersController {
     }
   }
 
-  public async store(ctx: HttpContextContract): Promise<void> {
+  public async storeUser(ctx: HttpContextContract, isAdmin: boolean = false): Promise<void> {
     const { response } = ctx
     const { repeatPassword, ...body } = await new UserValidator(ctx).validate()
     const needToVerifyEmail = Env.get('NEED_TO_VERIFY_EMAIL')
-    const user = await User.create({ ...body, emailVerified: !needToVerifyEmail })
+    const user = await User.create({ ...body, emailVerified: !needToVerifyEmail, isAdmin: isAdmin })
     await user.save()
     if (needToVerifyEmail) {
       await MailController.sendUserVerificationMail(user)
     }
     ExceptionHandler.SucessfullyCreated(response, user)
+  }
+
+  public async storeAdmin(ctx: HttpContextContract): Promise<void> {
+    return await this.storeUser(ctx, true)
   }
 
   public async update(ctx: HttpContextContract): Promise<void> {

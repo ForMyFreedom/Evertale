@@ -186,11 +186,19 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     response.internalServerError({ error: this.contract.ServerMisconfigured })
   }
 
+  public static CantReactYourself(response: ResponseContract): void {
+    response.badRequest({ error: this.contract.CantReactYourself })
+  }
+
   public static BadRequest(response: ResponseContract): void {
-    response.badRequest({ error: 'Bad Request' })
+    response.badRequest({ error: this.contract.BadRequest })
   }
 
   public static EmailSended(response: ResponseContract): void {
-    response.ok({ message: 'Email sended!' })
+    response.ok({ message: this.contract.EmailSended })
+  }
+
+  public static CantComplaintToDailyWrite(response: ResponseContract): void {
+    response.badRequest({ message: this.contract.CantComplaintToDailyWrite })
   }
 }

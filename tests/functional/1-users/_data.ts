@@ -6,12 +6,12 @@ import { postWithAuth } from '../_utils/basic-auth-requests'
 import User from 'App/Models/User'
 
 export const BASE_URL = '/api/user'
+export const BASE_ADMIN_URL = '/api/admin'
 
 export const NON_ADMIN_USER_SAMPLE: typeof UserValidatorSchema.props = {
   name: 'commum-user',
   email: 'commumuser@gmail.com',
   image: 'https://great-awesome-epic-incredible-image.wow/1',
-  isAdmin: false,
   birthDate: DateTime.now(),
   password: Env.get('USER_ROOT_PASSWORD'),
   repeatPassword: Env.get('USER_ROOT_PASSWORD'),
@@ -22,7 +22,6 @@ export const ADMIN_USER_SAMPLE: typeof UserValidatorSchema.props = {
   name: 'some-admin',
   email: 'someadmin@gmail.com',
   image: 'https://great-awesome-epic-incredible-image.wow/2',
-  isAdmin: true,
   birthDate: DateTime.now(),
   password: Env.get('USER_ROOT_PASSWORD'),
   repeatPassword: Env.get('USER_ROOT_PASSWORD'),
@@ -39,8 +38,13 @@ export const WRONG_USER_SAMPLE = {
 }
 
 export const postUser = async (
-  client: ApiClient, user: typeof UserValidatorSchema.props
+  client: ApiClient, user: typeof UserValidatorSchema.props, isAdmin: boolean
 ): Promise<User> => {
-  const response = await postWithAuth(BASE_URL, client, true, user)
-  return response.body().data as User
+  if (isAdmin) {
+    const response = await postWithAuth(BASE_ADMIN_URL, client, true, user)
+    return response.body().data as User
+  } else {
+    const response = await postWithAuth(BASE_URL, client, true, user)
+    return response.body().data as User
+  }
 }

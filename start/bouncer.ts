@@ -30,9 +30,10 @@ import User from 'App/Models/User'
 | NOTE: Always export the "actions" const from this file
 |****************************************************************
 */
-export const { actions } = Bouncer.define('admin', (user: User) => {
-  return user.isAdmin
-})
+export const { actions } = Bouncer
+  .define('admin', (user: User) => { return user.isAdmin})
+  .define('userIsOk', (user: User) => { 
+    return !user.deletedAt && user.emailVerified})
 
 /*
 |--------------------------------------------------------------------------

@@ -20,23 +20,32 @@ async function testReactWriteStore({ client }: TestContext): Promise<void> {
   await testPOSTUnauthenticated(client, BASE_URL, SAMPLE_REACT_WRITE)
   await testPOSTUnacceptedBody(client, BASE_URL, WRONG_SAMPLE_REACT_WRITE)
 
-  await testCantUseConclusiveReactionInPrompt(client, BASE_URL, CONCLUSIVE_REACT_WRITE)
-  await testPOSTAccepted(client, BASE_URL, REACT_ON_PROMPT, ConnectionType.Admin)
+  await testCantUseConclusiveReactionInPrompt(client, BASE_URL, CONCLUSIVE_REACT_WRITE, ConnectionType.NonAdmin)
+  await testCantReactYourself(client, BASE_URL, REACT_ON_PROMPT, ConnectionType.Admin)
+  await testCantReactYourself(client, BASE_URL, REACT_ON_PROPOSAL, ConnectionType.Admin)
+
   await testPOSTAccepted(client, BASE_URL, REACT_ON_PROMPT, ConnectionType.NonAdmin)
-  await testPOSTAccepted(client, BASE_URL, REACT_ON_PROPOSAL, ConnectionType.Admin)
   await testPOSTAccepted(client, BASE_URL, REACT_ON_PROPOSAL, ConnectionType.NonAdmin)
 
   await testOverReaction(
-    client, BASE_URL, 1, SAMPLE_REACT_WRITE, OTHER_SAMPLE_REACT_WRITE, ConnectionType.Admin
+    client, BASE_URL, 1, SAMPLE_REACT_WRITE, OTHER_SAMPLE_REACT_WRITE, ConnectionType.NonAdmin
   )
 }
 
 async function testCantUseConclusiveReactionInPrompt(
-  client: ApiClient, url: string, body: object, isAdmin: boolean = true
+  client: ApiClient, url: string, body: object, isAdmin: ConnectionType
 ): Promise<void> {
-  let response = await postWithAuth(url, client, isAdmin, body)
+  let response = await postWithAuth(url, client, Boolean(isAdmin), body)
   response.assertStatus(HTTP.BAD_REQUEST)
   response.assertBodyContains({ error: ExceptionContract.CantUseConclusiveReactionInPrompt })
+}
+
+async function testCantReactYourself(
+  client: ApiClient, url: string, body: object, isAdmin: ConnectionType
+): Promise<void> {
+  let response = await postWithAuth(url, client, Boolean(isAdmin), body)
+  response.assertStatus(HTTP.BAD_REQUEST)
+  response.assertBodyContains({ error: ExceptionContract.CantReactYourself })
 }
 
 

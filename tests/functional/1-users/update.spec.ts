@@ -8,8 +8,8 @@ import { testPUTUndefinedId } from '../_utils/basic-tests/undefined-id'
 import User from 'App/Models/User'
 
 async function testUserUpdate({ client }: TestContext): Promise<void> {
-  const adminUser = await postUser(client, ADMIN_USER_SAMPLE)
-  const nonAdminUser = await postUser(client, NON_ADMIN_USER_SAMPLE)
+  const adminUser = await postUser(client, ADMIN_USER_SAMPLE, true)
+  const nonAdminUser = await postUser(client, NON_ADMIN_USER_SAMPLE, false)
 
   await testPUTUnauthenticated(client, BASE_URL, adminUser.id, EDIT_NON_ADMIN_USER)
   await testEditUserUnauthorized(client, nonAdminUser, NON_ADMIN_USER_SAMPLE, EDIT_NON_ADMIN_USER)

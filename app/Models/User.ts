@@ -10,6 +10,7 @@ import {
   HasMany,
 } from '@ioc:Adonis/Lucid/Orm'
 import { softDelete, softDeleteQuery } from 'App/Utils/soft-delete'
+import Constant from './Constant'
 import Token from './Token'
 import { BOOLEAN_SERIAL } from './_Base'
 
@@ -36,7 +37,7 @@ export default class User extends BaseModel {
   @column()
   public image: string
 
-  @column(BOOLEAN_SERIAL)
+  @column({ consume: (value) => Boolean(value) })
   public emailVerified: boolean
 
   @column()
@@ -77,6 +78,21 @@ export default class User extends BaseModel {
   public static async hashPassword(user: User) {
     if (user.$dirty.password) {
       user.password = await Hash.make(user.password)
+    }
+  }
+
+  public async interactionBanned(this: User) {
+    const { deleteStrength }: Constant = await Constant.firstOrFail()
+    this.score -= deleteStrength
+    await this.save()
+    this.verifyBan()
+  }
+
+  public async verifyBan(this: User) {
+    const { banLimit } = await Constant.firstOrFail()
+    if (banLimit > this.score){
+      console.log(`The User ${this.id} was banned!`)
+      await this.softDelete()
     }
   }
 }

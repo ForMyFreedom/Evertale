@@ -8,7 +8,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.integer('id').primary()
       table.integer('strength_of_positive_opinion')
-      table.integer('negative_opinion_strength')
+      table.integer('strength_of_negative_opinion')
       table.integer('delete_strength')
       table.integer('completion_percentage')
       table.integer('exclusion_percentage')
@@ -19,7 +19,7 @@ export default class extends BaseSchema {
 
     this.schema.raw(
       `INSERT INTO ${this.tableName} (
-        strength_of_positive_opinion, negative_opinion_strength, delete_strength,
+        strength_of_positive_opinion, strength_of_negative_opinion, delete_strength,
         completion_percentage, exclusion_percentage, ban_limit
       ) VALUES (
         '${Env.get('DEFAULT_CONST___POSITIVE_STRENGTH')}',

@@ -31,6 +31,14 @@ export default class ReactWritesController {
       const body = await new WriteReactionValidator(ctx).validate()
       const type = ReactionType[body.type] as ReactionType
 
+      if (await reactItself(body.writeId, authorId)) {
+        return ExceptionHandler.CantReactYourself(response)
+      }
+
+      if (type === ReactionType.COMPLAINT && await writeIsDaily(body.writeId)) {
+        return ExceptionHandler.CantComplaintToDailyWrite(response)
+      }
+
       if (reactionIsConclusive(type)) {
         if (await writeIsPrompt(body.writeId)) {
           return ExceptionHandler.CantUseConclusiveReactionInPrompt(response)
@@ -82,4 +90,14 @@ export default class ReactWritesController {
 async function writeIsPrompt(writeId: number): Promise<boolean> {
   const prompts = await Prompt.query().where('writeId', '=', writeId)
   return prompts.length > 0
+}
+
+async function writeIsDaily(writeId: number) {
+  const prompts = await Prompt.query().where('writeId', '=', writeId)
+  return prompts.length > 0 && prompts[0].isDaily
+}
+
+async function reactItself(writeId: number, authorId: number): Promise<boolean> {
+  const write = await Write.findOrFail(writeId)
+  return write.authorId == authorId
 }
