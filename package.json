@@ -62,6 +62,8 @@
     "@adonisjs/mail": "^8.2.1",
     "@adonisjs/redis": "^7.3.3",
     "@adonisjs/repl": "^3.1.0",
+    "@adonisjs/session": "^6.4.0",
+    "@adonisjs/view": "^6.2.0",
     "adonis-validation-provider": "^3.0.5",
     "luxon": "^3.3.0",
     "phc-argon2": "^1.1.4",
