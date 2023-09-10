@@ -43,3 +43,5 @@ Route.group(() => {
   ConstantRoutes()
   Route.post('/auth/loguin', 'AuthController.loguin')
 }).prefix(Env.get('BASE_ROUTE_PREFIX'))
+
+Route.get('/restart-password/:token', 'UsersController.restartPasswordView')

@@ -1,8 +1,18 @@
 import { DateTime } from 'luxon'
 import Hash from '@ioc:Adonis/Core/Hash'
-import { column, beforeSave, BaseModel, beforeFind, beforeFetch } from '@ioc:Adonis/Lucid/Orm'
+import {
+  column,
+  beforeSave,
+  BaseModel,
+  beforeFind,
+  beforeFetch,
+  hasMany,
+  HasMany,
+} from '@ioc:Adonis/Lucid/Orm'
 import { softDelete, softDeleteQuery } from 'App/Utils/soft-delete'
 import Constant from './Constant'
+import Token from './Token'
+import { BOOLEAN_SERIAL } from './_Base'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -18,7 +28,7 @@ export default class User extends BaseModel {
   })
   public isAdmin: boolean
 
-  @column({ serialize: (value) => Boolean(value) })
+  @column(BOOLEAN_SERIAL)
   public isPremium: boolean
 
   @column()
@@ -26,6 +36,9 @@ export default class User extends BaseModel {
 
   @column()
   public image: string
+
+  @column(BOOLEAN_SERIAL)
+  public emailVerified: boolean
 
   @column()
   public score: number
@@ -47,6 +60,9 @@ export default class User extends BaseModel {
 
   @column.dateTime({ serializeAs: null })
   public deletedAt: DateTime
+
+  @hasMany(() => Token)
+  public tokens: HasMany<typeof Token>
 
   @beforeFind()
   public static softDeletesFind = softDeleteQuery

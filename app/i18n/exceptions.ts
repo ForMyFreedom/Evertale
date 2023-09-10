@@ -33,5 +33,13 @@ export interface ExceptionContract {
   CantUseConclusiveReactionInConcludedHistory: string
   TextLengthHigherThanAllowed: string
   CantReactYourself: string
+  UndefinedToken: string
+  PasswordsDontMatch: string
+  TokenIsInvalid: string
+  PasswordRequired: string
+  PasswordDontMatch: string
+  PasswordRegex: string
+  BadRequest: string
+  EmailSended: string
 }
 

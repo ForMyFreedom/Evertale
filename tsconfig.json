@@ -32,7 +32,10 @@
       "@adonisjs/lucid",
       "@adonisjs/auth",
       "@adonisjs/redis",
-      "@adonisjs/bouncer"
+      "@adonisjs/bouncer",
+      "@adonisjs/view",
+      "@adonisjs/mail",
+      "@adonisjs/session"
     ]
   }
 }

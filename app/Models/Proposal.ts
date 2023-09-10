@@ -16,6 +16,7 @@ import Comment from './Comment'
 import Write from './Write'
 import Prompt from './Prompt'
 import { calculatePointsThrowReactions } from 'App/Utils/reactions'
+import { BOOLEAN_SERIAL } from './_Base'
 
 export default class Proposal extends BaseModel {
   @column({ isPrimary: true })
@@ -30,7 +31,7 @@ export default class Proposal extends BaseModel {
   @column()
   public orderInHistory: number
 
-  @column({ serialize: (value) => Boolean(value) })
+  @column(BOOLEAN_SERIAL)
   public definitive: boolean
 
   @computed()

@@ -189,4 +189,12 @@ export default class ExceptionHandler extends HttpExceptionHandler {
   public static CantReactYourself(response: ResponseContract): void {
     response.badRequest({ error: this.contract.CantReactYourself })
   }
+
+  public static BadRequest(response: ResponseContract): void {
+    response.badRequest({ error: this.contract.BadRequest })
+  }
+
+  public static EmailSended(response: ResponseContract): void {
+    response.ok({ message: this.contract.EmailSended })
+  }
 }
