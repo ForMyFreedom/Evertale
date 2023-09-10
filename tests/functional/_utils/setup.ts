@@ -29,6 +29,7 @@ export async function createNonAdminUser() {
     password: NonAdminCredentials.password,
     email: NonAdminCredentials.email,
     isAdmin: false,
+    emailVerified: true,
     birthDate: DateTime.fromISO('2003-02-03'),
   })
 }

@@ -32,5 +32,11 @@ export interface ExceptionContract {
   NotAppropriablePrompt: string
   CantUseConclusiveReactionInConcludedHistory: string
   TextLengthHigherThanAllowed: string
+  UndefinedToken: string
+  PasswordsDontMatch: string
+  TokenIsInvalid: string
+  PasswordRequired: string
+  PasswordDontMatch: string
+  PasswordRegex: string
 }
 

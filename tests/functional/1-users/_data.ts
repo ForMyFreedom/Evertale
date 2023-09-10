@@ -14,6 +14,7 @@ export const NON_ADMIN_USER_SAMPLE: typeof UserValidatorSchema.props = {
   isAdmin: false,
   birthDate: DateTime.now(),
   password: Env.get('USER_ROOT_PASSWORD'),
+  repeatPassword: Env.get('USER_ROOT_PASSWORD'),
 }
 
 
@@ -24,6 +25,7 @@ export const ADMIN_USER_SAMPLE: typeof UserValidatorSchema.props = {
   isAdmin: true,
   birthDate: DateTime.now(),
   password: Env.get('USER_ROOT_PASSWORD'),
+  repeatPassword: Env.get('USER_ROOT_PASSWORD'),
 }
 
 export const EDIT_NON_ADMIN_USER: Partial<typeof UserValidatorSchema.props> = {

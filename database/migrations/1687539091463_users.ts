@@ -13,6 +13,7 @@ export default class extends BaseSchema {
       table.string('image').nullable()
       table.boolean('is_admin').notNullable()
       table.boolean('is_premium').defaultTo(false)
+      table.boolean('email_verified').notNullable()
       table.integer('score').defaultTo(0)
       table.timestamp('birth_date').notNullable()
       table.string('password', 180).notNullable()
@@ -28,10 +29,16 @@ export default class extends BaseSchema {
     })
 
     this.schema.raw(
-      `INSERT INTO ${this.tableName} (name, email, birth_date, password, is_admin)
-      VALUES ('${Env.get('USER_ROOT_NAME')}', '${Env.get('USER_ROOT_EMAIL')}','1999-09-19','${await Hash.make(
-        Env.get('USER_ROOT_PASSWORD')
-      )}', true)`
+      `INSERT INTO ${this.tableName} (
+        name, email, birth_date, password, is_admin, email_verified
+      ) VALUES (
+        '${Env.get('USER_ROOT_NAME')}',
+        '${Env.get('USER_ROOT_EMAIL')}',
+        '1999-09-19',
+        '${await Hash.make(Env.get('USER_ROOT_PASSWORD'))}',
+        true,
+        true
+      )`
     )
   }
 
