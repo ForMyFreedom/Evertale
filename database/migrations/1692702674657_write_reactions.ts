@@ -1,5 +1,5 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
-import { ReactionType } from 'App/Models/Reaction'
+import { ReactionType } from '@ioc:forfabledomain'
 
 export default class extends BaseSchema {
   protected tableName = 'write_reactions'

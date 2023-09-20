@@ -3,7 +3,7 @@ import Event from '@ioc:Adonis/Core/Event'
 import Env from '@ioc:Adonis/Core/Env'
 import { LiteralTime } from 'App/Utils/time'
 
-Event.on('refresh:daily-prompts', 'DailyPrompt.onRefreshDailyPrompts')
+Event.on('refresh:daily-prompts', 'DailyPromptListener.onRefreshDailyPrompts')
 
 Event.emit('refresh:daily-prompts', undefined)
 

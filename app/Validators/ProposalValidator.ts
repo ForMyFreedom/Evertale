@@ -1,8 +1,10 @@
-import { schema, CustomMessages, ParsedTypedSchema } from '@ioc:Adonis/Core/Validator'
+import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { MyValidator } from './MyValidator'
+import { SchemaTyper } from 'App/Utils/secure'
+import { ProposalInsert } from '@ioc:forfabledomain'
 
-export const ProposalValidatorSchema = schema.create({
+export const ProposalValidatorSchema: SchemaTyper<ProposalInsert> = schema.create({
   text: schema.string(),
   promptId: schema.number(),
 })
@@ -12,7 +14,7 @@ export class ProposalValidator extends MyValidator<typeof ProposalValidatorSchem
     super(ctx)
   }
 
-  public GetSchema(): ParsedTypedSchema<any> {
+  public GetSchema(): typeof ProposalValidatorSchema {
     return ProposalValidatorSchema
   }
 

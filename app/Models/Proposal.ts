@@ -15,10 +15,10 @@ import {
 import Comment from './Comment'
 import Write from './Write'
 import Prompt from './Prompt'
-import { calculatePointsThrowReactions } from 'App/Utils/reactions'
 import { BOOLEAN_SERIAL } from './_Base'
+import { calculatePointsThrowReactions, ProposalEntity, CommentEntity, PromptEntity, WriteEntity} from '@ioc:forfabledomain'
 
-export default class Proposal extends BaseModel {
+export default class Proposal extends BaseModel implements ProposalEntity {
   @column({ isPrimary: true })
   public id: number
 
@@ -64,4 +64,12 @@ export default class Proposal extends BaseModel {
       await Proposal.calculateProposalPopularity(proposal)
     }
   }
+
+  async calculateProposalPopularity(proposal: ProposalEntity): Promise<void> {
+    await ProposalEntity.calculateProposalPopularity(proposal)
+  }
+
+  public async getWrite(): Promise<WriteEntity> { return this.write }
+  public async getPrompt(): Promise<PromptEntity> { return this.prompt }
+  public async getComment(): Promise<CommentEntity[]> { return this.comments }
 }

@@ -1,11 +1,12 @@
-import { schema, CustomMessages, ParsedTypedSchema, rules } from '@ioc:Adonis/Core/Validator'
+import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { MyValidator } from './MyValidator'
-import { ReactionType } from 'App/Models/Reaction'
+import { ReactionType, WriteReactionInsert } from '@ioc:forfabledomain'
+import { SchemaTyper } from 'App/Utils/secure'
 
-export const WriteReactionValidatorSchema = schema.create({
+export const WriteReactionValidatorSchema: SchemaTyper<WriteReactionInsert> = schema.create({
   writeId: schema.number([rules.unsigned(), rules.exists({ table: 'writes', column: 'id' })]),
-  type: schema.enum(Object.values(ReactionType) as string[]),
+  type: schema.enum(Object.values(ReactionType) as ReactionType[]),
 })
 
 export class WriteReactionValidator extends MyValidator<
@@ -15,7 +16,7 @@ export class WriteReactionValidator extends MyValidator<
     super(ctx)
   }
 
-  public GetSchema(): ParsedTypedSchema<any> {
+  public GetSchema(): typeof WriteReactionValidatorSchema {
     return WriteReactionValidatorSchema
   }
 

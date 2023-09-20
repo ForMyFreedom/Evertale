@@ -38,7 +38,7 @@ export const WRONG_USER_SAMPLE = {
 }
 
 export const postUser = async (
-  client: ApiClient, user: typeof UserValidatorSchema.props, isAdmin: boolean
+  client: ApiClient, user: typeof UserValidatorSchema.props, isAdmin: boolean = true
 ): Promise<User> => {
   if (isAdmin) {
     const response = await postWithAuth(BASE_ADMIN_URL, client, true, user)

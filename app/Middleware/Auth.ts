@@ -1,6 +1,6 @@
 import type { GuardsList } from '@ioc:Adonis/Addons/Auth'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import ExceptionHandler from 'App/Exceptions/Handler'
+import { AdonisExceptionHandler } from 'App/Exceptions/Handler'
 
 export default class AuthMiddleware {
   protected async authenticate(
@@ -19,7 +19,7 @@ export default class AuthMiddleware {
       }
     }
 
-    ExceptionHandler.Unauthenticated(response)
+    response.unauthorized({ error: AdonisExceptionHandler.contract.Unauthenticated })
     return false
   }
 
@@ -30,8 +30,8 @@ export default class AuthMiddleware {
   ) {
     const guards = customGuards.length ? customGuards : [auth.name]
     const sucess = await this.authenticate(auth, response, guards)
-    await bouncer.authorize('userIsOk')
     if (sucess) {
+      await bouncer.authorize('userIsOk')
       await next()
     }
   }

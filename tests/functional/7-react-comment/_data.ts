@@ -1,8 +1,9 @@
 import { CommentReactionValidatorSchema } from 'App/Validators/CommentReactionValidator'
 import { postWithAuth } from '../_utils/basic-auth-requests'
 import { ApiClient } from '@japa/api-client/build/src/client'
-import { ReactionType, CommentReaction } from 'App/Models/Reaction'
+import { CommentReaction } from 'App/Models/Reaction'
 import { postComment } from '../5-comments/_data'
+import { ReactionType } from '@ioc:forfabledomain'
 
 export const BASE_URL = '/api/react-comment'
 

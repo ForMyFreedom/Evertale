@@ -1,4 +1,4 @@
-import { ExceptionContract } from "./exceptions"
+import { ExceptionContract } from "@ioc:forfabledomain"
 
 
 const englishExceptionContract: ExceptionContract = {
@@ -40,7 +40,6 @@ const englishExceptionContract: ExceptionContract = {
     PasswordsDontMatch: "Password don't match",
     TokenIsInvalid: 'Token is invalid',
     PasswordRequired: 'Please, insert your password',
-    PasswordDontMatch: 'Password do not match',
     PasswordRegex: 'Please, insert a password of at least eight characters with digits, minuscule letter, maiscule letter, and special characters',
     BadRequest: 'Bad Request',
     EmailSended: 'Email sended!',

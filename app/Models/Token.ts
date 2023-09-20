@@ -1,7 +1,8 @@
 import { column, BaseModel, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
 import User from './User'
+import { TokenEntity } from '@ioc:forfabledomain'
 
-export default class Token extends BaseModel {
+export default class Token extends BaseModel implements TokenEntity {
   @column({ isPrimary: true })
   public id: number
 
@@ -16,4 +17,6 @@ export default class Token extends BaseModel {
 
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
+
+  public async getUser(): Promise<User> { return this.user }
 }

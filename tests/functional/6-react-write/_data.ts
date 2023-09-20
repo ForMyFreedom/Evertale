@@ -1,9 +1,10 @@
 import { WriteReactionValidatorSchema } from 'App/Validators/WriteReactionValidator'
 import { postWithAuth } from '../_utils/basic-auth-requests'
 import { ApiClient } from '@japa/api-client/build/src/client'
-import { ReactionType, WriteReaction } from 'App/Models/Reaction'
+import { WriteReaction } from 'App/Models/Reaction'
 import { postPrompt } from '../3-prompts/_data'
 import { postProposal } from '../4-proposals/_data'
+import { ReactionType } from '@ioc:forfabledomain'
 
 export const BASE_URL = '/api/react-write'
 

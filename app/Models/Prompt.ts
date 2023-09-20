@@ -17,10 +17,11 @@ import {
 import Genre from './Genre'
 import Write from './Write'
 import Proposal from './Proposal'
-import { removeDuplicate } from 'App/Utils/arrays'
+import { removeDuplicate } from '@ioc:forfabledomain'
 import { BOOLEAN_SERIAL } from './_Base'
+import { GenreEntity, PromptEntity, ProposalEntity, UserEntity, WriteEntity } from '@ioc:forfabledomain'
 
-export default class Prompt extends BaseModel {
+export default class Prompt extends BaseModel implements PromptEntity {
   @column({ isPrimary: true })
   public id: number
 
@@ -94,6 +95,21 @@ export default class Prompt extends BaseModel {
     }
 
     delete prompt.$preloaded.proposals
+  }
+
+  async calculatePromptPopularity(prompt: PromptEntity, usersThatParticipated: UserEntity[]): Promise<void> {
+    await PromptEntity.calculatePromptPopularity(prompt, usersThatParticipated)
+  }
+
+  async setHistoryText(prompt: PromptEntity, proposalsInOrder: ProposalEntity[]): Promise<void> {
+    await PromptEntity.setHistoryText(prompt, proposalsInOrder)
+  }
+
+  public async getWrite(): Promise<WriteEntity> { return this.write }
+  public async getGenres(): Promise<GenreEntity[]> { return this.genres }
+  public async getProposals(this: Prompt): Promise<ProposalEntity[]> {
+    await this.load('proposals')
+    return this.proposals
   }
 }
 

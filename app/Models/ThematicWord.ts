@@ -1,7 +1,9 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, HasOne, column, hasOne } from '@ioc:Adonis/Lucid/Orm'
+import { ThematicWordEntity } from '@ioc:forfabledomain'
+import Genre from './Genre'
 
-export default class ThematicWord extends BaseModel {
+export default class ThematicWord extends BaseModel implements ThematicWordEntity {
   @column({ isPrimary: true })
   public id: number
 
@@ -16,4 +18,9 @@ export default class ThematicWord extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @hasOne(() => Genre)
+  public genre: HasOne<typeof Genre>
+
+  public async getGenre(): Promise<Genre> { return this.genre }
 }

@@ -13,8 +13,10 @@ import {
 import ThematicWord from './ThematicWord'
 import Prompt from './Prompt'
 import Database from '@ioc:Adonis/Lucid/Database'
+import { PromptEntity, GenreEntity, ThematicWordEntity } from '@ioc:forfabledomain'
 
-export default class Genre extends BaseModel {
+
+export default class Genre extends BaseModel implements GenreEntity {
   @column({ isPrimary: true })
   public id: number
 
@@ -40,24 +42,29 @@ export default class Genre extends BaseModel {
   public updatedAt: DateTime
 
   @afterFind()
-  public static async calculateGenrePopularity(genre: Genre) {
-    const amountOfPrompts = await getAmountOfNonDailyPrompts(genre)
-    const startDate = genre.createdAt
-    const actualDate = DateTime.now()
-    const daysOfExistence = startDate.diff(actualDate).days
-
-    genre.popularity = amountOfPrompts / (daysOfExistence + 1)
+  public static async setGenrePopularity(genre: Genre): Promise<void> {
+    const amountOfNonDailyPrompts = await getAmountOfNonDailyPrompts(genre)
+    return GenreEntity.calculateGenrePopularity(genre, amountOfNonDailyPrompts)
   }
 
   @afterFetch()
   public static async calculateGenreArrayPopularity(genresArray: Genre[]) {
     for (const genre of genresArray) {
-      await Genre.calculateGenrePopularity(genre)
+      await Genre.setGenrePopularity(genre)
     }
   }
+
+  
+  public async calculateGenrePopularity(genre: Genre): Promise<void> {
+    const amountOfNonDailyPrompts = await getAmountOfNonDailyPrompts(genre)
+    return GenreEntity.calculateGenrePopularity(genre, amountOfNonDailyPrompts)
+  }
+
+  public async getPrompts(): Promise<PromptEntity[]> { return this.prompts}
+  public async getThematicWords(): Promise<ThematicWordEntity[]> { return this.thematicWords}
 }
 
-async function getAmountOfNonDailyPrompts(genre: Genre) {
+async function getAmountOfNonDailyPrompts(genre: Genre): Promise<number> {
   const query = await Database.from('genres')
     .join('genre_prompt', 'genres.id', '=', 'genre_prompt.genre_id')
     .join('prompts', 'genre_prompt.prompt_id', '=', 'prompts.id')

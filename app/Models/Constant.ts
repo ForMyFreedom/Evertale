@@ -1,7 +1,8 @@
 import { BaseModel, column } from "@ioc:Adonis/Lucid/Orm"
 import { DateTime } from "luxon"
+import { ConstantEntity } from '@ioc:forfabledomain'
 
-export default class Constant extends BaseModel {
+export default class Constant extends BaseModel implements ConstantEntity {
   @column({ isPrimary: true })
   public id: number
 
