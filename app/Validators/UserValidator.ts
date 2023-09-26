@@ -1,9 +1,11 @@
-import { schema, CustomMessages, ParsedTypedSchema, rules } from '@ioc:Adonis/Core/Validator'
+import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { MyValidator } from './MyValidator'
-import { PasswordSchema } from 'App/Utils/secure'
+import { PasswordSchema, SchemaTyper } from 'App/Utils/secure'
+import { UserInsert } from '@ioc:forfabledomain'
 
-export const UserValidatorSchema = schema.create({
+
+export const UserValidatorSchema: SchemaTyper<UserInsert> = schema.create({
   name: schema.string({}, [rules.unique({ table: 'users', column: 'name' })]),
   email: schema.string({}, [rules.email(), rules.unique({ table: 'users', column: 'email' })]),
   image: schema.string({}, [rules.url()]),
@@ -16,7 +18,7 @@ export class UserValidator extends MyValidator<typeof UserValidatorSchema> {
     super(ctx)
   }
 
-  public GetSchema(): ParsedTypedSchema<any> {
+  public GetSchema(): typeof UserValidatorSchema {
     return UserValidatorSchema
   }
 

@@ -3,8 +3,9 @@ import { BaseModel, BelongsTo, HasMany, belongsTo, column, hasMany } from '@ioc:
 import User from './User'
 import { WriteReaction } from './Reaction'
 import { BOOLEAN_SERIAL } from './_Base'
+import { WriteReactionEntity, WriteEntity } from '@ioc:forfabledomain'
 
-export default class Write extends BaseModel {
+export default class Write extends BaseModel implements WriteEntity {
   @column({ isPrimary: true })
   public id: number
 
@@ -28,4 +29,13 @@ export default class Write extends BaseModel {
 
   @hasMany(() => WriteReaction)
   public reactions: HasMany<typeof WriteReaction>
+
+  public async getAuthor(this: Write): Promise<User> {
+    await this.load('author')
+    return this.author
+  }
+  public async getReactions(this: Write): Promise<WriteReactionEntity[]> {
+    await this.load('reactions')
+    return this.reactions
+  }
 }

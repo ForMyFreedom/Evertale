@@ -33,7 +33,6 @@
     }
   ],
   "providers": [
-    "./providers/AppProvider",
     "@adonisjs/core",
     "@adonisjs/lucid",
     "@adonisjs/auth",
@@ -41,7 +40,9 @@
     "@adonisjs/bouncer",
     "@adonisjs/mail",
     "@adonisjs/view",
-    "@adonisjs/session"
+    "@adonisjs/session",
+    "./providers/DomainProvider",
+    "./providers/FactoryProvider"
   ],
   "aceProviders": [
     "@adonisjs/repl"

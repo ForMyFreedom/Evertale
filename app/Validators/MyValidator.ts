@@ -1,8 +1,9 @@
-import { validator, ParsedTypedSchema, TypedSchema, CustomMessages } from '@ioc:Adonis/Core/Validator'
+import { validator, CustomMessages } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schemaAsOptional } from 'App/Utils/schema';
+import { SchemaTyper } from 'App/Utils/secure';
 
-export abstract class MyValidator<TSchema extends ParsedTypedSchema<TypedSchema>> {
+export abstract class MyValidator<TSchema extends SchemaTyper<any>> {
     protected body: any
 
     constructor(protected ctx: HttpContextContract) {

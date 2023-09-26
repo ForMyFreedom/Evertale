@@ -2,7 +2,7 @@
 import Event from '@ioc:Adonis/Core/Event'
 import Prompt from 'App/Models/Prompt'
 
-Event.on('run:prompt', 'History.onRunPrompt')
+Event.on('run:prompt', 'HistoryListener.onRunPrompt')
 
 let promise = Prompt.query().where('concluded', '=', false)
 promise.exec().then((activePrompts) => {

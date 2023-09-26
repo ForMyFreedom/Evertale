@@ -1,115 +1,39 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import ExceptionHandler from 'App/Exceptions/Handler'
-import Prompt from 'App/Models/Prompt'
-import Proposal from 'App/Models/Proposal'
-import Write from 'App/Models/Write'
+import ProposalsProvider from '@ioc:Providers/ProposalsService'
 import { ProposalValidator } from 'App/Validators/ProposalValidator'
+import { UsesUsecase } from './_Conversor'
+import { ProposalsUsecase } from '@ioc:forfabledomain'
 
-export default class ProposalsController {
-  public async indexByPrompt({ response, params }: HttpContextContract): Promise<void> {
-    if (await Prompt.find(params.id)) {
-      const proposals = await Proposal.query().where('promptId', '=', params.id)
-      ExceptionHandler.SucessfullyRecovered(response, proposals)
-    } else {
-      ExceptionHandler.UndefinedId(response)
-    }
+export default class ProposalsController implements UsesUsecase<ProposalsUsecase> {
+  public async indexByPrompt(ctx: HttpContextContract): Promise<void> {
+    await ProposalsProvider(ctx).indexByPrompt(ctx.params.id)
   }
 
-  public async actualIndexByPrompt({ response, params }: HttpContextContract): Promise<void> {
-    const prompt = await Prompt.find(params.id)
-    if (prompt) {
-      const proposals = await Proposal.query()
-        .where('promptId', '=', params.id)
-        .where('orderInHistory', '=', prompt.currentIndex)
-      ExceptionHandler.SucessfullyRecovered(response, proposals)
-    } else {
-      ExceptionHandler.UndefinedId(response)
-    }
+  public async actualIndexByPrompt(ctx: HttpContextContract): Promise<void> {
+    await ProposalsProvider(ctx).actualIndexByPrompt(ctx.params.id)
   }
 
-  public async show({ response, params }: HttpContextContract): Promise<void> {
-    try {
-      const proposal = await Proposal.findByOrFail('id', params.id)
-      await proposal.load('prompt')
-      await proposal.write.load('author')
-      delete proposal.write.$attributes.authorId
-      ExceptionHandler.SucessfullyRecovered(response, proposal)
-    } catch (e) {
-      ExceptionHandler.UndefinedId(response)
-    }
+  public async show(ctx: HttpContextContract): Promise<void> {
+    await ProposalsProvider(ctx).show(ctx.params.id)
   }
 
   public async store(ctx: HttpContextContract): Promise<void> {
-    const { response, auth } = ctx
-    const { text, promptId, ...body } = await new ProposalValidator(ctx).validate()
-    const authorId = auth?.user?.id
-    if (authorId) {
-      const prompt = await Prompt.findOrFail(promptId)
-      if (prompt.concluded) {
-        return ExceptionHandler.CantProposeToClosedHistory(response)
-      }
-
-      if (prompt.isDaily && prompt.write.authorId === null) {
-        return ExceptionHandler.CantProposeToUnappropriatedPrompt(response)
-      }
-
-      if (prompt.maxSizePerExtension < text.length) {
-        return ExceptionHandler.TextLengthHigherThanAllowed(response)
-      }
-
-      const finalText = insertSpaceInStartOfText(text)
-      const write = await Write.create({ text: finalText, authorId: authorId })
-
-      const proposal = await Proposal.create({
-        ...body,
-        writeId: write.id,
-        promptId: promptId,
-        orderInHistory: prompt.currentIndex,
-      })
-      await proposal.load('write')
-      await proposal.write.load('author')
-      await proposal.load('prompt')
-      ExceptionHandler.SucessfullyCreated(response, proposal)
-    } else {
-      ExceptionHandler.InvalidUser(response)
-    }
+    const { auth } = ctx
+    const body = await new ProposalValidator(ctx).validate()
+    const userId = auth?.user?.id
+    await ProposalsProvider(ctx).store(userId, body)
   }
 
   public async update(ctx: HttpContextContract): Promise<void> {
-    const { response, params, auth } = ctx
-    const proposal = await Proposal.find(params.id)
-    const { text } = await new ProposalValidator(ctx).validateAsOptional()
-    if (proposal) {
-      if (proposal.write.authorId !== auth?.user?.id) {
-        ExceptionHandler.CantEditOthersWrite(response)
-        return
-      }
-
-      await Write.updateOrCreate({ id: proposal.write.id }, { text: text, edited: true })
-
-      await proposal.load('write')
-      ExceptionHandler.SucessfullyUpdated(response, proposal)
-    } else {
-      ExceptionHandler.UndefinedId(response)
-    }
+    const { params, auth } = ctx
+    const userId = auth?.user?.id
+    const body = await new ProposalValidator(ctx).validateAsOptional()
+    await ProposalsProvider(ctx).update(userId, params.id, body)
   }
 
-  public async destroy({ response, params, auth }: HttpContextContract): Promise<void> {
-    const proposal = await Proposal.find(params.id)
-    if (proposal) {
-      if (proposal.write.authorId === auth?.user?.id) {
-        await proposal.delete()
-        ExceptionHandler.SucessfullyDestroyed(response, proposal)
-      } else {
-        ExceptionHandler.CantDeleteOthersWrite(response)
-      }
-    } else {
-      ExceptionHandler.UndefinedId(response)
-    }
+  public async destroy(ctx: HttpContextContract): Promise<void> {
+    const { params, auth } = ctx
+    const userId = auth?.user?.id
+    await ProposalsProvider(ctx).destroy(userId, params.id)
   }
-}
-
-
-function insertSpaceInStartOfText(text: string): string {
-  return text[0] === ' ' ? text : ' ' + text
 }

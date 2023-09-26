@@ -2,13 +2,14 @@ import HTTP from "http-status-enum"
 import { ApiClient } from '@japa/api-client/build/src/client'
 import { RequestFunction, deleteWithAuth, postWithAuth } from "../basic-auth-requests"
 import { ExceptionContract } from "../basic-auth-requests"
+import { ReactionType } from "@ioc:forfabledomain"
 
 export enum ConnectionType {
   NonAdmin = 0,
   Admin = 1
 }
 
-export async function testOverReaction(client: ApiClient, url: string, id: number, firstBody: {type: string}, secondBody: {type: string}, connectionType: ConnectionType = ConnectionType.Admin) {
+export async function testOverReaction(client: ApiClient, url: string, id: number, firstBody: {type: ReactionType}, secondBody: {type: ReactionType}, connectionType: ConnectionType = ConnectionType.Admin) {
   await deleteWithAuth(`${url}/${id}`, client, Boolean(connectionType))
   await postWithAuth(url, client, Boolean(connectionType), firstBody)
   const response = await postWithAuth(url, client, Boolean(connectionType), secondBody)

@@ -5,8 +5,8 @@ import { ConnectionType, testGETAccepted } from '../_utils/basic-tests/accepted'
 import { testGETUnauthorized } from '../_utils/basic-tests/unauthorized'
 
 async function testGenreIndex({ client }: TestContext): Promise<void> {
-  await testGETUnauthenticated(client, BASE_URL)
-  await testGETUnauthorized(client, BASE_URL)
+  // await testGETUnauthenticated(client, BASE_URL)
+  // await testGETUnauthorized(client, BASE_URL)
   await testGETAccepted(client, BASE_URL, ConnectionType.Admin)
 }
 

@@ -1,9 +1,9 @@
 import { ApiRequest } from '@japa/api-client/build/src/request'
 import { ApiClient } from '@japa/api-client/build/src/client'
-import ExceptionHandler from 'App/Exceptions/Handler'
+import AdonisExceptionHandler from 'App/Exceptions/Handler'
 import { AdminCredentials, NonAdminCredentials } from './setup'
 
-export const ExceptionContract =  ExceptionHandler.contract
+export const ExceptionContract =  AdonisExceptionHandler.contract
 
 export type BasicRequestFunction = (path: string) => ApiRequest
 export type RequestFunction = (path: string, client: ApiClient, isAdmin?: boolean, body?: object) => Promise<ApiRequest>

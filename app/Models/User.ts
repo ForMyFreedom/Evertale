@@ -13,8 +13,9 @@ import { softDelete, softDeleteQuery } from 'App/Utils/soft-delete'
 import Constant from './Constant'
 import Token from './Token'
 import { BOOLEAN_SERIAL } from './_Base'
+import { UserEntity } from '@ioc:forfabledomain'
 
-export default class User extends BaseModel {
+export default class User extends BaseModel implements UserEntity {
   @column({ isPrimary: true })
   public id: number
 
@@ -82,17 +83,14 @@ export default class User extends BaseModel {
   }
 
   public async interactionBanned(this: User) {
-    const { deleteStrength }: Constant = await Constant.firstOrFail()
-    this.score -= deleteStrength
+    const config = await Constant.firstOrFail()
+    UserEntity.interactionBanned(this, config)
     await this.save()
     this.verifyBan()
   }
 
-  public async verifyBan(this: User) {
-    const { banLimit } = await Constant.firstOrFail()
-    if (banLimit > this.score){
-      console.log(`The User ${this.id} was banned!`)
-      await this.softDelete()
-    }
+  async verifyBan(): Promise<void> {
+    const config = await Constant.firstOrFail()
+    UserEntity.verifyBan(this, config)
   }
 }

@@ -1,8 +1,10 @@
 import { schema, rules, CustomMessages } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { MyValidator } from './MyValidator'
+import { SchemaTyper } from 'App/Utils/secure'
+import { ConstantInsert } from '@ioc:forfabledomain'
 
-export const ConstantsValidatorSchema = schema.create({
+export const ConstantsValidatorSchema: SchemaTyper<ConstantInsert> = schema.create({
   strengthOfPositiveOpinion: schema.number([rules.unsigned()]),
   strengthOfNegativeOpinion: schema.number([rules.unsigned()]),
   deleteStrength: schema.number([rules.unsigned()]),

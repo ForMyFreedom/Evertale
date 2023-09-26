@@ -32,7 +32,7 @@ import User from 'App/Models/User'
 */
 export const { actions } = Bouncer
   .define('admin', (user: User) => { return user.isAdmin})
-  .define('userIsOk', (user: User) => { 
+  .define('userIsOk', (user: User) => {
     return !user.deletedAt && user.emailVerified})
 
 /*

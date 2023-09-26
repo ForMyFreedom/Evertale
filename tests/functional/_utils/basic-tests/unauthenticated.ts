@@ -24,5 +24,5 @@ async function testREQUESTUnauthenticated(
 ): Promise<void> {
   let response = await requestFunction(url).json(body ?? {})
   response.assertStatus(HTTP.UNAUTHORIZED)
-  response.assertBodyContains({ error: ExceptionContract.Unauthorized })
+  response.assertBodyContains({ error: ExceptionContract.Unauthenticated })
 }

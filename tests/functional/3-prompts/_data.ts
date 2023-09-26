@@ -13,12 +13,10 @@ export const SAMPLE_PROMPT: typeof PromptValidatorSchema.props = {
 	maxSizePerExtension: 50,
 	limitOfExtensions: 5,
 	genreIds: [1],
-	timeForAvanceInMinutes: 2,
-	concluded: undefined
+	timeForAvanceInMinutes: 2
 }
 
 export const EDIT_SAMPLE_PROMPT: Partial<typeof PromptValidatorSchema.props> = {
-	concluded: true,
 	text: "Opa"
 }
 
