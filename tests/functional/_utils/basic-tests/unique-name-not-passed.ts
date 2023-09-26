@@ -16,6 +16,6 @@ async function testREQUESTUniqueNameNotPassed(
   client: ApiClient, url: string, body?: object
 ): Promise<void> {
   let response = await requestFunction(url, client, true, body)
-  response.assertStatus(HTTP.BAD_REQUEST)
+  response.assertStatus(HTTP.UNPROCESSABLE_ENTITY)
   response.assertBodyContains({ error: ExceptionContract.BodyValidationFailure })
 }

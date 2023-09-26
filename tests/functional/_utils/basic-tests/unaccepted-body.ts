@@ -16,6 +16,6 @@ async function testREQUESTUnacceptedBody(
   client: ApiClient, url: string, body: object, isAdmin: boolean
 ): Promise<void> {
   let response = await requestFunction(url, client, isAdmin, body)
-  response.assertStatus(HTTP.BAD_REQUEST)
+  response.assertStatus(HTTP.UNPROCESSABLE_ENTITY)
   response.assertBodyContains({error: ExceptionContract.BodyValidationFailure})
 }

@@ -8,7 +8,7 @@ export const BASE_URL = '/api/comment'
 
 export const SAMPLE_COMMENT: typeof CommentValidatorSchema.props = {
   writeId: 1,
-  answerToId: undefined,
+  answerToId: null,
   text: 'Some comment',
   imageUrl: 'https://cdn-icons-png.flaticon.com/512/3773/3773795.png',
 }
@@ -17,7 +17,7 @@ export const SAMPLE_COMMENT_ANSWER: typeof CommentValidatorSchema.props = {
   writeId: 1,
   answerToId: 1,
   text: 'Some answer',
-  imageUrl: undefined,
+  imageUrl: null,
 }
 
 export const EDIT_SAMPLE_COMMENT: Partial<typeof CommentValidatorSchema.props> = {

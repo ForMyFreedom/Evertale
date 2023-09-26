@@ -1,0 +1,7 @@
+export * from './CommentPersistence'
+export * from './ConstantsPersistence'
+export * from './GenrePersistence'
+export * from './ThematicWordPersistence'
+export * from './WritePersistence'
+export * from './PromptPersistence'
+export * from './ProposalPersistence'

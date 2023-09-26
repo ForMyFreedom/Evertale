@@ -6,11 +6,11 @@ export default class extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.integer('write_id').unsigned().references('writes.id').onDelete('CASCADE')
-      table.integer('author_id').unsigned().references('users.id').onDelete('SET NULL')
-      table.integer('answer_to_id').unsigned().references('comments.id').onDelete('CASCADE')
+      table.integer('write_id').unsigned().references('writes.id').onDelete('CASCADE').notNullable()
+      table.integer('author_id').unsigned().references('users.id').onDelete('SET NULL').notNullable()
+      table.integer('answer_to_id').unsigned().references('comments.id').onDelete('CASCADE').nullable()
 
-      table.string('text')
+      table.string('text').notNullable()
       table.boolean('edited').defaultTo(false)
       table.string('image_url').nullable()
 

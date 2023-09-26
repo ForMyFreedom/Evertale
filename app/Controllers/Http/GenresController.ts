@@ -1,101 +1,39 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-import Genre from 'App/Models/Genre'
-import ExceptionHandler from 'App/Exceptions/Handler'
-import ThematicWord from 'App/Models/ThematicWord'
 import { GenreValidator } from 'App/Validators/GenreValidator'
 import { ThematicWordValidator } from 'App/Validators/ThematicWordValidator'
+import GenresProvider from '@ioc:Providers/GenresService'
+import { UsesUsecase } from './_Conversor'
+import { GenresUsecase } from '@ioc:forfabledomain'
 
-export default class GenresController {
+
+export default class GenresController implements UsesUsecase<GenresUsecase> {
   public async store(ctx: HttpContextContract): Promise<void> {
-    const { response } = ctx
     const body = await new GenreValidator(ctx).validate()
-    let { thematicWords, ...rest } = body
-
-    const genre = await Genre.create(rest)
-    genre.save()
-
-    await storeWordsToGenre(thematicWords, genre)
-    ExceptionHandler.SucessfullyCreated(response, genre)
+    await GenresProvider(ctx).store(body)
   }
 
-  public async index({ response }: HttpContextContract): Promise<void> {
-    const genres = await Genre.query().preload('thematicWords')
-    ExceptionHandler.SucessfullyRecovered(response, genres)
+  public async index(ctx: HttpContextContract): Promise<void> {
+    await GenresProvider(ctx).index()
   }
 
-  public async show({ response, params }: HttpContextContract): Promise<void> {
-    const genre = await Genre.find(params.id)
-    if (!genre) {
-      ExceptionHandler.UndefinedId(response)
-    } else {
-      await genre.load('thematicWords')
-      ExceptionHandler.SucessfullyRecovered(response, genre)
-    }
+  public async show(ctx: HttpContextContract): Promise<void> {
+    await GenresProvider(ctx).show(ctx.params.id)
   }
 
   public async update(ctx: HttpContextContract): Promise<void> {
-    const { request, response } = ctx
+    const { params } = ctx
     const body = await new GenreValidator(ctx).validateAsOptional()
-    const { thematicWords, ...rest } = body
-
-    let genre = await Genre.find(request.param('id'))
-    if (!genre) {
-      ExceptionHandler.UndefinedId(response)
-    } else {
-      genre.merge(rest)
-      genre.save()
-
-      if (thematicWords) {
-        await genre.load('thematicWords')
-        await eraseAllWordsFromGenre(genre)
-        await storeWordsToGenre(thematicWords, genre)
-      }
-      await genre.load('thematicWords')
-      ExceptionHandler.SucessfullyUpdated(response, genre)
-    }
+    await GenresProvider(ctx).update(params.id, body)
   }
 
-  public async destroy({ params, response }: HttpContextContract): Promise<void> {
-    const genre = await Genre.find(params.id)
-    if (!genre) {
-      ExceptionHandler.UndefinedId(response)
-    } else {
-      genre.delete()
-      await genre.load('thematicWords')
-      ExceptionHandler.SucessfullyDestroyed(response, genre)
-    }
+  public async destroy(ctx: HttpContextContract): Promise<void> {
+    await GenresProvider(ctx).destroy(ctx.params.id)
   }
 
   public async storeWords(ctx: HttpContextContract): Promise<void> {
-    const { params, response } = ctx
+    const { params } = ctx
     const words = (await new ThematicWordValidator(ctx).validate()).words
-    const genre = await Genre.find(params.id)
-
-    if (!genre) {
-      ExceptionHandler.UndefinedId(response)
-    } else {
-      await storeWordsToGenre(words, genre)
-      await genre.load('thematicWords')
-      ExceptionHandler.SucessfullyCreated(response, genre)
-    }
+    await GenresProvider(ctx).storeWords(params.id, words)
   }
-}
-
-async function storeWordsToGenre(thematicWords: string[], genre: Genre): Promise<void> {
-  for (const word of thematicWords) {
-    if (!(await wordAlreadyInGenre(word, genre))) {
-      await ThematicWord.create({ text: word, genreId: genre.id })
-    }
-  }
-}
-
-async function eraseAllWordsFromGenre(genre: Genre): Promise<void> {
-  for (const word of genre.thematicWords) {
-    await word.delete()
-  }
-}
-
-async function wordAlreadyInGenre(word: string, genre: Genre): Promise<boolean> {
-  return !!(await ThematicWord.query().where('text', word).where('genreId', genre.id).first())
 }

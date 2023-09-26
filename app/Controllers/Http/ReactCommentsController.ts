@@ -1,76 +1,24 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import ExceptionHandler from 'App/Exceptions/Handler'
-import Comment from 'App/Models/Comment'
-import { CommentReaction, ReactionType } from 'App/Models/Reaction'
-import { cleanReactions, reactionIsConclusive } from 'App/Utils/reactions'
+import ReactCommentsProvider from '@ioc:Providers/ReactCommentsService'
 import { CommentReactionValidator } from 'App/Validators/CommentReactionValidator'
+import { UsesUsecase } from './_Conversor'
+import { ReactCommentsUsecase } from '@ioc:forfabledomain'
 
-export default class ReactCommentsController {
-  public async show({ response, params }: HttpContextContract): Promise<void> {
-    if (await Comment.find(params.id)) {
-      const bruteReactions = await CommentReaction.query()
-        .where('commentId', '=', params.id)
-        .select('type')
-        .countDistinct('id as id')
-        .count('* as total')
-        .groupBy('type')
-
-      const reactions = cleanReactions(bruteReactions)
-      ExceptionHandler.SucessfullyRecovered(response, reactions)
-    } else {
-      ExceptionHandler.UndefinedId(response)
-    }
+export default class ReactCommentsController implements UsesUsecase<ReactCommentsUsecase> {
+  public async show(ctx: HttpContextContract): Promise<void> {
+    return ReactCommentsProvider(ctx).show(ctx.params.id)
   }
 
   public async store(ctx: HttpContextContract): Promise<void> {
-    const { response, auth } = ctx
-    const authorId = auth?.user?.id
-    if (authorId) {
-      const body = await new CommentReactionValidator(ctx).validate()
-      const type = ReactionType[body.type] as ReactionType
-
-      if (await reactItself(body.commentId, authorId)) {
-        return ExceptionHandler.CantReactYourself(response)
-      }
-
-      if (reactionIsConclusive(type)) {
-        return ExceptionHandler.CantUseConclusiveReactionInComment(response)
-      }
-
-      const couldFind = await CommentReaction.query()
-        .where('userId', '=', authorId)
-        .where('commentId', '=', body.commentId)
-
-      if (couldFind.length > 0) {
-        await couldFind[0].delete()
-      }
-      const reaction = await CommentReaction.create({ ...body, type: type, userId: authorId })
-      ExceptionHandler.SucessfullyCreated(response, reaction)
-    } else {
-      ExceptionHandler.InvalidUser(response)
-    }
+    const { auth } = ctx
+    const body = await new CommentReactionValidator(ctx).validate()
+    const userId = auth?.user?.id
+    return ReactCommentsProvider(ctx).store(userId, body)
   }
 
-  public async destroy({ response, params, auth }: HttpContextContract): Promise<void> {
-    const requesterId = auth?.user?.id
-    if (!requesterId) {
-      return ExceptionHandler.Unauthenticated(response)
-    }
-    const reaction = await CommentReaction.find(params.id)
-    if (reaction) {
-      if (requesterId === reaction.userId) {
-        await reaction.delete()
-        ExceptionHandler.SucessfullyDestroyed(response, reaction)
-      } else {
-        ExceptionHandler.CantDeleteOthersReaction(response)
-      }
-    } else {
-      ExceptionHandler.UndefinedId(response)
-    }
+  public async destroy(ctx: HttpContextContract): Promise<void> {
+    const { params, auth } = ctx
+    const userId = auth?.user?.id
+    return ReactCommentsProvider(ctx).destroy(userId, params.id)
   }
-}
-
-async function reactItself(commentId: number, authorId: number): Promise<boolean> {
-  const comment = await Comment.findOrFail(commentId)
-  return comment.authorId == authorId
 }
