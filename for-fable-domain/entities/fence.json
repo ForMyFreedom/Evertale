@@ -1,5 +1,0 @@
-{
-    "tags": [ "entities" ],
-    "imports": [ "utils" ],
-    "dependencies": [ "luxon" ]
-}
