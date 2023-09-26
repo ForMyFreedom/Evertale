@@ -4,7 +4,7 @@ import Write from './Write'
 import User from './User'
 import { CommentReaction } from './Reaction'
 import { BOOLEAN_SERIAL } from './_Base'
-import { UserEntity, WriteEntity, CommentEntity, CommentReactionEntity } from '@ioc:forfabledomain'
+import { WriteEntity, CommentEntity, CommentReactionEntity } from '@ioc:forfabledomain'
 
 export default class Comment extends BaseModel implements CommentEntity {
   @column({ isPrimary: true })
@@ -46,8 +46,20 @@ export default class Comment extends BaseModel implements CommentEntity {
   @hasMany(() => Comment, { foreignKey: 'answerToId' })
   public answers: HasMany<typeof Comment>
 
-  public async getWrite(): Promise<WriteEntity> { return this.write }
-  public async getAuthor(): Promise<UserEntity> { return this.author }
-  public async getReactions(): Promise<CommentReactionEntity[]> { return this.reactions }
-  public async getAnswers(): Promise<CommentEntity[]> { return this.answers }
+  public async getWrite(this: Comment): Promise<WriteEntity> {
+    await this.load('write')
+    return this.write
+  }
+  public async getAuthor(this: Comment): Promise<User> {
+    await this.load('author')
+    return this.author
+  }
+  public async getReactions(this: Comment): Promise<CommentReactionEntity[]> {
+    await this.load('reactions')
+    return this.reactions
+  }
+  public async getAnswers(this: Comment): Promise<CommentEntity[]> {
+    await this.load('answers')
+    return this.answers
+  }
 }

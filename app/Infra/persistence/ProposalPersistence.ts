@@ -34,7 +34,7 @@ export class ProposalPersistence implements ProposalRepository {
     return Proposal.all()
   }
 
-  async create(body: ProposalInsert): Promise<ProposalEntity> {
+  async create(body: Omit<ProposalInsert, 'text'>): Promise<ProposalEntity> {
     const proposal = await Proposal.create(body)
     await proposal.load('write')
     await proposal.write.load('author')
@@ -52,11 +52,15 @@ export class ProposalPersistence implements ProposalRepository {
     }
   }
 
-  async update(entityId: number, {text}: Partial<ProposalInsert>): Promise<ProposalEntity | null> {
+  async update(entityId: number, { text, definitive }: Partial<ProposalInsert> & { definitive?: boolean }): Promise<ProposalEntity | null> {
     const proposal = await Proposal.find(entityId)
     if (proposal) {
       const proposalWrite = proposal.write
       proposalWrite.merge({text: text, edited: true})
+      if (definitive) {
+        proposal.merge({ definitive: definitive })
+        await proposal.save()
+      }
       await proposalWrite.save()
       await proposal.load('write')
       return proposal

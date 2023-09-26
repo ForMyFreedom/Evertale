@@ -11,7 +11,8 @@ export default class CommentsController implements UsesUsecase<CommentsUsecase> 
 
   public async store(ctx: HttpContextContract): Promise<void> {
     const body = await new CommentValidator(ctx).validate()
-    await CommentProvider(ctx).store(body)
+    const user = ctx.auth?.user
+    await CommentProvider(ctx).store(user, body)
   }
 
   public async update(ctx: HttpContextContract): Promise<void> {

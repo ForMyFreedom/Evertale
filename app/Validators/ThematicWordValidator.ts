@@ -1,12 +1,11 @@
-import { CustomMessages, schema, rules } from '@ioc:Adonis/Core/Validator'
+import { CustomMessages, schema } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { MyValidator } from './MyValidator'
 import { ThematicWordInsert } from '@ioc:forfabledomain'
 import { SchemaTyper } from 'App/Utils/secure'
 
-export const ThematicWordValidatorSchema: SchemaTyper<ThematicWordInsert> = schema.create({
-  words: schema.array().members(schema.string()),
-  genreId: schema.number([rules.unsigned()])
+export const ThematicWordValidatorSchema: SchemaTyper<Omit<ThematicWordInsert, 'genreId'>> = schema.create({
+  words: schema.array().members(schema.string())
 })
 
 export class ThematicWordValidator extends MyValidator<typeof ThematicWordValidatorSchema> {

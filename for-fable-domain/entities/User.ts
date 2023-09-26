@@ -31,8 +31,8 @@ export abstract class UserEntity {
     }
   }
 
-  public static async interactionBanned(user: UserEntity, { banLimit }: ConstantEntity): Promise<void> {
-    user.score -= banLimit
+  public static async interactionBanned(user: UserEntity, { deleteStrength }: ConstantEntity): Promise<void> {
+    user.score -= deleteStrength
   }
 }
 

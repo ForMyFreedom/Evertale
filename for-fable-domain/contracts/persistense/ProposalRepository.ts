@@ -6,10 +6,14 @@ type ExtraInfoOnCreate = {
     orderInHistory: PromptEntity['currentIndex']
 }
 
+type ExtraInfoOnUpdate = {
+  definitive?: boolean
+}
+
 export interface ProposalRepository
-    extends DefaultRepository<ProposalInsert, ProposalEntity> {
-      create(body: ProposalInsert & ExtraInfoOnCreate): Promise<ProposalEntity>
-      update(entityId: ProposalEntity['id'], partialBody: Partial<ProposalInsert>): Promise<ProposalEntity|null>
+    extends DefaultRepository<Omit<ProposalInsert, 'text'>, ProposalEntity> {
+      create(body: Omit<ProposalInsert, 'text'> & ExtraInfoOnCreate): Promise<ProposalEntity>
+      update(entityId: ProposalEntity['id'], partialBody: Partial<ProposalInsert> & ExtraInfoOnUpdate): Promise<ProposalEntity|null>
       fullFind(proposalId: ProposalEntity['id']): Promise<ProposalEntity|null>
       getProposalsByPrompt(promptId: PromptEntity['id']): Promise<ProposalEntity[]>
       getIndexedProposalsByPrompt(promptId: PromptEntity['id'], index: number): Promise<ProposalEntity[]>

@@ -6,7 +6,7 @@ import { TokenPersistence } from 'App/Infra/persistence/TokenPersistence';
 import { UserPersistence } from 'App/Infra/persistence/UserPersistence';
 import Services, { ServiceHandler } from 'Config/services';
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { AdonisExceptionHandler } from 'App/Exceptions/Handler';
+import AdonisExceptionHandler from 'App/Exceptions/Handler';
 
 export class ServicesHandlers implements Services {
   allHandlers: {[key in keyof Services]: ServiceHandler<any>} = {
@@ -120,7 +120,7 @@ export class ServicesHandlers implements Services {
 }
 
 function Handler(ctx: HttpContextContract): ExceptionHandler {
-  return new AdonisExceptionHandler(ctx.response)    
+  return AdonisExceptionHandler.getInstance(ctx.response)    
 }
 
 export default ServicesHandlers

@@ -1,12 +1,11 @@
-import { DateTime } from 'luxon'
 import Event from '@ioc:Adonis/Core/Event'
 import type { EventsList } from '@ioc:Adonis/Core/Event'
-import { LiteralTime } from 'App/Utils/time'
-import { StoryAdvanceProvider } from '@ioc:Providers/StoryAdvanceService'
+import { LiteralTime } from '@ioc:forfabledomain'
+import StoryAdvanceProvider from '@ioc:Providers/StoryAdvanceService'
 
 export default class HistoryListener {
   public async onRunPrompt(prompt: EventsList['run:prompt']) {
-    console.log(`${DateTime.now()}  |  Try Advance History ${prompt.id}`)
+    console.log(`Hello ${prompt.id} History!`)
     setTimeout(async () => {
       if ((await StoryAdvanceProvider().tryMakeStoreAdvance(prompt.id)).toContinueLoop) {
         Event.emit('run:prompt', prompt)

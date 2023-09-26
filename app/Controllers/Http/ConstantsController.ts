@@ -6,8 +6,12 @@ import { UsesUsecase } from './_Conversor'
 
 
 export default class ConstantsController implements UsesUsecase<ConstantsUsecase> {
-  public async show(ctx: HttpContextContract): Promise<void> {
+  public async index(ctx: HttpContextContract): Promise<void> {
     return ConstantProvider(ctx).show()
+  }
+
+  public async show(ctx: HttpContextContract): Promise<void> {
+    return await this.index(ctx)
   }
 
   public async update(ctx: HttpContextContract): Promise<void> {

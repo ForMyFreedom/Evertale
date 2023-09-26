@@ -17,7 +17,7 @@ import Logger from '@ioc:Adonis/Core/Logger'
 import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
 import type { ResponseContract } from '@ioc:Adonis/Core/Response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import englishExceptionContract from 'App/i18n/en'
+import { englishExceptionContract } from '@ioc:forfabledomain'
 import Env from '@ioc:Adonis/Core/Env'
 import { ExceptionContract, ExceptionHandler } from '@ioc:forfabledomain'
 
@@ -28,13 +28,18 @@ const contractsList: {[key: string]: ExceptionContract} = {
   'en': englishExceptionContract
 }
 
-export class AdonisExceptionHandler extends HttpExceptionHandler implements ExceptionHandler {
+export default class AdonisExceptionHandler extends HttpExceptionHandler implements ExceptionHandler {
   public static contract: ExceptionContract = contractsList[Env.get('I18N')]
   public response: ResponseContract
   
-  constructor(response: ResponseContract) {
+  constructor() {
     super(Logger)
-    this.response = response
+  }
+
+  static getInstance(response: ResponseContract): AdonisExceptionHandler {
+    const instance = new AdonisExceptionHandler()
+    instance.response = response
+    return instance
   }
 
   private basicHandlers: ErrorHandlers = {
@@ -48,7 +53,7 @@ export class AdonisExceptionHandler extends HttpExceptionHandler implements Exce
     }),
     E_VALIDATION_FAILURE: (error) => ({
       response: { error: AdonisExceptionHandler.contract.BodyValidationFailure, failures: error.messages },
-      errorTreater: this.response.badRequest.bind(this.response),
+      errorTreater: this.response.unprocessableEntity.bind(this.response),
     }),
     E_AUTHORIZATION_FAILURE: (_error) => ({
       response: { error: AdonisExceptionHandler.contract.Unauthorized },
@@ -57,13 +62,14 @@ export class AdonisExceptionHandler extends HttpExceptionHandler implements Exce
   }
 
   public async handle(error: any, { response }: HttpContextContract): Promise<any> {
+    this.response = response
     if (error && error.code) {
       const basicResponse = this.basicHandlers[error.code]
       if (basicResponse) {
         const responseHandler = basicResponse(error)
         responseHandler.errorTreater(responseHandler.response)
       } else {
-        response.badRequest(error)
+        response.badRequest()
       }
     }
   }

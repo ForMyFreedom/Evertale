@@ -69,7 +69,16 @@ export default class Proposal extends BaseModel implements ProposalEntity {
     await ProposalEntity.calculateProposalPopularity(proposal)
   }
 
-  public async getWrite(): Promise<WriteEntity> { return this.write }
-  public async getPrompt(): Promise<PromptEntity> { return this.prompt }
-  public async getComment(): Promise<CommentEntity[]> { return this.comments }
+  public async getWrite(this: Proposal): Promise<WriteEntity> {
+    await this.load('write')
+    return this.write
+  }
+  public async getPrompt(this: Proposal): Promise<PromptEntity> {
+    await this.load('prompt')
+    return this.prompt
+  }
+  public async getComment(this: Proposal): Promise<CommentEntity[]> {
+    await this.load('comments')
+    return this.comments
+  }
 }

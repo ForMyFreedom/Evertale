@@ -1,6 +1,7 @@
 import { GenreEntity, ThematicWordEntity } from '../entities'
 import { GenresRepository, PromptRepository, WriteRepository } from '../contracts'
 import { DailyPromptsUsecase } from '../usecases'
+import { DateTime } from 'luxon'
 
 export class DailyPromptsService implements DailyPromptsUsecase {
   public static SEPARATOR = ' | '
@@ -10,6 +11,12 @@ export class DailyPromptsService implements DailyPromptsUsecase {
     private readonly writeRepository: WriteRepository,
     private readonly genreRepository: GenresRepository,
   ) { }
+
+  public async refreshDailyPrompt(): Promise<void> {
+    console.log(`${DateTime.now()}  |  Reseting Daily Prompts!`)
+    await this.deleteAllNonAppropriatedDailyPrompts()
+    await this.createDailyPromptsForEachGenre()
+  }
 
   public async deleteAllNonAppropriatedDailyPrompts(): Promise<void> {
     const allDailyPrompts = await this.promptRepository.getAllDailyPrompt()

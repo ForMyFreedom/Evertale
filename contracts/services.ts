@@ -70,7 +70,7 @@ declare module '@ioc:Providers/UsersService' {
 
 declare module '@ioc:Providers/StoryAdvanceService' {
   import { StoryAdvanceUsecase } from "@ioc:forfabledomain"
-  import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
   const StoryAdvanceProvider: () => StoryAdvanceUsecase
+  export default StoryAdvanceProvider
 }
 

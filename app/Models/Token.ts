@@ -18,5 +18,8 @@ export default class Token extends BaseModel implements TokenEntity {
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
 
-  public async getUser(): Promise<User> { return this.user }
+  public async getUser(this: Token): Promise<User> {
+    await this.load('user')
+    return this.user
+  }
 }

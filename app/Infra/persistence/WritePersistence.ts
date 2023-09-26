@@ -13,7 +13,7 @@ export class WritePersistence implements WriteRepository {
     }
 
     async create(body: WriteInsert): Promise<WriteEntity> {
-        return Write.create(body)
+        return await Write.create(body)
     }
 
     async delete(entityId: number): Promise<WriteEntity | null> {

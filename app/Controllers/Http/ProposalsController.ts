@@ -6,7 +6,7 @@ import { ProposalsUsecase } from '@ioc:forfabledomain'
 
 export default class ProposalsController implements UsesUsecase<ProposalsUsecase> {
   public async indexByPrompt(ctx: HttpContextContract): Promise<void> {
-    await ProposalsProvider(ctx).actualIndexByPrompt(ctx.params.id)
+    await ProposalsProvider(ctx).indexByPrompt(ctx.params.id)
   }
 
   public async actualIndexByPrompt(ctx: HttpContextContract): Promise<void> {

@@ -60,9 +60,16 @@ export default class Genre extends BaseModel implements GenreEntity {
     return GenreEntity.calculateGenrePopularity(genre, amountOfNonDailyPrompts)
   }
 
-  public async getPrompts(): Promise<PromptEntity[]> { return this.prompts}
-  public async getThematicWords(): Promise<ThematicWordEntity[]> { return this.thematicWords}
+  public async getPrompts(this: Genre): Promise<PromptEntity[]> {
+    await this.load('prompts')
+    return this.prompts
+  }
+  public async getThematicWords(this: Genre): Promise<ThematicWordEntity[]> {
+    await this.load('thematicWords')
+    return this.thematicWords
+  }
 }
+
 
 async function getAmountOfNonDailyPrompts(genre: Genre): Promise<number> {
   const query = await Database.from('genres')

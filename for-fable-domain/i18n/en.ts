@@ -1,7 +1,7 @@
 import { ExceptionContract } from "@ioc:forfabledomain"
 
 
-const englishExceptionContract: ExceptionContract = {
+export const englishExceptionContract: ExceptionContract = {
     RouteNotFounded: 'Route not found',
     BodyValidationFailure: 'Validation failure',
     Unauthorized: 'Unauthorized',
@@ -45,5 +45,3 @@ const englishExceptionContract: ExceptionContract = {
     EmailSended: 'Email sended!',
     CantComplaintToDailyWrite: "You can't complaint to a daily write"
 }
-
-export default englishExceptionContract

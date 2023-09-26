@@ -4,7 +4,7 @@ import { UserValidator } from 'App/Validators/UserValidator'
 import { SessionContract } from '@ioc:Adonis/Addons/Session'
 import { PasswordInsert, UsersUsecase } from '@ioc:forfabledomain'
 import UsersProvider from '@ioc:Providers/UsersService'
-import { AdonisExceptionHandler } from 'App/Exceptions/Handler'
+import AdonisExceptionHandler from 'App/Exceptions/Handler'
 import { UsesUsecase } from './_Conversor'
 
 

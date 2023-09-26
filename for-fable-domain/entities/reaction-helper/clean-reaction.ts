@@ -11,14 +11,12 @@ export function getExibitionReaction(reactions: ReactionEntity[]): ExibitionReac
   cleanReactions = solveConclusiveAggregate(positiveConclusive, cleanReactions)
   cleanReactions = cleanBlankReactions(cleanReactions)
 
-  // @eu odeio o enum do typescript
-  // cleanReactions.map((value) => {return {...value, type: ReactionType[value.type]}})
   return cleanReactions
 }
 
 function getBruteExitionReactionList(reactions: ReactionEntity[]): ExibitionReaction[] {
   return reactions.map((value: ReactionEntity) => {
-    return { type: ReactionType[value.type] as unknown as ReactionType, amount: value.id }
+    return { type: value.type, amount: value.id }
   })
 }
 

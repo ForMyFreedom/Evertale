@@ -1,5 +1,5 @@
 import { ConstantEntity, ConstantsRepository } from "@ioc:forfabledomain";
-import { AdonisExceptionHandler } from "App/Exceptions/Handler";
+import AdonisExceptionHandler from "App/Exceptions/Handler";
 import Constant from "App/Models/Constant";
 
 const langContract = AdonisExceptionHandler.contract

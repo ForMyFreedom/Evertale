@@ -29,22 +29,21 @@ export class ReactWritesService extends BaseHTTPService implements ReactWritesUs
       return this.exceptionHandler.Unauthenticated()
     }
 
-    const type = ReactionType[body.type] as unknown as ReactionType // @ shit enum...
     const write = await this.writeRepository.find(body.writeId)
 
     if (!write) {
       return this.exceptionHandler.UndefinedWrite()
     }
 
-    if (write.id == userId) {
+    if (write.authorId == userId) {
       return this.exceptionHandler.CantReactYourself()
     }
 
-    if (type === ReactionType.COMPLAINT && await this.writeIsDaily(body.writeId)) {
+    if (body.type === ReactionType.COMPLAINT && await this.writeIsDaily(body.writeId)) {
       return this.exceptionHandler.CantComplaintToDailyWrite()
     }
 
-    if (reactionIsConclusive(type)) {
+    if (reactionIsConclusive(body.type)) {
       if (await this.promptRepository.findByWriteId(body.writeId)) {
         return this.exceptionHandler.CantUseConclusiveReactionInPrompt()
       } else {
@@ -64,7 +63,7 @@ export class ReactWritesService extends BaseHTTPService implements ReactWritesUs
     }
 
     const reaction = await this.reactWriteRepository.create({
-      ...body, type: type, userId: userId
+      ...body, userId: userId
     })
 
     this.exceptionHandler.SucessfullyCreated(reaction)

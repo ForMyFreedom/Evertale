@@ -1,7 +1,6 @@
-/* eslint-disable prettier/prettier */
 import Event from '@ioc:Adonis/Core/Event'
 import Env from '@ioc:Adonis/Core/Env'
-import { LiteralTime } from 'App/Utils/time'
+import { LiteralTime } from '@ioc:forfabledomain'
 
 Event.on('refresh:daily-prompts', 'DailyPromptListener.onRefreshDailyPrompts')
 

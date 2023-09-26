@@ -1,6 +1,6 @@
 import type { GuardsList } from '@ioc:Adonis/Addons/Auth'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { AdonisExceptionHandler } from 'App/Exceptions/Handler'
+import AdonisExceptionHandler from 'App/Exceptions/Handler'
 
 export default class AuthMiddleware {
   protected async authenticate(

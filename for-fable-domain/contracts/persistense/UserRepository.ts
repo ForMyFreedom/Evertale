@@ -3,6 +3,7 @@ import { DefaultRepository } from "./_DefaultRepository";
 
 type ExtraInfoOnCreate = {
     isAdmin: boolean
+    emailVerified: UserEntity['emailVerified']
 }
 
 export interface UserRepository extends DefaultRepository<UserInsert, UserEntity> {

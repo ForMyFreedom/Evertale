@@ -6,7 +6,7 @@ import { SchemaTyper } from 'App/Utils/secure'
 
 export const WriteReactionValidatorSchema: SchemaTyper<WriteReactionInsert> = schema.create({
   writeId: schema.number([rules.unsigned(), rules.exists({ table: 'writes', column: 'id' })]),
-  type: schema.enum(Object.values(ReactionType) as ReactionType[]),
+  type: schema.enum(Object.values(ReactionType)),
 })
 
 export class WriteReactionValidator extends MyValidator<

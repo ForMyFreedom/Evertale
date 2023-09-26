@@ -9,17 +9,17 @@ export const BASE_URL = '/api/react-comment'
 
 export const SAMPLE_REACT_COMMENT: typeof CommentReactionValidatorSchema.props = {
   commentId: 1,
-  type: ReactionType[ReactionType.NEGATIVE],
+  type: ReactionType.NEGATIVE,
 }
 
 export const OTHER_SAMPLE_REACT_COMMENT: typeof CommentReactionValidatorSchema.props = {
   commentId: 1,
-  type: ReactionType[ReactionType.POSITIVE]
+  type: ReactionType.POSITIVE
 }
 
 export const CONCLUSIVE_REACT_COMMENT: typeof CommentReactionValidatorSchema.props = {
   commentId: 1,
-  type: ReactionType[ReactionType.CONCLUSIVE],
+  type: ReactionType.CONCLUSIVE,
 }
 
 export const WRONG_SAMPLE_REACT_COMMENT = {

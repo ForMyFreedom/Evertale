@@ -6,7 +6,7 @@ import { SchemaTyper } from 'App/Utils/secure'
 
 export const CommentReactionValidatorSchema: SchemaTyper<CommentReactionInsert> = schema.create({
   commentId: schema.number([rules.unsigned(), rules.exists({ table: 'comments', column: 'id' })]),
-  type: schema.enum(Object.values(ReactionType) as ReactionType[]),
+  type: schema.enum(Object.values(ReactionType)),
 })
 
 export class CommentReactionValidator extends MyValidator<

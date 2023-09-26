@@ -12,7 +12,7 @@ export class CommentsService extends BaseHTTPService implements CommentsUsecase 
 
   public async indexByWrite(writeId: WriteEntity['id']): Promise<void> {
     if (! await this.writeRepository.find(writeId)) {
-      return this.exceptionHandler.NotFound()
+      return this.exceptionHandler.UndefinedId()
     }
     let comments: CommentEntity[] = await this.commentRepository.getByWrite(writeId)
     let authors: UserEntity[] = await this.commentRepository.loadAuthors(comments)
@@ -21,7 +21,11 @@ export class CommentsService extends BaseHTTPService implements CommentsUsecase 
   }
 
 
-  public async store(body: CommentInsert): Promise<void> {
+  public async store(user: UserEntity|undefined, body: CommentInsert): Promise<void> {
+    if (!user) {
+      return this.exceptionHandler.Unauthenticated()
+    }
+
     if(! await this.writeRepository.find(body.writeId)) {
       return this.exceptionHandler.UndefinedWrite()
     }
@@ -37,7 +41,9 @@ export class CommentsService extends BaseHTTPService implements CommentsUsecase 
       }
     }
 
-    const comment = await this.commentRepository.create(body)
+    const comment = await this.commentRepository.create({
+      ...body, authorId: user.id
+    })
     return this.exceptionHandler.SucessfullyCreated(comment)
   }
 
@@ -86,15 +92,19 @@ export class CommentsService extends BaseHTTPService implements CommentsUsecase 
 
 
 async function estruturateCommentsWithAnswers(
-  commentsArray: CommentEntity[]
-): Promise<Partial<CommentEntity>[]> {
-  const newCommentsArray: Partial<CommentEntity>[] = []
+  commentsArray: (CommentEntity & {answers?: CommentEntity[]})[]
+): Promise<(Partial<CommentEntity> & {answers?: CommentEntity[]})[]> {
+  commentsArray.sort((a, b) => a.id - b.id)
+  const newCommentsArray: (CommentEntity & {answers?: CommentEntity[]})[] = []
   for (const comment of commentsArray) {
     const answerToId = comment.answerToId
     if (answerToId) {
-      const originComment = commentsArray.find((c) => c.id === answerToId)
-      if (originComment) {
-        await insertCommentInTree(comment, originComment)
+      const commentOwner = commentsArray.find((c) => c.id == answerToId)
+      if (commentOwner) {
+        if(!commentOwner.answers){
+          commentOwner.answers = []
+        }
+        commentOwner.answers.push(comment)
       }
     } else {
       newCommentsArray.push(comment)
@@ -103,17 +113,3 @@ async function estruturateCommentsWithAnswers(
   return newCommentsArray
 }
 
-
-async function insertCommentInTree(comment: CommentEntity, originComment: CommentEntity) {
-  let wasBlank = false
-  const originCommentAnswers = await originComment.getAnswers()
-  if (originCommentAnswers === undefined) {
-    wasBlank = true
-  }
-  if (wasBlank) {
-    while (originCommentAnswers.length > 0) {
-      originCommentAnswers.pop()
-    }
-  }
-  originCommentAnswers.push(comment)
-}

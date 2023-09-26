@@ -22,5 +22,8 @@ export default class ThematicWord extends BaseModel implements ThematicWordEntit
   @hasOne(() => Genre)
   public genre: HasOne<typeof Genre>
 
-  public async getGenre(): Promise<Genre> { return this.genre }
+  public async getGenre(this: ThematicWord): Promise<Genre> {
+    await this.load('genre')
+    return this.genre
+  }
 }

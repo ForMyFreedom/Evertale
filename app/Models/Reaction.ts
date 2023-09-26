@@ -6,13 +6,7 @@ import Write from './Write'
 import Constant from './Constant'
 import Prompt from './Prompt'
 import Proposal from './Proposal'
-import { CommentReactionEntity, WriteReactionEntity, CommentEntity, UserEntity, WriteEntity, ReactionType, ReactionEntity } from '@ioc:forfabledomain'
-
-const TYPE_SERIAL = {
-  consume: (value) => { return ReactionType[value] },
-  serialize: (value) => { return ReactionType[value] },
-}
-
+import { InteractionEntity, CommentReactionEntity, WriteReactionEntity, CommentEntity, UserEntity, WriteEntity, ReactionType, ReactionEntity } from '@ioc:forfabledomain'
 
 export class CommentReaction extends BaseModel implements CommentReactionEntity {
   @column({ isPrimary: true })
@@ -24,7 +18,7 @@ export class CommentReaction extends BaseModel implements CommentReactionEntity 
   @column()
   public commentId: number
 
-  @column(TYPE_SERIAL)
+  @column()
   public type: ReactionType
 
   @column.dateTime({ autoCreate: true })
@@ -52,7 +46,7 @@ export class CommentReaction extends BaseModel implements CommentReactionEntity 
     await reaction.load('comment')
     await reaction.comment.load('author')
     ReactionEntity.addScoreAlterationInTarget(reaction, reaction.comment, config)
-    await reaction.comment.author.save()
+    await (await reaction.comment.getAuthor()).save()
   }
 
   @beforeDelete()
@@ -79,9 +73,21 @@ export class CommentReaction extends BaseModel implements CommentReactionEntity 
     )
   }
 
-  public async getComment(): Promise<CommentEntity> { return this.comment }
-  public async getOwner(): Promise<UserEntity> { return this.owner }
-  public getTargetId(): number { return this.commentId}
+  public async getComment(this: CommentReaction): Promise<CommentEntity> {
+    await this.load('comment')
+    return this.comment
+  }
+
+  public async getOwner(this: CommentReaction): Promise<UserEntity> {
+    await this.load('owner')
+    return this.owner
+  }
+
+  public getTargetId(): number { return this.commentId }
+
+  public getTarget(): Promise<InteractionEntity> {
+    return this.getComment()
+  }
 }
 
 export class WriteReaction extends BaseModel implements WriteReactionEntity {
@@ -94,7 +100,7 @@ export class WriteReaction extends BaseModel implements WriteReactionEntity {
   @column()
   public writeId: number
 
-  @column(TYPE_SERIAL)
+  @column()
   public type: ReactionType
 
   @column.dateTime({ autoCreate: true })
@@ -122,7 +128,7 @@ export class WriteReaction extends BaseModel implements WriteReactionEntity {
     await reaction.load('write')
     await reaction.write.load('author')
     ReactionEntity.addScoreAlterationInTarget(reaction, reaction.write, config)
-    await reaction.write.author.save()
+    await (await reaction.write.getAuthor()).save()
   }
 
   @beforeDelete()
@@ -148,9 +154,18 @@ export class WriteReaction extends BaseModel implements WriteReactionEntity {
     )
   }
 
-  public async getWrite(): Promise<WriteEntity> { return this.write }
+  public async getWrite(this: WriteReaction): Promise<WriteEntity> {
+    await this.load('write')
+    return this.write
+  }
+  public async getOwner(this: WriteReaction): Promise<UserEntity> {
+    await this.load('owner')
+    return this.owner
+  }
   public getTargetId(): number { return this.writeId}
-  public async getOwner(): Promise<UserEntity> { return this.owner }
+  public getTarget(): Promise<InteractionEntity> {
+    return this.getWrite()
+  }
 }
 
 

@@ -28,13 +28,16 @@ export class UsersService extends BaseHTTPService implements UsersUsecase {
   }
 
   public async storeUser(body: UserInsert, isAdmin: boolean): Promise<void> {
-
-    const user = await this.userRepository.create({ ...body, isAdmin: isAdmin })
-
     const needToVerifyEmail = await this.userRepository.isNeedToVerifyEmail()
+
+    const user = await this.userRepository.create({
+      ...body, isAdmin: isAdmin, emailVerified: !needToVerifyEmail
+    })
+
     if (needToVerifyEmail) {
       await this.mailService.sendUserVerificationMail(user)
     }
+
 
     await this.userRepository.update(user.id, {emailVerified: !needToVerifyEmail})
 

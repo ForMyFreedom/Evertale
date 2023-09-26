@@ -72,7 +72,9 @@ export default class Prompt extends BaseModel implements PromptEntity {
 
   @afterFind()
   public static async calculatePromptPopularity(prompt: Prompt) {
-    prompt.popularity = await getDistinctParticipantsCount(prompt)
+    PromptEntity.calculatePromptPopularity(
+      prompt, await getDistinctParticipantsCount(prompt)
+    )
   }
 
   @afterFetch()
@@ -89,11 +91,7 @@ export default class Prompt extends BaseModel implements PromptEntity {
       .filter((proposal) => proposal.definitive)
       .sort((a, b) => b.orderInHistory - a.orderInHistory)
 
-    prompt.historyText = prompt.write.text
-    for (const proposal of definitiveProposals) {
-      prompt.historyText += proposal.write.text
-    }
-
+    await PromptEntity.setHistoryText(prompt, definitiveProposals)
     delete prompt.$preloaded.proposals
   }
 
@@ -105,49 +103,59 @@ export default class Prompt extends BaseModel implements PromptEntity {
     await PromptEntity.setHistoryText(prompt, proposalsInOrder)
   }
 
-  public async getWrite(): Promise<WriteEntity> { return this.write }
-  public async getGenres(): Promise<GenreEntity[]> { return this.genres }
+  public async getWrite(this: Prompt): Promise<WriteEntity> {
+    await this.load('write')
+    return this.write
+  }
+  public async getGenres(this: Prompt): Promise<GenreEntity[]> {
+    await this.load('genres')
+    return this.genres
+  }
   public async getProposals(this: Prompt): Promise<ProposalEntity[]> {
     await this.load('proposals')
     return this.proposals
   }
 }
 
-async function getDistinctParticipantsCount(prompt: Prompt): Promise<number> {
-  const arrayOfUsersIds: number[] = []
+async function getDistinctParticipantsCount(prompt: Prompt): Promise<{id: number}[]> {
+  const arrayOfUsersIds: {id: number}[] = []
   arrayOfUsersIds.push(...(await getUsersIdsThatReact(prompt)))
   arrayOfUsersIds.push(...(await getUsersIdsThatComment(prompt)))
   arrayOfUsersIds.push(...(await getUsersIdsThatPropose(prompt)))
-  return removeDuplicate(arrayOfUsersIds).length
+  return removeDuplicate(arrayOfUsersIds)
 }
 
-async function getUsersIdsThatReact(prompt: Prompt): Promise<number[]> {
+async function getUsersIdsThatReact(prompt: Prompt): Promise<{id: number}[]> {
   const reactUsers = await Write.query()
     .join('write_reactions', 'writes.id', '=', 'write_reactions.write_id')
     .where('writes.id', '=', prompt.write.id)
     .select('write_reactions.user_id')
 
   if (reactUsers.length > 0) {
-    return reactUsers.map((data) => data.$extras.user_id as number)
+    return reactUsers.map((data) => {
+      return { id: data.$extras.user_id as number }
+    })
   } else {
     return []
   }
 }
 
-async function getUsersIdsThatComment(prompt: Prompt): Promise<number[]> {
+async function getUsersIdsThatComment(prompt: Prompt): Promise<{id: number}[]> {
   const commentsUsers = await Write.query()
     .join('comments', 'writes.id', '=', 'comments.write_id')
     .where('writes.id', '=', prompt.write.id)
     .select('comments.author_id')
 
   if (commentsUsers.length > 0) {
-    return commentsUsers.map((data) => data.$original.authorId as number)
+    return commentsUsers.map((data) => {
+      return { id: data.$original.authorId as number }
+    })
   } else {
     return []
   }
 }
 
-async function getUsersIdsThatPropose(prompt: Prompt): Promise<number[]> {
+async function getUsersIdsThatPropose(prompt: Prompt): Promise<{id: number}[]> {
   const proposalUsers = await Write.query()
     .join('proposals', 'writes.id', '=', 'proposals.prompt_id')
     .join('writes as prop_writes', 'proposals.write_id', '=', 'prop_writes.id')
@@ -155,7 +163,9 @@ async function getUsersIdsThatPropose(prompt: Prompt): Promise<number[]> {
     .select('prop_writes.author_id')
 
   if (proposalUsers.length > 0) {
-    return proposalUsers.map((data) => data.$original.authorId as number)
+    return proposalUsers.map((data) => {
+      return { id: data.$original.authorId as number }
+    })
   } else {
     return []
   }

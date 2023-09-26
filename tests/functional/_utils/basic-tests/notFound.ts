@@ -23,6 +23,6 @@ async function testREQUESTNotFound(
   requestFunction: RequestFunction, client: ApiClient, url: string, body?: object
 ): Promise<void> {
   let response = await requestFunction(url, client, true, body)
-  response.assertStatus(HTTP.BAD_REQUEST)
+  response.assertStatus(HTTP.NOT_FOUND)
   response.assertBodyContains({ error: ExceptionContract.NotFound })
 }

@@ -1,5 +1,5 @@
 import { BaseHTTPService } from "./BaseHTTPService"
-import { CommentReactionEntity, CommentEntity, CommentReactionInsert, ReactionType, UserEntity, getExibitionReaction, reactionIsConclusive } from '../entities'
+import { CommentReactionEntity, CommentEntity, CommentReactionInsert, UserEntity, getExibitionReaction, reactionIsConclusive } from '../entities'
 import { CommentRepository, ExceptionHandler, ReactCommentRepository } from '../contracts'
 import { ReactCommentsUsecase } from '../usecases'
 
@@ -29,8 +29,6 @@ export class ReactCommentsService extends BaseHTTPService implements ReactCommen
       return this.exceptionHandler.InvalidUser()
     }
 
-    const type = ReactionType[body.type] as unknown as ReactionType // @enum shit...
-
     const comment = await this.commentRepository.find(body.commentId)
     if (!comment) {
       return this.exceptionHandler.NotFound()
@@ -40,7 +38,7 @@ export class ReactCommentsService extends BaseHTTPService implements ReactCommen
       return this.exceptionHandler.CantReactYourself()
     }
 
-    if (reactionIsConclusive(type)) {
+    if (reactionIsConclusive(body.type)) {
       return this.exceptionHandler.CantUseConclusiveReactionInComment()
     }
 
@@ -53,7 +51,7 @@ export class ReactCommentsService extends BaseHTTPService implements ReactCommen
     }
 
     const reaction = await this.reactCommentRepository.create(
-      { ...body, type: type, userId: userId }
+      { ...body, userId: userId }
     )
 
     this.exceptionHandler.SucessfullyCreated(reaction)

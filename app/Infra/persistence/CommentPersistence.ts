@@ -15,7 +15,9 @@ export class CommentPersistence implements CommentRepository {
   }
 
   async create(body: CommentInsert): Promise<CommentEntity> {
-    return Comment.create(body)
+    const comment = await Comment.create(body)
+    await comment.load('author')
+    return comment
   }
 
   async delete(commentId: number): Promise<CommentEntity|null> {
@@ -41,10 +43,6 @@ export class CommentPersistence implements CommentRepository {
 
   async getByWrite(writeId: number): Promise<CommentEntity[]> {
     const commentsArray = await Comment.query().where('writeId', '=', writeId)
-    for (const comment of commentsArray) {
-      delete comment.$attributes.answerToId
-      delete comment.$attributes.writeId
-    }
     return commentsArray
   }
 

@@ -71,7 +71,6 @@ export class ProposalsService extends BaseHTTPService implements ProposalsUsecas
     )
 
     const proposal = await this.proposalsRepository.create({
-      ...body,
       writeId: proposalWrite.id,
       promptId: promptId,
       orderInHistory: prompt.currentIndex,
@@ -81,7 +80,11 @@ export class ProposalsService extends BaseHTTPService implements ProposalsUsecas
   }
 
   public async update(userId: UserEntity['id']|undefined, proposalId: ProposalEntity['id'], partialBody: Partial<ProposalInsert>): Promise<void> {
-    const proposal = await this.promptRepository.find(proposalId)
+    if (!userId) {
+      return this.exceptionHandler.Unauthenticated()
+    }
+  
+    const proposal = await this.proposalsRepository.find(proposalId)
     if (!proposal) {
       return this.exceptionHandler.UndefinedId()
     }
@@ -111,7 +114,7 @@ export class ProposalsService extends BaseHTTPService implements ProposalsUsecas
       await this.proposalsRepository.delete(proposalId)
       this.exceptionHandler.SucessfullyDestroyed(proposal)
     } else {
-      this.exceptionHandler.CantEditOthersWrite()
+      this.exceptionHandler.CantDeleteOthersWrite()
     }
   }
 }

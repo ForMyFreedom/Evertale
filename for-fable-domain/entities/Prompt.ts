@@ -35,7 +35,7 @@ export abstract class PromptEntity {
   abstract calculatePromptPopularity(prompt: PromptEntity, usersThatParticipated: UserEntity[]): Promise<void>
   abstract setHistoryText(prompt: PromptEntity, proposalsInOrder: ProposalEntity[]): Promise<void>
 
-  static async calculatePromptPopularity(prompt: PromptEntity, usersThatParticipated: UserEntity[]): Promise<void> {
+  static async calculatePromptPopularity(prompt: PromptEntity, usersThatParticipated: {id: number}[]): Promise<void> {
     prompt.popularity = removeDuplicate(usersThatParticipated).length
   }
 

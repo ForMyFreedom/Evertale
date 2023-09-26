@@ -1,6 +1,7 @@
 import { PromptEntity, ProposalEntity } from '../entities'
 import { ConstantsRepository, PromptRepository, ProposalRepository } from '../contracts'
 import { StoreAdvanceResponse, StoryAdvanceUsecase } from '../usecases'
+import { DateTime } from 'luxon'
 
 const CONTINUE: StoreAdvanceResponse = { toContinueLoop: true }
 const NOT_CONTINUE: StoreAdvanceResponse = { toContinueLoop: false }
@@ -15,6 +16,8 @@ export class StoryAdvanceService implements StoryAdvanceUsecase {
 
   
   async tryMakeStoreAdvance(promptId: number): Promise<StoreAdvanceResponse> {
+    console.log(`${DateTime.now()}  |  Try Advance History ${promptId}`)
+
     const prompt = await this.promptRepository.find(promptId)
     if (!prompt || prompt.concluded) { return NOT_CONTINUE }
 
