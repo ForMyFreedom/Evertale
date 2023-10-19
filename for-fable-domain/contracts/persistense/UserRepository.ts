@@ -10,4 +10,6 @@ export interface UserRepository extends DefaultRepository<UserInsert, UserEntity
     create(body: UserInsert & ExtraInfoOnCreate): Promise<UserEntity>
     isNeedToVerifyEmail(): Promise<boolean>
     passwordIsValid(body: PasswordInsert): Promise<{errors?: string[]}>
+    validateWithCredential(email: string, password: string): Promise<string>
+    validateWithToken(token: string): Promise<boolean>
 }

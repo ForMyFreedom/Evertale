@@ -12,10 +12,10 @@ async function testUserUpdate({ client }: TestContext): Promise<void> {
   const nonAdminUser = await postUser(client, NON_ADMIN_USER_SAMPLE, false)
 
   await testPUTUnauthenticated(client, BASE_URL, adminUser.id, EDIT_NON_ADMIN_USER)
-  await testEditUserUnauthorized(client, nonAdminUser, NON_ADMIN_USER_SAMPLE, EDIT_NON_ADMIN_USER)
+  await testEditUserUnauthorized(client, nonAdminUser, NON_ADMIN_USER_SAMPLE)
   await testBlockWithoutAuthorship(client, adminUser.id)
   await testPUTUndefinedId(client, BASE_URL, EDIT_NON_ADMIN_USER)
-  await testEditUserAccepted(client, adminUser, ADMIN_USER_SAMPLE, EDIT_NON_ADMIN_USER)
+  await testEditUserAccepted(client, adminUser, EDIT_NON_ADMIN_USER)
 }
 
 async function testBlockWithoutAuthorship(client: ApiClient, id: number): Promise<void> {
@@ -24,19 +24,19 @@ async function testBlockWithoutAuthorship(client: ApiClient, id: number): Promis
   response.assertBodyContains({error: ExceptionContract.CantEditOtherUser})
 }
 
-async function testEditUserUnauthorized(client: ApiClient, user: User, baseUser: { password: string }, body: object): Promise<void> {
+async function testEditUserUnauthorized(client: ApiClient, user: User, body: object): Promise<void> {
   let response = await requestWithUser(
     `${BASE_URL}/${user.id}`, client.put.bind(client),
-    user.name, baseUser.password,  body
+    user, body
   )
   response.assertStatus(HTTP.UNAUTHORIZED)
   response.assertBodyContains({error: ExceptionContract.Unauthorized})
 }
 
-async function testEditUserAccepted(client: ApiClient, user: User, baseUser: { password: string }, body: object): Promise<void> {
+async function testEditUserAccepted(client: ApiClient, user: User, body: object): Promise<void> {
   let response = await requestWithUser(
     `${BASE_URL}/${user.id}`, client.put.bind(client),
-    user.name, baseUser.password,  body
+    user, body
   )
   response.assertStatus(HTTP.ACCEPTED)
   response.assertBodyContains({message: ExceptionContract.SucessfullyUpdated})

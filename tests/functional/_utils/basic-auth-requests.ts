@@ -2,6 +2,7 @@ import { ApiRequest } from '@japa/api-client/build/src/request'
 import { ApiClient } from '@japa/api-client/build/src/client'
 import AdonisExceptionHandler from 'App/Exceptions/Handler'
 import { AdminCredentials, NonAdminCredentials } from './setup'
+import User from 'App/Models/User'
 
 export const ExceptionContract =  AdonisExceptionHandler.contract
 
@@ -25,18 +26,19 @@ export async function postWithAuth(path: string, client: ApiClient, isAdmin: boo
 }
 
 export async function requestWithAuth(path: string, method: (endpoint: string) => ApiRequest, isAdmin: boolean, body: object = {}): Promise<ApiRequest> {
-  const [name, password] = await getCredentials(isAdmin)
-  return await method(path).basicAuth(name, password).json(body)
+  const user = await getTemplateUser(isAdmin)
+  return await method(path).loginAs(user).json(body)
 }
 
-export async function requestWithUser(path: string, method: (endpoint: string) => ApiRequest, userName: string, password: string, body: object = {}): Promise<ApiRequest> {
-  return await method(path).basicAuth(userName, password).json(body)
+export async function requestWithUser(path: string, method: (endpoint: string) => ApiRequest, user: User, body: object = {}): Promise<ApiRequest> {
+  return await method(path).loginAs(user).json(body)
 }
 
-async function getCredentials(isAdmin: boolean): Promise<[string, string]> {
+async function getTemplateUser(isAdmin: boolean): Promise<User> {
   if (isAdmin) {
-    return [AdminCredentials.name, AdminCredentials.password]
+    return User.findByOrFail('email', AdminCredentials.email)
   } else {
-    return [NonAdminCredentials.name, NonAdminCredentials.password]
+    return User.findByOrFail('email', NonAdminCredentials.email)
   }
 }
+

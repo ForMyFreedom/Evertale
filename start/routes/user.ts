@@ -12,6 +12,7 @@ export default function routes(){
   }).middleware('auth')
 
   Route.post('/user', 'UsersController.storeUser')
+  Route.post('/login', 'LoginController.loginByCredential')
 
   Route.get('/verify-email/:token', 'UsersController.verifyEmail')
   Route.post('restartPassword/:token', 'UsersController.restartPassword')

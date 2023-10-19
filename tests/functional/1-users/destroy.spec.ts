@@ -20,8 +20,8 @@ async function testUserDestroy({ client }: TestContext): Promise<void> {
   await testBlockWithoutAuthorship(client, nonAdminUser.id, ConnectionType.NonAdmin)
   await testBlockWithoutAuthorship(client, adminUser.id, ConnectionType.Admin)
 
-  await testDeleteUserAccepted(client, adminUser, ADMIN_USER_SAMPLE)
-  await testDeleteUserAccepted(client, nonAdminUser, NON_ADMIN_USER_SAMPLE)
+  await testDeleteUserAccepted(client, adminUser)
+  await testDeleteUserAccepted(client, nonAdminUser)
 }
 
 async function testBlockWithoutAuthorship(
@@ -32,12 +32,11 @@ async function testBlockWithoutAuthorship(
   response.assertBodyContains({error: ExceptionContract.CantDeleteOtherUser})
 }
 
-async function testDeleteUserAccepted(client: ApiClient, user: User, baseUser: { password: string }): Promise<void> {
+async function testDeleteUserAccepted(client: ApiClient, user: User): Promise<void> {
   let response = await requestWithUser(
     `${BASE_URL}/${user.id}`,
     client.delete.bind(client),
-    user.name,
-    baseUser.password
+    user
   )
   response.assertStatus(HTTP.ACCEPTED)
   response.assertBodyContains({message: ExceptionContract.SucessfullyDestroyed})

@@ -55,6 +55,14 @@ export class UserPersistence implements UserRepository {
       return {errors: getMessageFromError(e)}
     }
   }
+
+  async validateWithCredential(email: string, password: string): Promise<string> {
+    throw new Error("Method not implemented.")
+  }
+
+  async validateWithToken(token: string): Promise<boolean> {
+    throw new Error("Method not implemented.")
+  }
 }
 
 function getMessageFromError(e: { messages: any }): string[] {

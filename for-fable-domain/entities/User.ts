@@ -41,4 +41,13 @@ export type PasswordInsert = {
   repeatPassword: string
 }
 
+export type LoginWithCredentialInsert = {
+  email: string
+  password: string
+}
+
+export type LoginWithTokenInsert = {
+  token: string
+}
+
 export type RestartPasswordInsert = PasswordInsert

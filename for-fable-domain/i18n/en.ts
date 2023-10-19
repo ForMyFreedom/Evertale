@@ -1,4 +1,4 @@
-import { ExceptionContract } from "@ioc:forfabledomain"
+import { ExceptionContract } from "for-fable-domain/contracts";
 
 
 export const englishExceptionContract: ExceptionContract = {

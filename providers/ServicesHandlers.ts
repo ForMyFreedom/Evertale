@@ -1,4 +1,4 @@
-import { CommentsService, ConstantsService, DailyPromptsService, ExceptionHandler, GenresService, MailService, PromptsService, ProposalsService, ReactCommentsService, ReactWritesService, StoryAdvanceService, UsersService } from '@ioc:forfabledomain';
+import { CommentsService, ConstantsService, DailyPromptsService, ExceptionHandler, GenresService, LoginService, MailService, PromptsService, ProposalsService, ReactCommentsService, ReactWritesService, StoryAdvanceService, UsersService } from '@ioc:forfabledomain';
 import { AdonisEventEmmiter, AdonisMailSender, CommentPersistence, ConstantsPersistence, GenrePersistence, PromptPersistence, ProposalPersistence, ThematicWordPersistence, WritePersistence } from 'App/Infra';
 import { ReactCommentPersistence } from 'App/Infra/persistence/ReactCommentPersistence';
 import { ReactWritePersistence } from 'App/Infra/persistence/ReactWritePersistence';
@@ -20,7 +20,8 @@ export class ServicesHandlers implements Services {
     ReactCommentsService: this.ReactCommentsService.bind(this),
     ReactWritesService: this.ReactWritesService.bind(this),
     UsersService: this.UsersService.bind(this),
-    StoryAdvanceService: this.StoryAdvanceService.bind(this)
+    StoryAdvanceService: this.StoryAdvanceService.bind(this),
+    LoginService: this.LoginService.bind(this),
   }
 
   CommentsService(): (ctx: HttpContextContract) => CommentsService {
@@ -114,6 +115,14 @@ export class ServicesHandlers implements Services {
       return new StoryAdvanceService(
         PromptPersistence.instance, ProposalPersistence.instance,
         ConstantsPersistence.instance
+      );
+    }
+  }
+
+  LoginService(): (ctx: HttpContextContract) => LoginService {
+    return (ctx: HttpContextContract) => {
+      return new LoginService(
+        UserPersistence.instance, Handler(ctx)
       );
     }
   }

@@ -14,13 +14,15 @@ export async function Setup(group: Group) {
 export const AdminCredentials = {
   name: Env.get('USER_ROOT_NAME'),
   email: Env.get('USER_ROOT_EMAIL'),
-  password: Env.get('USER_ROOT_PASSWORD')
+  password: Env.get('USER_ROOT_PASSWORD'),
+  token: ''
 }
 
 export const NonAdminCredentials = {
   name: Env.get('USER_TEST_NAME'),
   email: Env.get('USER_TEST_EMAIL'),
-  password: Env.get('USER_TEST_PASSWORD')
+  password: Env.get('USER_TEST_PASSWORD'),
+  token: ''
 }
 
 export async function createNonAdminUser() {

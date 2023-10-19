@@ -74,3 +74,9 @@ declare module '@ioc:Providers/StoryAdvanceService' {
   export default StoryAdvanceProvider
 }
 
+declare module '@ioc:Providers/LoginService' {
+  import { LoginService } from "@ioc:forfabledomain"
+  import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+  const LoginProvider: (ctx: HttpContextContract) => LoginService
+  export default LoginProvider
+}
