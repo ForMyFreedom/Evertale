@@ -1,5 +1,6 @@
-import { ReactWriteRepository, WriteReactionEntity, WriteReactionInsert } from "@ioc:forfabledomain";
+import { Pagination, ReactWriteRepository, WriteReactionEntity, WriteReactionInsert } from "@ioc:forfabledomain";
 import { WriteReaction } from "App/Models/Reaction";
+import { paginate } from "./utils";
 
 
 export class ReactWritePersistence implements ReactWriteRepository {
@@ -36,8 +37,8 @@ export class ReactWritePersistence implements ReactWriteRepository {
     return WriteReaction.find(entityId)
   }
 
-  async findAll(): Promise<WriteReactionEntity[]> {
-    return WriteReaction.all()
+  async findAll(page?: number, limit?: number): Promise<Pagination<WriteReactionEntity>> {
+    return paginate(await WriteReaction.query().paginate(page || 1, limit))
   }
 
   async delete(entityId: number): Promise<WriteReactionEntity | null> {

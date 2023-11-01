@@ -1,6 +1,7 @@
-import { ProposalEntity, ProposalInsert, ProposalRepository, ReactionType } from "@ioc:forfabledomain"
+import { Pagination, ProposalEntity, ProposalInsert, ProposalRepository, ReactionType } from "@ioc:forfabledomain"
 import Proposal from "App/Models/Proposal"
 import Write from "App/Models/Write"
+import { paginate } from "./utils"
 
 export class ProposalPersistence implements ProposalRepository {
   public static instance = new ProposalPersistence()
@@ -30,8 +31,8 @@ export class ProposalPersistence implements ProposalRepository {
     return proposal
   }
 
-  async findAll(): Promise<ProposalEntity[]> {
-    return Proposal.all()
+  async findAll(page?: number, limit?: number): Promise<Pagination<ProposalEntity>> {
+    return paginate(await Proposal.query().paginate(page || 1, limit))
   }
 
   async create(body: Omit<ProposalInsert, 'text'>): Promise<ProposalEntity> {

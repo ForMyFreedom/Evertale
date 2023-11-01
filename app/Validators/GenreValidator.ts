@@ -6,7 +6,7 @@ import { GenreInsert } from '@ioc:forfabledomain'
 
 export const GenreValidatorSchema: SchemaTyper<GenreInsert> = schema.create({
   name: schema.string({}, [rules.unique({ table: 'genres', column: 'name' })]),
-  image: schema.string({}, [rules.url()]),
+  imageUrl: schema.string({}, [rules.url()]),
   thematicWords: schema.array().members(schema.string()),
 })
 

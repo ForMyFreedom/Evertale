@@ -1,5 +1,6 @@
-import { PromptEntity, PromptInsert, PromptRepository } from "@ioc:forfabledomain"
+import { Pagination, PromptEntity, PromptInsert, PromptRepository } from "@ioc:forfabledomain"
 import Prompt from "App/Models/Prompt"
+import { paginate } from "./utils"
 
 export class PromptPersistence implements PromptRepository {
   public static instance = new PromptPersistence()
@@ -35,8 +36,8 @@ export class PromptPersistence implements PromptRepository {
     }
   }
 
-  async findAll(): Promise<PromptEntity[]> {
-    return await Prompt.all()
+  async findAll(page?: number, limit?: number): Promise<Pagination<PromptEntity>> {
+    return paginate(await Prompt.query().paginate(page || 1, limit))
   }
 
   async delete(entityId: number): Promise<PromptEntity | null> {

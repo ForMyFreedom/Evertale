@@ -1,13 +1,15 @@
-import { PasswordInsert, UserEntity, UserRepository } from "@ioc:forfabledomain"
+import { AuthWrapper, Pagination, PasswordInsert, UserEntity, UserRepository } from "@ioc:forfabledomain"
 import User from 'App/Models/User'
 import { schema, validator } from '@ioc:Adonis/Core/Validator'
 import Env from '@ioc:Adonis/Core/Env'
 import { PasswordSchema } from "App/Utils/secure"
+import { AuthContract } from "@ioc:Adonis/Addons/Auth"
+import { paginate } from "./utils"
 
 export class UserPersistence implements UserRepository {
   public static instance = new UserPersistence()
 
-  async create(body: PasswordInsert & Pick<UserEntity, 'name' | 'email' | 'image' | 'birthDate'> & { isAdmin: boolean }): Promise<UserEntity> {
+  async create(body: PasswordInsert & Pick<UserEntity, 'name' | 'email' | 'imageUrl' | 'birthDate'> & { isAdmin: boolean }): Promise<UserEntity> {
     const { repeatPassword, ...rest } = body
     return User.create(rest)
   }
@@ -17,11 +19,18 @@ export class UserPersistence implements UserRepository {
   }
 
   async find(entityId: number): Promise<UserEntity | null> {
-    return User.find(entityId)
+    return await User.find(entityId)
   }
 
-  async findAll(): Promise<UserEntity[]> {
-    return User.all()
+  async findAll(page?: number, limit?: number): Promise<Pagination<UserEntity>> {
+    const toIgnoreId = String(Env.get('TO_IGNORE_USER_ID'))
+
+    return paginate(
+      await User.query()
+        .orderBy('score', 'desc')
+        .where('id', '!=', toIgnoreId)
+        .paginate(page || 1, limit)
+    )
   }
 
   async delete(entityId: number): Promise<UserEntity | null> {
@@ -56,12 +65,12 @@ export class UserPersistence implements UserRepository {
     }
   }
 
-  async validateWithCredential(email: string, password: string): Promise<string> {
-    throw new Error("Method not implemented.")
-  }
-
-  async validateWithToken(token: string): Promise<boolean> {
-    throw new Error("Method not implemented.")
+  async findByIdentify(identify: string): Promise<UserEntity | null> {
+    const userByEmail = await User.findBy('email', identify)
+    if (userByEmail) { return userByEmail }
+    const userByName = await User.findBy('name', identify)
+    if (userByName) { return userByName }
+    return null
   }
 }
 
@@ -77,4 +86,19 @@ function getMessageFromError(e: { messages: any }): string[] {
   }
 
   return messages
+}
+
+export class AdonisAuthWrapper implements AuthWrapper {
+  constructor(private readonly auth: AuthContract) { }
+
+  async validateWithCredential(identify: string, password: string): Promise<{token: string|undefined}> {
+    try{
+      const userData = await this.auth.use('api').attempt(
+        identify, password, { expiresIn: '12 hours' }
+      )
+      return {token: userData.token}
+    } catch (e) {
+      return { token: undefined }
+    }
+  }
 }

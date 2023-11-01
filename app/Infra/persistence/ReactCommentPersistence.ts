@@ -1,5 +1,6 @@
-import { CommentReactionEntity, CommentReactionInsert, ReactCommentRepository } from "@ioc:forfabledomain";
+import { CommentReactionEntity, CommentReactionInsert, Pagination, ReactCommentRepository } from "@ioc:forfabledomain";
 import { CommentReaction } from "App/Models/Reaction";
+import { paginate } from "./utils";
 
 
 export class ReactCommentPersistence implements ReactCommentRepository {
@@ -36,8 +37,8 @@ export class ReactCommentPersistence implements ReactCommentRepository {
     return CommentReaction.find(entityId)
   }
 
-  async findAll(): Promise<CommentReactionEntity[]> {
-    return CommentReaction.all()
+  async findAll(page?: number, limit?: number): Promise<Pagination<CommentReactionEntity>> {
+    return paginate(await CommentReaction.query().paginate(page || 1, limit))
   }
 
   async delete(entityId: number): Promise<CommentReactionEntity | null> {

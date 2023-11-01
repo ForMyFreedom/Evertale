@@ -11,7 +11,7 @@ export const BASE_ADMIN_URL = '/api/admin'
 export const NON_ADMIN_USER_SAMPLE: typeof UserValidatorSchema.props = {
   name: 'commum-user',
   email: 'commumuser@gmail.com',
-  image: 'https://great-awesome-epic-incredible-image.wow/1',
+  imageUrl: 'https://great-awesome-epic-incredible-image.wow/1',
   birthDate: DateTime.now(),
   password: Env.get('USER_ROOT_PASSWORD'),
   repeatPassword: Env.get('USER_ROOT_PASSWORD'),
@@ -21,19 +21,19 @@ export const NON_ADMIN_USER_SAMPLE: typeof UserValidatorSchema.props = {
 export const ADMIN_USER_SAMPLE: typeof UserValidatorSchema.props = {
   name: 'some-admin',
   email: 'someadmin@gmail.com',
-  image: 'https://great-awesome-epic-incredible-image.wow/2',
+  imageUrl: 'https://great-awesome-epic-incredible-image.wow/2',
   birthDate: DateTime.now(),
   password: Env.get('USER_ROOT_PASSWORD'),
   repeatPassword: Env.get('USER_ROOT_PASSWORD'),
 }
 
 export const EDIT_NON_ADMIN_USER: Partial<typeof UserValidatorSchema.props> = {
-  image: 'https://great-awesome-epic-incredible-image.wow/2',
+  imageUrl: 'https://great-awesome-epic-incredible-image.wow/2',
 }
 
 export const WRONG_USER_SAMPLE = {
   email: 'test@gmail.com',
-  image: null,
+  imageUrl: null,
   isAdmin: false,
 }
 

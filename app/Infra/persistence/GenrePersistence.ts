@@ -1,6 +1,7 @@
-import { GenreEntity, GenreInsert, GenresRepository } from "@ioc:forfabledomain"
+import { GenreEntity, GenreInsert, GenresRepository, Pagination } from "@ioc:forfabledomain"
 import Genre from "App/Models/Genre"
 import ThematicWord from "App/Models/ThematicWord"
+import { paginate } from "./utils"
 
 export class GenrePersistence implements GenresRepository {
   public static instance = new GenrePersistence()
@@ -9,8 +10,12 @@ export class GenrePersistence implements GenresRepository {
       return await Genre.create(body)
   }
 
-  async loadGenresWithWords(): Promise<GenreEntity[]> {
-    return await Genre.query().preload('thematicWords')
+  async loadGenresWithWords(page?: number, limit?: number): Promise<Pagination<GenreEntity>> {
+    return paginate(
+      await Genre.query()
+        .preload('thematicWords')
+        .paginate(page || 1, limit)
+    )
   }
 
   async find(entityId: number): Promise<GenreEntity | null> {
@@ -23,8 +28,8 @@ export class GenrePersistence implements GenresRepository {
     }
   }
 
-  async findAll(): Promise<GenreEntity[]> {
-    return Genre.all()
+  async findAll(page?: number, limit?: number): Promise<Pagination<GenreEntity>> {
+    return paginate(await Genre.query().paginate(page || 1, limit))
   }
 
   async delete(entityId: number): Promise<GenreEntity | null> {

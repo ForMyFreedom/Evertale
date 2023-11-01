@@ -1,6 +1,7 @@
-import { CommentEntity, CommentInsert, CommentRepository, UserEntity } from "@ioc:forfabledomain";
+import { CommentEntity, CommentInsert, CommentRepository, Pagination, UserEntity } from "@ioc:forfabledomain";
 import Comment from "App/Models/Comment";
 import User from "App/Models/User";
+import { paginate } from "./utils";
 
 
 export class CommentPersistence implements CommentRepository {
@@ -10,8 +11,8 @@ export class CommentPersistence implements CommentRepository {
     return Comment.find(commentId)
   }
 
-  async findAll(): Promise<CommentEntity[]> {
-    return Comment.all()
+  async findAll(page?: number, limit?: number): Promise<Pagination<CommentEntity>> {
+    return paginate(await Comment.query().paginate(page || 1, limit))
   }
 
   async create(body: CommentInsert): Promise<CommentEntity> {
