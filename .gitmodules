@@ -1,0 +1,3 @@
+[submodule "ForFableDomain"]
+	path = ForFable-Domain
+	url = git@github.com:ForMyFreedom/ForFable-Domain.git
