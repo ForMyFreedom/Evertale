@@ -1,6 +1,6 @@
 
 declare module '@ioc:Providers/CommentsService' {
-  import { CommentsUsecase } from "@ioc:forfabledomain"
+  import { CommentsUsecase, LoginUsecase } from "@ioc:forfabledomain"
   import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
   const CommentProvider: (ctx: HttpContextContract) => CommentsUsecase
   export default CommentProvider
@@ -75,8 +75,8 @@ declare module '@ioc:Providers/StoryAdvanceService' {
 }
 
 declare module '@ioc:Providers/LoginService' {
-  import { LoginService } from "@ioc:forfabledomain"
+  import { LoginUsecase } from "@ioc:forfabledomain"
   import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-  const LoginProvider: (ctx: HttpContextContract) => LoginService
+  const LoginProvider: (ctx: HttpContextContract) => LoginUsecase
   export default LoginProvider
 }

@@ -1,6 +1,5 @@
 import { DateTime } from 'luxon'
 import {
-  BaseModel,
   HasMany,
   ManyToMany,
   afterFetch,
@@ -14,9 +13,10 @@ import ThematicWord from './ThematicWord'
 import Prompt from './Prompt'
 import Database from '@ioc:Adonis/Lucid/Database'
 import { PromptEntity, GenreEntity, ThematicWordEntity } from '@ioc:forfabledomain'
+import { BaseAdonisModel } from './_Base'
 
 
-export default class Genre extends BaseModel implements GenreEntity {
+export default class Genre extends BaseAdonisModel implements GenreEntity {
   @column({ isPrimary: true })
   public id: number
 
@@ -24,7 +24,7 @@ export default class Genre extends BaseModel implements GenreEntity {
   public name: string
 
   @column()
-  public image: string
+  public imageUrl: string
 
   @computed()
   public popularity: number // Amount of Prompts per day

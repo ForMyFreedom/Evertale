@@ -4,10 +4,10 @@ import { GenreValidator } from 'App/Validators/GenreValidator'
 import { ThematicWordValidator } from 'App/Validators/ThematicWordValidator'
 import GenresProvider from '@ioc:Providers/GenresService'
 import { UsesUsecase } from './_Conversor'
-import { GenresUsecase } from '@ioc:forfabledomain'
+import { GenresController } from '@ioc:forfabledomain'
 
 
-export default class GenresController implements UsesUsecase<GenresUsecase> {
+export default class GenresAdonisController implements UsesUsecase<GenresController> {
   public async store(ctx: HttpContextContract): Promise<void> {
     const body = await new GenreValidator(ctx).validate()
     await GenresProvider(ctx).store(body)

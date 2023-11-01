@@ -2,9 +2,9 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ReactWritesProvider from '@ioc:Providers/ReactWritesService'
 import { WriteReactionValidator } from 'App/Validators/WriteReactionValidator'
 import { UsesUsecase } from './_Conversor'
-import { ReactWritesUsecase } from '@ioc:forfabledomain'
+import { ReactWritesController } from '@ioc:forfabledomain'
 
-export default class ReactWritesController implements UsesUsecase<ReactWritesUsecase> {
+export default class ReactWritesAdonisController implements UsesUsecase<ReactWritesController> {
   public async show(ctx: HttpContextContract): Promise<void> {
     return await ReactWritesProvider(ctx).show(ctx.params.id)
   }

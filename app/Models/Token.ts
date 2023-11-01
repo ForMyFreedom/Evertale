@@ -1,8 +1,9 @@
-import { column, BaseModel, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
+import { column, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
 import User from './User'
 import { TokenEntity } from '@ioc:forfabledomain'
+import { BaseAdonisModel } from './_Base'
 
-export default class Token extends BaseModel implements TokenEntity {
+export default class Token extends BaseAdonisModel implements TokenEntity {
   @column({ isPrimary: true })
   public id: number
 

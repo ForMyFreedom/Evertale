@@ -1,11 +1,11 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ConstantsValidator } from 'App/Validators/ConstantValidator'
 import ConstantProvider from '@ioc:Providers/ConstantsService'
-import { ConstantsUsecase } from '@ioc:forfabledomain'
+import { ConstantsController } from '@ioc:forfabledomain'
 import { UsesUsecase } from './_Conversor'
 
 
-export default class ConstantsController implements UsesUsecase<ConstantsUsecase> {
+export default class ConstantsAdonisController implements UsesUsecase<ConstantsController> {
   public async index(ctx: HttpContextContract): Promise<void> {
     return ConstantProvider(ctx).show()
   }

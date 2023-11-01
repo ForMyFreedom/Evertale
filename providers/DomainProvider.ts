@@ -24,12 +24,14 @@ export default class DomainProvider {
 
   public register() {
     this.app.container.singleton('forfabledomain', () => {
-      return require('../for-fable-domain')
+      return require('../ForFable-Domain')
     })
   }
 
   public async boot() {
-    // All bindings are ready, feel free to use them
+    const { BaseModel } = await import('@ioc:Adonis/Lucid/Orm')
+    const { default: CamelCaseNamingStrategy } = await import('Config/camelCase')
+    BaseModel.namingStrategy = new CamelCaseNamingStrategy()
   }
 
   public async ready() {

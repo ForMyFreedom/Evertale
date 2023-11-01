@@ -1,5 +1,4 @@
 import {
-  BaseModel,
   BelongsTo,
   HasMany,
   ManyToMany,
@@ -18,10 +17,10 @@ import Genre from './Genre'
 import Write from './Write'
 import Proposal from './Proposal'
 import { removeDuplicate } from '@ioc:forfabledomain'
-import { BOOLEAN_SERIAL } from './_Base'
+import { BOOLEAN_SERIAL, BaseAdonisModel } from './_Base'
 import { GenreEntity, PromptEntity, ProposalEntity, UserEntity, WriteEntity } from '@ioc:forfabledomain'
 
-export default class Prompt extends BaseModel implements PromptEntity {
+export default class Prompt extends BaseAdonisModel implements PromptEntity {
   @column({ isPrimary: true })
   public id: number
 

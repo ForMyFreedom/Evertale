@@ -1,12 +1,12 @@
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, HasMany, belongsTo, column, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import { BelongsTo, HasMany, belongsTo, column, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import Write from './Write'
 import User from './User'
 import { CommentReaction } from './Reaction'
-import { BOOLEAN_SERIAL } from './_Base'
+import { BOOLEAN_SERIAL, BaseAdonisModel } from './_Base'
 import { WriteEntity, CommentEntity, CommentReactionEntity } from '@ioc:forfabledomain'
 
-export default class Comment extends BaseModel implements CommentEntity {
+export default class Comment extends BaseAdonisModel implements CommentEntity {
   @column({ isPrimary: true })
   public id: number
 

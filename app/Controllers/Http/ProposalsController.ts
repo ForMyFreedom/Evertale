@@ -2,9 +2,9 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ProposalsProvider from '@ioc:Providers/ProposalsService'
 import { ProposalValidator } from 'App/Validators/ProposalValidator'
 import { UsesUsecase } from './_Conversor'
-import { ProposalsUsecase } from '@ioc:forfabledomain'
+import { ProposalsController } from '@ioc:forfabledomain'
 
-export default class ProposalsController implements UsesUsecase<ProposalsUsecase> {
+export default class ProposalsAdonisController implements UsesUsecase<ProposalsController> {
   public async indexByPrompt(ctx: HttpContextContract): Promise<void> {
     await ProposalsProvider(ctx).indexByPrompt(ctx.params.id)
   }

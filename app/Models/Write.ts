@@ -1,11 +1,11 @@
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, HasMany, belongsTo, column, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import { BelongsTo, HasMany, belongsTo, column, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import User from './User'
 import { WriteReaction } from './Reaction'
-import { BOOLEAN_SERIAL } from './_Base'
+import { BOOLEAN_SERIAL, BaseAdonisModel } from './_Base'
 import { WriteReactionEntity, WriteEntity } from '@ioc:forfabledomain'
 
-export default class Write extends BaseModel implements WriteEntity {
+export default class Write extends BaseAdonisModel implements WriteEntity {
   @column({ isPrimary: true })
   public id: number
 

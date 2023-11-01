@@ -3,7 +3,7 @@ import { AdonisEventEmmiter, AdonisMailSender, CommentPersistence, ConstantsPers
 import { ReactCommentPersistence } from 'App/Infra/persistence/ReactCommentPersistence';
 import { ReactWritePersistence } from 'App/Infra/persistence/ReactWritePersistence';
 import { TokenPersistence } from 'App/Infra/persistence/TokenPersistence';
-import { UserPersistence } from 'App/Infra/persistence/UserPersistence';
+import { AdonisAuthWrapper, UserPersistence } from 'App/Infra/persistence/UserPersistence';
 import Services, { ServiceHandler } from 'Config/services';
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import AdonisExceptionHandler from 'App/Exceptions/Handler';
@@ -121,8 +121,9 @@ export class ServicesHandlers implements Services {
 
   LoginService(): (ctx: HttpContextContract) => LoginService {
     return (ctx: HttpContextContract) => {
+      const authWraper = new AdonisAuthWrapper(ctx.auth)
       return new LoginService(
-        UserPersistence.instance, Handler(ctx)
+        authWraper, UserPersistence.instance, Handler(ctx)
       );
     }
   }

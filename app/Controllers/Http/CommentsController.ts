@@ -2,9 +2,9 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { CommentValidator } from 'App/Validators/CommentValidator'
 import CommentProvider from '@ioc:Providers/CommentsService'
 import { UsesUsecase } from './_Conversor'
-import { CommentsUsecase } from '@ioc:forfabledomain'
+import { CommentsController } from '@ioc:forfabledomain'
 
-export default class CommentsController implements UsesUsecase<CommentsUsecase> {
+export default class CommentsAdonisController implements UsesUsecase<CommentsController> {
   public async indexByWrite(ctx: HttpContextContract): Promise<void> {
     await CommentProvider(ctx).indexByWrite(ctx.params.id)
   }

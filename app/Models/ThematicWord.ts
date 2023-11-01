@@ -1,9 +1,10 @@
 import { DateTime } from 'luxon'
-import { BaseModel, HasOne, column, hasOne } from '@ioc:Adonis/Lucid/Orm'
+import { HasOne, column, hasOne } from '@ioc:Adonis/Lucid/Orm'
 import { ThematicWordEntity } from '@ioc:forfabledomain'
 import Genre from './Genre'
+import { BaseAdonisModel } from './_Base'
 
-export default class ThematicWord extends BaseModel implements ThematicWordEntity {
+export default class ThematicWord extends BaseAdonisModel implements ThematicWordEntity {
   @column({ isPrimary: true })
   public id: number
 

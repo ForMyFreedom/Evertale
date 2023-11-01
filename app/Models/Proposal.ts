@@ -1,5 +1,4 @@
 import {
-  BaseModel,
   BelongsTo,
   HasMany,
   ModelQueryBuilderContract,
@@ -15,10 +14,10 @@ import {
 import Comment from './Comment'
 import Write from './Write'
 import Prompt from './Prompt'
-import { BOOLEAN_SERIAL } from './_Base'
+import { BOOLEAN_SERIAL, BaseAdonisModel } from './_Base'
 import { calculatePointsThrowReactions, ProposalEntity, CommentEntity, PromptEntity, WriteEntity} from '@ioc:forfabledomain'
 
-export default class Proposal extends BaseModel implements ProposalEntity {
+export default class Proposal extends BaseAdonisModel implements ProposalEntity {
   @column({ isPrimary: true })
   public id: number
 

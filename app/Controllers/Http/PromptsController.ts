@@ -4,11 +4,11 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { PromptValidator } from 'App/Validators/PromptValidator'
 import PromptsProvider from '@ioc:Providers/PromptsService'
 import { UsesUsecase } from './_Conversor'
-import { PromptsUsecase } from '@ioc:forfabledomain'
+import { PromptsController } from '@ioc:forfabledomain'
 import DailyPromptValidator from 'App/Validators/DailyPromptValidator'
 
 
-export default class PromptsController implements UsesUsecase<PromptsUsecase> {
+export default class PromptsAdonisController implements UsesUsecase<PromptsController> {
   public async index(ctx: HttpContextContract): Promise<void> {
     await PromptsProvider(ctx).index()
   }

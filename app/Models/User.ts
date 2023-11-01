@@ -3,7 +3,6 @@ import Hash from '@ioc:Adonis/Core/Hash'
 import {
   column,
   beforeSave,
-  BaseModel,
   beforeFind,
   beforeFetch,
   hasMany,
@@ -12,15 +11,27 @@ import {
 import { softDelete, softDeleteQuery } from 'App/Utils/soft-delete'
 import Constant from './Constant'
 import Token from './Token'
-import { BOOLEAN_SERIAL } from './_Base'
+import { BOOLEAN_SERIAL, BaseAdonisModel } from './_Base'
 import { UserEntity } from '@ioc:forfabledomain'
 
-export default class User extends BaseModel implements UserEntity {
+export default class User extends BaseAdonisModel implements UserEntity {
   @column({ isPrimary: true })
   public id: number
 
   @column()
   public name: string
+
+  @column()
+  public nickname: string
+
+  @column()
+  public imageUrl: string
+
+  @column()
+  public primaryColorHex: string
+
+  @column()
+  public secondaryColorHex: string
 
   @column({
     consume: (value) => {
@@ -34,9 +45,6 @@ export default class User extends BaseModel implements UserEntity {
 
   @column()
   public email: string
-
-  @column()
-  public image: string
 
   @column({ consume: (value) => Boolean(value) })
   public emailVerified: boolean

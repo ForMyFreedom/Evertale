@@ -52,7 +52,7 @@ export default class AdonisExceptionHandler extends HttpExceptionHandler impleme
       errorTreater: this.response.badRequest.bind(this.response),
     }),
     E_VALIDATION_FAILURE: (error) => ({
-      response: { error: AdonisExceptionHandler.contract.BodyValidationFailure, failures: error.messages },
+      response: { error: error.messages },
       errorTreater: this.response.unprocessableEntity.bind(this.response),
     }),
     E_AUTHORIZATION_FAILURE: (_error) => ({
@@ -78,8 +78,12 @@ export default class AdonisExceptionHandler extends HttpExceptionHandler impleme
     this.response.created({ message: AdonisExceptionHandler.contract.SucessfullyCreated, data: body })
   }
 
-  public SuccessfullyAuthenticated(): void {
-    this.response.accepted({ message: AdonisExceptionHandler.contract.SuccessfullyAuthenticated })
+  public SuccessfullyAuthenticated(body: any): void {
+    this.response.accepted({ message: AdonisExceptionHandler.contract.SuccessfullyAuthenticated, data: body })
+  }
+
+  public InternalServerError(body: any): void {
+    this.response.internalServerError({ error: AdonisExceptionHandler.contract.InternalServerError, data: body })
   }
 
   public SucessfullyUpdated(body: any): void {

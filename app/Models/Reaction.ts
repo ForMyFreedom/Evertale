@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, afterCreate, beforeDelete, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import { BelongsTo, afterCreate, beforeDelete, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import User from './User'
 import Comment from './Comment'
 import Write from './Write'
@@ -7,8 +7,9 @@ import Constant from './Constant'
 import Prompt from './Prompt'
 import Proposal from './Proposal'
 import { InteractionEntity, CommentReactionEntity, WriteReactionEntity, CommentEntity, UserEntity, WriteEntity, ReactionType, ReactionEntity } from '@ioc:forfabledomain'
+import { BaseAdonisModel } from './_Base'
 
-export class CommentReaction extends BaseModel implements CommentReactionEntity {
+export class CommentReaction extends BaseAdonisModel implements CommentReactionEntity {
   @column({ isPrimary: true })
   public id: number
 
@@ -90,7 +91,7 @@ export class CommentReaction extends BaseModel implements CommentReactionEntity 
   }
 }
 
-export class WriteReaction extends BaseModel implements WriteReactionEntity {
+export class WriteReaction extends BaseAdonisModel implements WriteReactionEntity {
   @column({ isPrimary: true })
   public id: number
 

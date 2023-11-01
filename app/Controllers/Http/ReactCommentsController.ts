@@ -2,9 +2,9 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ReactCommentsProvider from '@ioc:Providers/ReactCommentsService'
 import { CommentReactionValidator } from 'App/Validators/CommentReactionValidator'
 import { UsesUsecase } from './_Conversor'
-import { ReactCommentsUsecase } from '@ioc:forfabledomain'
+import { ReactCommentsController } from '@ioc:forfabledomain'
 
-export default class ReactCommentsController implements UsesUsecase<ReactCommentsUsecase> {
+export default class ReactCommentsAdonisController implements UsesUsecase<ReactCommentsController> {
   public async show(ctx: HttpContextContract): Promise<void> {
     return ReactCommentsProvider(ctx).show(ctx.params.id)
   }
