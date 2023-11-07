@@ -1,4 +1,4 @@
-import { CommentsService, ConstantsService, DailyPromptsService, ExceptionHandler, GenresService, LoginService, MailService, PromptsService, ProposalsService, ReactCommentsService, ReactWritesService, StoryAdvanceService, UsersService } from '@ioc:forfabledomain';
+import { CommentsService, ConstantsService, DailyPromptsService, ResponseHandler, GenresService, LoginService, MailService, PromptsService, ProposalsService, ReactCommentsService, ReactWritesService, StoryAdvanceService, UsersService } from '@ioc:forfabledomain';
 import { AdonisEventEmmiter, AdonisMailSender, CommentPersistence, ConstantsPersistence, GenrePersistence, PromptPersistence, ProposalPersistence, ThematicWordPersistence, WritePersistence } from 'App/Infra';
 import { ReactCommentPersistence } from 'App/Infra/persistence/ReactCommentPersistence';
 import { ReactWritePersistence } from 'App/Infra/persistence/ReactWritePersistence';
@@ -6,7 +6,7 @@ import { TokenPersistence } from 'App/Infra/persistence/TokenPersistence';
 import { AdonisAuthWrapper, UserPersistence } from 'App/Infra/persistence/UserPersistence';
 import Services, { ServiceHandler } from 'Config/services';
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import AdonisExceptionHandler from 'App/Exceptions/Handler';
+import AdonisResponseHandler from 'App/Exceptions/Handler';
 
 export class ServicesHandlers implements Services {
   allHandlers: {[key in keyof Services]: ServiceHandler<any>} = {
@@ -129,8 +129,8 @@ export class ServicesHandlers implements Services {
   }
 }
 
-function Handler(ctx: HttpContextContract): ExceptionHandler {
-  return AdonisExceptionHandler.getInstance(ctx.response)    
+function Handler(ctx: HttpContextContract): ResponseHandler {
+  return AdonisResponseHandler.getInstance(ctx.response)    
 }
 
 export default ServicesHandlers

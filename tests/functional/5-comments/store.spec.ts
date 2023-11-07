@@ -3,10 +3,10 @@ import { ApiClient } from '@japa/api-client/build/src/client'
 import HTTP from 'http-status-enum'
 import { BASE_URL, SAMPLE_COMMENT, SAMPLE_COMMENT_ANSWER, WRONG_SAMPLE_COMMENT } from './_data'
 import { testPOSTUnauthenticated } from '../_utils/basic-tests/unauthenticated'
-import { ConnectionType, testPOSTAccepted } from '../_utils/basic-tests/accepted'
+import { testPOSTAccepted } from '../_utils/basic-tests/accepted'
 import { testPOSTUnacceptedBody } from '../_utils/basic-tests/unaccepted-body'
 import { postPrompt } from '../3-prompts/_data'
-import { ExceptionContract, postWithAuth } from '../_utils/basic-auth-requests'
+import { ConnectionType, ExceptionContract, postWithAuth } from '../_utils/basic-auth-requests'
 
 async function testCommentStore({ client }: TestContext): Promise<void> {
   const write = await postPrompt(client)
@@ -25,17 +25,17 @@ async function testCommentStore({ client }: TestContext): Promise<void> {
 }
 
 async function testWriteNotDefined(
-  client: ApiClient, url: string, body: object, isAdmin: boolean = true
+  client: ApiClient, url: string, body: object, connectionType: ConnectionType = ConnectionType.Admin
 ): Promise<void> {
-  let response = await postWithAuth(url, client, isAdmin, body)
+  let response = await postWithAuth(url, client, connectionType, body)
   response.assertStatus(HTTP.NOT_FOUND)
   response.assertBodyContains({error: ExceptionContract.UndefinedWrite})
 }
 
 async function testCommentNotDefined(
-  client: ApiClient, url: string, body: object, isAdmin: boolean = true
+  client: ApiClient, url: string, body: object, connectionType: ConnectionType = ConnectionType.Admin
 ): Promise<void> {
-  let response = await postWithAuth(url, client, isAdmin, body)
+  let response = await postWithAuth(url, client, connectionType, body)
   response.assertStatus(HTTP.NOT_FOUND)
   response.assertBodyContains({error: ExceptionContract.UndefinedComment})
 }

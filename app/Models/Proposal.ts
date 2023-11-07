@@ -15,7 +15,7 @@ import Comment from './Comment'
 import Write from './Write'
 import Prompt from './Prompt'
 import { BOOLEAN_SERIAL, BaseAdonisModel } from './_Base'
-import { calculatePointsThrowReactions, ProposalEntity, CommentEntity, PromptEntity, WriteEntity} from '@ioc:forfabledomain'
+import { ReactionEntity, ProposalEntity } from '@ioc:forfabledomain'
 
 export default class Proposal extends BaseAdonisModel implements ProposalEntity {
   @column({ isPrimary: true })
@@ -54,7 +54,7 @@ export default class Proposal extends BaseAdonisModel implements ProposalEntity 
   @afterFind()
   public static async calculateProposalPopularity(proposal: Proposal) {
     await proposal.write.load('reactions')
-    proposal.popularity = calculatePointsThrowReactions(proposal.write.reactions)
+    proposal.popularity = ReactionEntity.calculatePointsThrowReactions(proposal.write.reactions)
   }
 
   @afterFetch()
@@ -62,22 +62,5 @@ export default class Proposal extends BaseAdonisModel implements ProposalEntity 
     for (const proposal of proposalArray) {
       await Proposal.calculateProposalPopularity(proposal)
     }
-  }
-
-  async calculateProposalPopularity(proposal: ProposalEntity): Promise<void> {
-    await ProposalEntity.calculateProposalPopularity(proposal)
-  }
-
-  public async getWrite(this: Proposal): Promise<WriteEntity> {
-    await this.load('write')
-    return this.write
-  }
-  public async getPrompt(this: Proposal): Promise<PromptEntity> {
-    await this.load('prompt')
-    return this.prompt
-  }
-  public async getComment(this: Proposal): Promise<CommentEntity[]> {
-    await this.load('comments')
-    return this.comments
   }
 }

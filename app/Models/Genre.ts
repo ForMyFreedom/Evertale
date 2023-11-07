@@ -12,7 +12,7 @@ import {
 import ThematicWord from './ThematicWord'
 import Prompt from './Prompt'
 import Database from '@ioc:Adonis/Lucid/Database'
-import { PromptEntity, GenreEntity, ThematicWordEntity } from '@ioc:forfabledomain'
+import { GenreEntity } from '@ioc:forfabledomain'
 import { BaseAdonisModel } from './_Base'
 
 
@@ -58,15 +58,6 @@ export default class Genre extends BaseAdonisModel implements GenreEntity {
   public async calculateGenrePopularity(genre: Genre): Promise<void> {
     const amountOfNonDailyPrompts = await getAmountOfNonDailyPrompts(genre)
     return GenreEntity.calculateGenrePopularity(genre, amountOfNonDailyPrompts)
-  }
-
-  public async getPrompts(this: Genre): Promise<PromptEntity[]> {
-    await this.load('prompts')
-    return this.prompts
-  }
-  public async getThematicWords(this: Genre): Promise<ThematicWordEntity[]> {
-    await this.load('thematicWords')
-    return this.thematicWords
   }
 }
 

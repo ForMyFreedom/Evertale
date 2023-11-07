@@ -4,10 +4,11 @@ import { testPUTUnauthenticated } from '../_utils/basic-tests/unauthenticated'
 import { testPUTUndefinedId } from '../_utils/basic-tests/undefined-id'
 import { testPUTOthersWrite } from '../_utils/basic-tests/others-write'
 import { testPUTAccepted } from '../_utils/basic-tests/accepted'
+import { ConnectionType } from '../_utils/basic-auth-requests'
 
 async function testPromptUpdate({ client }: TestContext): Promise<void> {
-  const prompt = await postPrompt(client, true)
-  const otherPrompt = await postPrompt(client, false)
+  const prompt = await postPrompt(client, ConnectionType.Admin)
+  const otherPrompt = await postPrompt(client, ConnectionType.NonAdmin)
 
   await testPUTUnauthenticated(client, BASE_URL, prompt.id, EDIT_SAMPLE_PROMPT)
   await testPUTUndefinedId(client, BASE_URL, EDIT_SAMPLE_PROMPT)

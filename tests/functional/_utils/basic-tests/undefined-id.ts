@@ -1,6 +1,6 @@
 import HTTP from "http-status-enum"
 import { ApiClient } from '@japa/api-client/build/src/client'
-import { ExceptionContract } from "../basic-auth-requests"
+import { ConnectionType, ExceptionContract } from "../basic-auth-requests"
 import { RequestFunction, deleteWithAuth, getWithAuth, postWithAuth, putWithAuth } from "../basic-auth-requests"
 
 export async function testGETUndefinedId(client: ApiClient, urlWithoutId: string): Promise<void> {
@@ -23,7 +23,7 @@ async function testREQUESTUndefinedId(
   requestFunction: RequestFunction,
   client: ApiClient, url: string, body?: object
 ): Promise<void> {
-  let response = await requestFunction(`${url}/99`, client, true, body)
+  let response = await requestFunction(`${url}/99`, client, ConnectionType.Admin, body)
   response.assertStatus(HTTP.NOT_FOUND)
   response.assertBody({error: ExceptionContract.UndefinedId})
 }

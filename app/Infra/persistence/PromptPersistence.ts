@@ -1,4 +1,4 @@
-import { Pagination, PromptEntity, PromptInsert, PromptRepository } from "@ioc:forfabledomain"
+import { Pagination, PromptEntity, PromptInsert, PromptRepository, ProposalEntity, WriteEntity } from "@ioc:forfabledomain"
 import Prompt from "App/Models/Prompt"
 import { paginate } from "./utils"
 
@@ -36,8 +36,17 @@ export class PromptPersistence implements PromptRepository {
     }
   }
 
-  async findAll(page?: number, limit?: number): Promise<Pagination<PromptEntity>> {
+  async findAll(page?: number, limit?: number): Promise<Pagination<PromptEntity>['data']> {
     return paginate(await Prompt.query().paginate(page || 1, limit))
+  }
+
+  async findAllByAuthor(authorId: number, page?: number | undefined, limit?: number | undefined): Promise<Pagination<PromptEntity>['data']> {
+    return paginate(
+      await Prompt.query()
+        .join('writes', 'writes.id', '=', 'prompts.write_id')
+        .where('writes.author_id', '=', authorId)
+        .paginate(page || 1, limit)
+    )
   }
 
   async delete(entityId: number): Promise<PromptEntity | null> {
@@ -82,5 +91,25 @@ export class PromptPersistence implements PromptRepository {
   
   async getAllDailyPrompt(): Promise<PromptEntity[]> {
     return Prompt.query().where('isDaily', true)
+  }
+
+  async getProposals(prompt: Prompt|Prompt['id']): Promise<ProposalEntity[]> {
+    if (typeof prompt === 'number') {
+      const promptModel = await Prompt.find(prompt)
+      if (promptModel) {
+        await promptModel.load('proposals')
+        return promptModel.proposals
+      } else {
+        return []
+      }
+    } else {
+      await prompt.load('proposals')
+      return prompt.proposals
+    }
+  }
+
+  async getWrite(prompt: Prompt): Promise<WriteEntity> {
+    await prompt.load('write')
+    return prompt.write
   }
 }

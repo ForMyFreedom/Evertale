@@ -4,8 +4,8 @@ import HTTP from 'http-status-enum'
 import { BASE_URL, SAMPLE_REACT_COMMENT, WRONG_SAMPLE_REACT_COMMENT, CONCLUSIVE_REACT_COMMENT, OTHER_SAMPLE_REACT_COMMENT } from './_data'
 import { testPOSTUnauthenticated } from '../_utils/basic-tests/unauthenticated'
 import { testPOSTUnacceptedBody } from '../_utils/basic-tests/unaccepted-body'
-import { ConnectionType, testPOSTAccepted } from '../_utils/basic-tests/accepted'
-import { ExceptionContract, postWithAuth } from '../_utils/basic-auth-requests'
+import { testPOSTAccepted } from '../_utils/basic-tests/accepted'
+import { ConnectionType, ExceptionContract, postWithAuth } from '../_utils/basic-auth-requests'
 import { testOverReaction } from '../_utils/basic-tests/reaction-tests'
 import { postComment } from '../5-comments/_data'
 
@@ -25,17 +25,17 @@ async function testReactCommentStore({ client }: TestContext): Promise<void> {
 }
 
 async function testCantUseConclusiveReactionInComment(
-  client: ApiClient, url: string, body: object, isAdmin: ConnectionType
+  client: ApiClient, url: string, body: object, connectionType: ConnectionType
 ): Promise<void> {
-  let response = await postWithAuth(url, client, Boolean(isAdmin), body)
+  let response = await postWithAuth(url, client, connectionType, body)
   response.assertStatus(HTTP.BAD_REQUEST)
   response.assertBodyContains({ error: ExceptionContract.CantUseConclusiveReactionInComment })
 }
 
 async function testCantReactYourself(
-  client: ApiClient, url: string, body: object, isAdmin: ConnectionType
+  client: ApiClient, url: string, body: object, connectionType: ConnectionType
 ): Promise<void> {
-  let response = await postWithAuth(url, client, Boolean(isAdmin), body)
+  let response = await postWithAuth(url, client, connectionType, body)
   response.assertStatus(HTTP.BAD_REQUEST)
   response.assertBodyContains({ error: ExceptionContract.CantReactYourself })
 }

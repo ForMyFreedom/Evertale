@@ -1,8 +1,8 @@
 import { ConstantEntity, ConstantsRepository } from "@ioc:forfabledomain";
-import AdonisExceptionHandler from "App/Exceptions/Handler";
+import AdonisResponseHandler from "App/Exceptions/Handler";
 import Constant from "App/Models/Constant";
 
-const langContract = AdonisExceptionHandler.contract
+const langContract = AdonisResponseHandler.contract
 
 export class ConstantsPersistence implements ConstantsRepository {
   public static instance = new ConstantsPersistence()

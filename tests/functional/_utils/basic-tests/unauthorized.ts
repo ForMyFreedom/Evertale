@@ -1,6 +1,6 @@
 import HTTP from "http-status-enum"
 import { ApiClient } from '@japa/api-client/build/src/client'
-import { ExceptionContract } from "../basic-auth-requests"
+import { ConnectionType, ExceptionContract } from "../basic-auth-requests"
 import { RequestFunction, deleteWithAuth, getWithAuth, postWithAuth, putWithAuth } from "../basic-auth-requests"
 
 export async function testGETUnauthorized(client: ApiClient, url: string): Promise<void> {
@@ -23,7 +23,7 @@ async function testREQUESTUnauthorized(
   requestFunction: RequestFunction,
   client: ApiClient, url: string, body?: object
 ): Promise<void> {
-  let response = await requestFunction(url, client, false, body)
+  let response = await requestFunction(url, client, ConnectionType.NonAdmin, body)
   response.assertStatus(HTTP.UNAUTHORIZED)
   response.assertBodyContains({ error: ExceptionContract.Unauthorized })
 }

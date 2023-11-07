@@ -1,15 +1,10 @@
 import HTTP from "http-status-enum"
 import { ApiClient } from '@japa/api-client/build/src/client'
-import { RequestFunction, deleteWithAuth, getWithAuth, postWithAuth, putWithAuth } from "../basic-auth-requests"
+import { ConnectionType, RequestFunction, deleteWithAuth, getWithAuth, postWithAuth, putWithAuth } from "../basic-auth-requests"
 import { ExceptionContract } from "../basic-auth-requests"
 
-export enum ConnectionType {
-  NonAdmin = 0,
-  Admin = 1
-}
-
 export async function testGETAccepted(
-  client: ApiClient, url: string, connectionType: ConnectionType = ConnectionType.Admin
+  client: ApiClient, url: string, connectionType: ConnectionType
 ): Promise<void> {
   const message = { message: ExceptionContract.SucessfullyRecovered }
   const http = HTTP.ACCEPTED
@@ -44,7 +39,7 @@ async function testREQUESTAccepted(
   requestFunction: RequestFunction, connectionType: ConnectionType, message: object,
   http: number, client: ApiClient, url: string, body?: object
 ): Promise<void> {
-  let response = await requestFunction(url, client, Boolean(connectionType), body)
+  let response = await requestFunction(url, client, connectionType, body)
   response.assertStatus(http)
   response.assertBodyContains(message)
 }

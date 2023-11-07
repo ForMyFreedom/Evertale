@@ -2,8 +2,9 @@ import { TestContext } from '@japa/runner'
 import { BASE_URL, postReactWrite } from './_data'
 import { testDELETEUnauthenticated } from '../_utils/basic-tests/unauthenticated'
 import { testDELETEUndefinedId } from '../_utils/basic-tests/undefined-id'
-import { ConnectionType, testDELETEAccepted } from '../_utils/basic-tests/accepted'
+import { testDELETEAccepted } from '../_utils/basic-tests/accepted'
 import { testDELETEOthersReaction } from '../_utils/basic-tests/reaction-tests'
+import { ConnectionType } from '../_utils/basic-auth-requests'
 
 async function testReactWriteUpdate({ client }: TestContext): Promise<void> {
   const adminReactPrompt = await postReactWrite(client, true, true)

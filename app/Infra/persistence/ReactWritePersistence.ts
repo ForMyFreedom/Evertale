@@ -1,4 +1,4 @@
-import { Pagination, ReactWriteRepository, WriteReactionEntity, WriteReactionInsert } from "@ioc:forfabledomain";
+import { Pagination, ReactWriteRepository, UserEntity, WriteReactionEntity, WriteReactionInsert } from "@ioc:forfabledomain";
 import { WriteReaction } from "App/Models/Reaction";
 import { paginate } from "./utils";
 
@@ -37,7 +37,7 @@ export class ReactWritePersistence implements ReactWriteRepository {
     return WriteReaction.find(entityId)
   }
 
-  async findAll(page?: number, limit?: number): Promise<Pagination<WriteReactionEntity>> {
+  async findAll(page?: number, limit?: number): Promise<Pagination<WriteReactionEntity>['data']> {
     return paginate(await WriteReaction.query().paginate(page || 1, limit))
   }
 
@@ -60,5 +60,10 @@ export class ReactWritePersistence implements ReactWriteRepository {
     } else {
       return null
     }
+  }
+
+  async getAuthor(reaction: WriteReaction): Promise<UserEntity> {
+    await reaction.load('owner')
+    return reaction.owner
   }
 }

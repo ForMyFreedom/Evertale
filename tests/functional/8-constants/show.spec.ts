@@ -1,8 +1,7 @@
 import { TestContext } from '@japa/runner'
 import { BASE_URL } from './_data'
-import { testGETUnauthenticated } from '../_utils/basic-tests/unauthenticated'
-import { ConnectionType, testGETAccepted } from '../_utils/basic-tests/accepted'
-import { testGETUnauthorized } from '../_utils/basic-tests/unauthorized'
+import { testGETAccepted } from '../_utils/basic-tests/accepted'
+import { ConnectionType } from '../_utils/basic-auth-requests'
 
 async function testGenreIndex({ client }: TestContext): Promise<void> {
   // await testGETUnauthenticated(client, BASE_URL)

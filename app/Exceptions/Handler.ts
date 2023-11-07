@@ -1,25 +1,11 @@
-/*
-|--------------------------------------------------------------------------
-| Http Exception Handler
-|--------------------------------------------------------------------------
-|
-| AdonisJs will forward all exceptions occurred during an HTTP request to
-| the following class. You can learn more about exception handling by
-| reading docs.
-|
-| The exception handler extends a base `HttpExceptionHandler` which is not
-| mandatory, however it can do lot of heavy lifting to handle the errors
-| properly.
-|
-*/
 
 import Logger from '@ioc:Adonis/Core/Logger'
 import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
 import type { ResponseContract } from '@ioc:Adonis/Core/Response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { englishExceptionContract } from '@ioc:forfabledomain'
+import { ApiResponse, englishExceptionContract } from '@ioc:forfabledomain'
 import Env from '@ioc:Adonis/Core/Env'
-import { ExceptionContract, ExceptionHandler } from '@ioc:forfabledomain'
+import { ExceptionContract, ResponseHandler } from '@ioc:forfabledomain'
 
 type ErrorTreater = { response: object; errorTreater: (body: any) => void }
 type ErrorHandlers = { [key: string]: (error: any, ) => ErrorTreater }
@@ -28,7 +14,7 @@ const contractsList: {[key: string]: ExceptionContract} = {
   'en': englishExceptionContract
 }
 
-export default class AdonisExceptionHandler extends HttpExceptionHandler implements ExceptionHandler {
+export default class AdonisResponseHandler extends HttpExceptionHandler implements ResponseHandler {
   public static contract: ExceptionContract = contractsList[Env.get('I18N')]
   public response: ResponseContract
   
@@ -36,19 +22,19 @@ export default class AdonisExceptionHandler extends HttpExceptionHandler impleme
     super(Logger)
   }
 
-  static getInstance(response: ResponseContract): AdonisExceptionHandler {
-    const instance = new AdonisExceptionHandler()
+  static getInstance(response: ResponseContract): AdonisResponseHandler {
+    const instance = new AdonisResponseHandler()
     instance.response = response
     return instance
   }
 
   private basicHandlers: ErrorHandlers = {
     E_ROUTE_NOT_FOUND: (_error) => ({
-      response: { error: AdonisExceptionHandler.contract.RouteNotFounded },
+      response: { error: AdonisResponseHandler.contract.RouteNotFounded },
       errorTreater: this.response.badRequest.bind(this.response),
     }),
     E_ROW_NOT_FOUND: (_error) => ({
-      response: { error: AdonisExceptionHandler.contract.NotFound },
+      response: { error: AdonisResponseHandler.contract.NotFound },
       errorTreater: this.response.badRequest.bind(this.response),
     }),
     E_VALIDATION_FAILURE: (error) => ({
@@ -56,7 +42,7 @@ export default class AdonisExceptionHandler extends HttpExceptionHandler impleme
       errorTreater: this.response.unprocessableEntity.bind(this.response),
     }),
     E_AUTHORIZATION_FAILURE: (_error) => ({
-      response: { error: AdonisExceptionHandler.contract.Unauthorized },
+      response: { error: AdonisResponseHandler.contract.Unauthorized },
       errorTreater: this.response.unauthorized.bind(this.response),
     }),
   }
@@ -74,175 +60,218 @@ export default class AdonisExceptionHandler extends HttpExceptionHandler impleme
     }
   }
 
-  public SucessfullyCreated(body: any): void {
-    this.response.created({ message: AdonisExceptionHandler.contract.SucessfullyCreated, data: body })
+  public SucessfullyCreated<T>(body?: T|null): ApiResponse<T> {
+    this.response.created({ message: AdonisResponseHandler.contract.SucessfullyCreated, data: body })
+    return body ? { data: body } : { error: 'InternalServerError' }
   }
 
-  public SuccessfullyAuthenticated(body: any): void {
-    this.response.accepted({ message: AdonisExceptionHandler.contract.SuccessfullyAuthenticated, data: body })
+  public SuccessfullyAuthenticated<T>(body?: T|null): ApiResponse<T> {
+    this.response.accepted({ message: AdonisResponseHandler.contract.SuccessfullyAuthenticated, data: body })
+    return body ? { data: body } : { error: 'InternalServerError' }
   }
 
-  public InternalServerError(body: any): void {
-    this.response.internalServerError({ error: AdonisExceptionHandler.contract.InternalServerError, data: body })
+  public InternalServerError<T>(body?: T|null): ApiResponse<T> {
+    this.response.internalServerError({ error: AdonisResponseHandler.contract.InternalServerError, data: body })
+    return { error: 'InternalServerError' }
   }
 
-  public SucessfullyUpdated(body: any): void {
-    this.response.accepted({ message: AdonisExceptionHandler.contract.SucessfullyUpdated, data: body })
+  public SucessfullyUpdated<T>(body?: T|null): ApiResponse<T> {
+    this.response.accepted({ message: AdonisResponseHandler.contract.SucessfullyUpdated, data: body })
+    return body ? { data: body } : { error: 'InternalServerError' }
   }
 
-  public SucessfullyRecovered(body: any): void {
-    this.response.accepted({ message: AdonisExceptionHandler.contract.SucessfullyRecovered, data: body })
+  public SucessfullyRecovered<T>(body?: T|null): ApiResponse<T> {
+    this.response.accepted({ message: AdonisResponseHandler.contract.SucessfullyRecovered, data: body })
+    return body ? { data: body } : { error: 'InternalServerError' }
   }
 
-  public SucessfullyDestroyed(body: any): void {
-    this.response.accepted({ message: AdonisExceptionHandler.contract.SucessfullyDestroyed, data: body })
+  public SucessfullyDestroyed<T>(body?: T|null): ApiResponse<T> {
+    this.response.accepted({ message: AdonisResponseHandler.contract.SucessfullyDestroyed, data: body })
+    return body ? { data: body } : { error: 'InternalServerError' }
   }
 
-  public UndefinedId(): void {
-    this.response.notFound({ error: AdonisExceptionHandler.contract.UndefinedId })
+  public UndefinedId<T>(_body?: T|null): ApiResponse<T> {
+    this.response.notFound({ error: AdonisResponseHandler.contract.UndefinedId })
+    return { error: 'UndefinedId' }
   }
 
-  public UndefinedWrite(): void {
-    this.response.notFound({ error: AdonisExceptionHandler.contract.UndefinedWrite })
+  public UndefinedWrite<T>(_body?: T|null): ApiResponse<T> {
+    this.response.notFound({ error: AdonisResponseHandler.contract.UndefinedWrite })
+    return { error: 'UndefinedWrite' }
   }
 
-  public UndefinedComment(): void {
-    this.response.notFound({ error: AdonisExceptionHandler.contract.UndefinedComment })
+  public UndefinedComment<T>(_body?: T|null): ApiResponse<T> {
+    this.response.notFound({ error: AdonisResponseHandler.contract.UndefinedComment })
+    return { error: 'UndefinedComment' }
   }
 
-  public CantDeleteOthersWrite(): void {
-    this.response.unauthorized({ error: AdonisExceptionHandler.contract.CantDeleteOthersWrite })
+  public CantDeleteOthersWrite<T>(_body?: T|null): ApiResponse<T> {
+    this.response.unauthorized({ error: AdonisResponseHandler.contract.CantDeleteOthersWrite })
+    return { error: 'CantDeleteOthersWrite' }
   }
 
-  public CantEditOthersWrite(): void {
-    this.response.unauthorized({ error: AdonisExceptionHandler.contract.CantEditOthersWrite })
+  public CantEditOthersWrite<T>(_body?: T|null): ApiResponse<T> {
+    this.response.unauthorized({ error: AdonisResponseHandler.contract.CantEditOthersWrite })
+    return { error: 'CantEditOthersWrite' }
   }
 
-  public CantEditOtherUser(): void {
-    this.response.unauthorized({ error: AdonisExceptionHandler.contract.CantEditOtherUser })
+  public CantEditOtherUser<T>(_body?: T|null): ApiResponse<T> {
+    this.response.unauthorized({ error: AdonisResponseHandler.contract.CantEditOtherUser })
+    return { error: 'CantEditOtherUser' }
   }
 
-  public CantDeleteOtherUser(): void {
-    this.response.unauthorized({ error: AdonisExceptionHandler.contract.CantDeleteOtherUser })
+  public CantDeleteOtherUser<T>(_body?: T|null): ApiResponse<T> {
+    this.response.unauthorized({ error: AdonisResponseHandler.contract.CantDeleteOtherUser })
+    return { error: 'CantDeleteOtherUser' }
   }
 
-  public CantDeleteOthersReaction(): void {
-    this.response.unauthorized({ error: AdonisExceptionHandler.contract.CantDeleteOthersReaction })
+  public CantDeleteOthersReaction<T>(_body?: T|null): ApiResponse<T> {
+    this.response.unauthorized({ error: AdonisResponseHandler.contract.CantDeleteOthersReaction })
+    return { error: 'CantDeleteOthersReaction' }
   }
 
-  public ImageError(): void {
-    this.response.badRequest({ error: AdonisExceptionHandler.contract.ImageError })
+  public ImageError<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ error: AdonisResponseHandler.contract.ImageError })
+    return { error: 'ImageError' }
   }
 
-  public Unauthenticated(): void {
-    this.response.proxyAuthenticationRequired({ error: AdonisExceptionHandler.contract.Unauthenticated })
+  public Unauthenticated<T>(_body?: T|null): ApiResponse<T> {
+    this.response.proxyAuthenticationRequired({ error: AdonisResponseHandler.contract.Unauthenticated })
+    return { error: 'Unauthenticated' }
   }
 
-  public Unauthorized(): void {
-    this.response.unauthorized({ error: AdonisExceptionHandler.contract.Unauthorized })
+  public Unauthorized<T>(_body?: T|null): ApiResponse<T> {
+    this.response.unauthorized({ error: AdonisResponseHandler.contract.Unauthorized })
+    return { error: 'Unauthorized' }
   }
 
-  public InvalidUser(): void {
-    this.response.badRequest({ message: AdonisExceptionHandler.contract.InvalidUser })
+  public InvalidUser<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ message: AdonisResponseHandler.contract.InvalidUser })
+    return { error: 'InvalidUser' }
   }
 
-  public InvalidGenre(): void {
-    this.response.badRequest({ message: AdonisExceptionHandler.contract.InvalidGenre })
+  public InvalidGenre<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ message: AdonisResponseHandler.contract.InvalidGenre })
+    return { error: 'InvalidGenre' }
   }
 
-  public FileNotFound(): void {
-    this.response.notFound({ error: AdonisExceptionHandler.contract.FileNotFound })
+  public FileNotFound<T>(_body?: T|null): ApiResponse<T> {
+    this.response.notFound({ error: AdonisResponseHandler.contract.FileNotFound })
+    return { error: 'FileNotFound' }
   }
 
-  public CantProposeToClosedHistory(): void {
-    this.response.badRequest({ error: AdonisExceptionHandler.contract.CantProposeToClosedHistory })
+  public CantProposeToClosedHistory<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ error: AdonisResponseHandler.contract.CantProposeToClosedHistory })
+    return { error: 'CantProposeToClosedHistory' }
   }
 
-  public IncompatibleWriteAndAnswer(): void {
-    this.response.badRequest({ error: AdonisExceptionHandler.contract.IncompatibleWriteAndAnswer })
+  public IncompatibleWriteAndAnswer<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ error: AdonisResponseHandler.contract.IncompatibleWriteAndAnswer })
+    return { error: 'IncompatibleWriteAndAnswer' }
   }
 
-  public CantUseConclusiveReactionInComment(): void {
-    this.response.badRequest({ error: AdonisExceptionHandler.contract.CantUseConclusiveReactionInComment })
+  public CantUseConclusiveReactionInComment<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ error: AdonisResponseHandler.contract.CantUseConclusiveReactionInComment })
+    return { error: 'CantUseConclusiveReactionInComment' }
   }
 
-  public CantUseConclusiveReactionInPrompt(): void {
-    this.response.badRequest({ error: AdonisExceptionHandler.contract.CantUseConclusiveReactionInPrompt })
+  public CantUseConclusiveReactionInPrompt<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ error: AdonisResponseHandler.contract.CantUseConclusiveReactionInPrompt })
+    return { error: 'CantUseConclusiveReactionInPrompt' }
   }
 
-  public TextLengthHigherThanAllowed(): void {
-    this.response.badRequest({ error: AdonisExceptionHandler.contract.TextLengthHigherThanAllowed })
+  public TextLengthHigherThanAllowed<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ error: AdonisResponseHandler.contract.TextLengthHigherThanAllowed })
+    return { error: 'TextLengthHigherThanAllowed' }
   }
 
-  public CantUseConclusiveReactionInConcludedHistory(): void {
-    this.response.badGateway({ error: AdonisExceptionHandler.contract.CantUseConclusiveReactionInConcludedHistory })
+  public CantUseConclusiveReactionInConcludedHistory<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badGateway({ error: AdonisResponseHandler.contract.CantUseConclusiveReactionInConcludedHistory })
+    return { error: 'CantUseConclusiveReactionInConcludedHistory' }
   }
 
-  public NotAppropriablePrompt(): void {
-    this.response.badRequest({ error: AdonisExceptionHandler.contract.NotAppropriablePrompt })
+  public NotAppropriablePrompt<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ error: AdonisResponseHandler.contract.NotAppropriablePrompt })
+    return { error: 'NotAppropriablePrompt' }
   }
 
-  public TextDontRespectPrompt(): void {
-    this.response.badRequest({ error: AdonisExceptionHandler.contract.TextDontRespectPrompt })
+  public TextDontRespectPrompt<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ error: AdonisResponseHandler.contract.TextDontRespectPrompt })
+    return { error: 'TextDontRespectPrompt' }
   }
 
-  public CantEditDailyPrompt(): void {
-    this.response.badRequest({ error: AdonisExceptionHandler.contract.CantEditDailyPrompt })
+  public CantEditDailyPrompt<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ error: AdonisResponseHandler.contract.CantEditDailyPrompt })
+    return { error: 'CantEditDailyPrompt' }
   }
 
-  public CantProposeToUnappropriatedPrompt(): void {
-    this.response.badRequest({ error: AdonisExceptionHandler.contract.CantProposeToUnappropriatedPrompt })
+  public CantProposeToUnappropriatedPrompt<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ error: AdonisResponseHandler.contract.CantProposeToUnappropriatedPrompt })
+    return { error: 'CantProposeToUnappropriatedPrompt' }
   }
 
-  public ServerMisconfigured(): void {
-    this.response.internalServerError({ error: AdonisExceptionHandler.contract.ServerMisconfigured })
+  public ServerMisconfigured<T>(_body?: T|null): ApiResponse<T> {
+    this.response.internalServerError({ error: AdonisResponseHandler.contract.ServerMisconfigured })
+    return { error: 'ServerMisconfigured' }
   }
 
-  public CantReactYourself(): void {
-    this.response.badRequest({ error: AdonisExceptionHandler.contract.CantReactYourself })
+  public CantReactYourself<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ error: AdonisResponseHandler.contract.CantReactYourself })
+    return { error: 'CantReactYourself' }
   }
 
-  public BadRequest(): void {
-    this.response.badRequest({ error: AdonisExceptionHandler.contract.BadRequest })
+  public BadRequest<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ error: AdonisResponseHandler.contract.BadRequest })
+    return { error: 'BadRequest' }
   }
 
-  public EmailSended(): void {
-    this.response.ok({ message: AdonisExceptionHandler.contract.EmailSended })
+  public EmailSended<T>(_body?: T|null): ApiResponse<T> {
+    this.response.ok({ message: AdonisResponseHandler.contract.EmailSended })
+    return { error: 'EmailSended' }
   }
 
-  public CantComplaintToDailyWrite(): void {
-    this.response.badRequest({ message: AdonisExceptionHandler.contract.CantComplaintToDailyWrite })
+  public CantComplaintToDailyWrite<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ message: AdonisResponseHandler.contract.CantComplaintToDailyWrite })
+    return { error: 'CantComplaintToDailyWrite' }
   }
 
-  public RouteNotFounded(): void {
-    this.response.notFound({ error: AdonisExceptionHandler.contract.NotFound })
+  public RouteNotFounded<T>(_body?: T|null): ApiResponse<T> {
+    this.response.notFound({ error: AdonisResponseHandler.contract.NotFound })
+    return { error: 'RouteNotFounded' }
   }
 
-  public BodyValidationFailure(): void {
-    this.response.badRequest({ error: AdonisExceptionHandler.contract.BodyValidationFailure })
+  public BodyValidationFailure<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ error: AdonisResponseHandler.contract.BodyValidationFailure })
+    return { error: 'BodyValidationFailure' }
   }
 
-  public NotFound(): void {
-    this.response.notFound({ error: AdonisExceptionHandler.contract.NotFound })
+  public NotFound<T>(_body?: T|null): ApiResponse<T> {
+    this.response.notFound({ error: AdonisResponseHandler.contract.NotFound })
+    return { error: 'NotFound' }
   }
 
-  public UndefinedToken(): void {
-    this.response.badRequest({ error: AdonisExceptionHandler.contract.UndefinedToken })
+  public UndefinedToken<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ error: AdonisResponseHandler.contract.UndefinedToken })
+    return { error: 'UndefinedToken' }
   }
 
-  public PasswordsDontMatch(): void {
-    this.response.badRequest({ error: AdonisExceptionHandler.contract.PasswordsDontMatch })
+  public PasswordsDontMatch<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ error: AdonisResponseHandler.contract.PasswordsDontMatch })
+    return { error: 'PasswordsDontMatch' }
   }
 
-  public TokenIsInvalid(): void {
-    this.response.unauthorized({ error: AdonisExceptionHandler.contract.TokenIsInvalid })
+  public TokenIsInvalid<T>(_body?: T|null): ApiResponse<T> {
+    this.response.unauthorized({ error: AdonisResponseHandler.contract.TokenIsInvalid })
+    return { error: 'TokenIsInvalid' }
   }
 
-  public PasswordRequired(): void {
-    this.response.badRequest({ error: AdonisExceptionHandler.contract.PasswordRequired })
+  public PasswordRequired<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ error: AdonisResponseHandler.contract.PasswordRequired })
+    return { error: 'PasswordRequired' }
   }
 
-  public PasswordRegex(): void {
-    this.response.badRequest({ error: AdonisExceptionHandler.contract.PasswordRegex })
+  public PasswordRegex<T>(_body?: T|null): ApiResponse<T> {
+    this.response.badRequest({ error: AdonisResponseHandler.contract.PasswordRegex })
+    return { error: 'PasswordRegex' }
   }
 }

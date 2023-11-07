@@ -1,5 +1,6 @@
 import { test } from '@japa/runner'
 import testProposalIndexByPrompt from './index-by-prompt.spec'
+import testProposalIndexByAuthor from './index-by-author.spec'
 import testActualProposalIndexByPrompt from './actual-index-by-prompt.spec'
 import testProposalStore from './store.spec'
 import testProposalShow from './show.spec'
@@ -15,4 +16,5 @@ test.group('4-Proposal', (group) => {
   test('Proposal-ActualIndexByPrompt', testActualProposalIndexByPrompt)
   test('Proposal-Update', testProposalUpdate)
   test('Proposal-Destroy', testProposalDestroy)
+  test('Proposal-IndexByAuthor', testProposalIndexByAuthor)
 })

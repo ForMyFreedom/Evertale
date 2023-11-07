@@ -11,7 +11,7 @@ export class CommentPersistence implements CommentRepository {
     return Comment.find(commentId)
   }
 
-  async findAll(page?: number, limit?: number): Promise<Pagination<CommentEntity>> {
+  async findAll(page?: number, limit?: number): Promise<Pagination<CommentEntity>['data']> {
     return paginate(await Comment.query().paginate(page || 1, limit))
   }
 
@@ -42,9 +42,12 @@ export class CommentPersistence implements CommentRepository {
     }
   }
 
-  async getByWrite(writeId: number): Promise<CommentEntity[]> {
-    const commentsArray = await Comment.query().where('writeId', '=', writeId)
-    return commentsArray
+  async getByWrite(writeId: number, page?: number, limit?: number): Promise<Pagination<CommentEntity>['data']> {
+    return paginate(
+      await Comment.query()
+        .where('writeId', '=', writeId)
+        .paginate(page ?? 1, limit)
+    )
   }
 
   async loadAuthors(commentsArray: CommentEntity[]): Promise<UserEntity[]> {

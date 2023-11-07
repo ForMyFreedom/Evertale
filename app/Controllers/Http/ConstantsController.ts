@@ -7,7 +7,7 @@ import { UsesUsecase } from './_Conversor'
 
 export default class ConstantsAdonisController implements UsesUsecase<ConstantsController> {
   public async index(ctx: HttpContextContract): Promise<void> {
-    return ConstantProvider(ctx).show()
+    await ConstantProvider(ctx).show()
   }
 
   public async show(ctx: HttpContextContract): Promise<void> {
@@ -16,6 +16,6 @@ export default class ConstantsAdonisController implements UsesUsecase<ConstantsC
 
   public async update(ctx: HttpContextContract): Promise<void> {
     const body = await new ConstantsValidator(ctx).validateAsOptional()
-    return ConstantProvider(ctx).update(body)
+    await ConstantProvider(ctx).update(body)
   }
 }

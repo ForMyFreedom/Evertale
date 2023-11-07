@@ -45,4 +45,12 @@ export default class PromptsAdonisController implements UsesUsecase<PromptsContr
       userId, params.id, body
     )
   }
+
+  public async indexByAuthor(ctx: HttpContextContract): Promise<void> {
+    const { params } = ctx
+    const { page, limit } = ctx.request.qs()
+    await PromptsProvider(ctx).indexByAuthor(
+      params.id, page, limit
+    )
+  }
 }

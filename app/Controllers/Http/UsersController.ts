@@ -4,17 +4,17 @@ import { UserValidator } from 'App/Validators/UserValidator'
 import { SessionContract } from '@ioc:Adonis/Addons/Session'
 import { PasswordInsert, UsersController } from '@ioc:forfabledomain'
 import UsersProvider from '@ioc:Providers/UsersService'
-import AdonisExceptionHandler from 'App/Exceptions/Handler'
+import AdonisResponseHandler from 'App/Exceptions/Handler'
 import { UsesUsecase } from './_Conversor'
 import { UserUpdateValidator } from 'App/Validators/UserUpdateValidator'
 
 
-const langContract = AdonisExceptionHandler.contract
+const langContract = AdonisResponseHandler.contract
 
 export default class UsersAdonisController implements UsesUsecase<UsersController> {
   public async index(ctx: HttpContextContract): Promise<any> {
     const { page, limit } = ctx.request.qs()
-    const instance = AdonisExceptionHandler.getInstance(ctx.response)
+    const instance = AdonisResponseHandler.getInstance(ctx.response)
     const badRequest = instance.BadRequest.bind(instance)
     if((!page && limit || page && !limit)) {
       return badRequest()
@@ -81,6 +81,11 @@ export default class UsersAdonisController implements UsesUsecase<UsersControlle
     } else {
       return await view.render('password-reset-sucess')
     }
+  }
+
+  public async indexWritesByAuthor(ctx: HttpContextContract): Promise<any> {
+    const { page, limit } = ctx.request.qs()
+    return UsersProvider(ctx).indexWritesByAuthor(ctx.params.id, page, limit)
   }
 }
 

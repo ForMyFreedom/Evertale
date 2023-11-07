@@ -1,4 +1,4 @@
-import { GenreEntity, GenreInsert, GenresRepository, Pagination } from "@ioc:forfabledomain"
+import { GenreEntity, GenreInsert, GenresRepository, Pagination, ThematicWordEntity } from "@ioc:forfabledomain"
 import Genre from "App/Models/Genre"
 import ThematicWord from "App/Models/ThematicWord"
 import { paginate } from "./utils"
@@ -10,7 +10,7 @@ export class GenrePersistence implements GenresRepository {
       return await Genre.create(body)
   }
 
-  async loadGenresWithWords(page?: number, limit?: number): Promise<Pagination<GenreEntity>> {
+  async loadGenresWithWords(page?: number, limit?: number): Promise<Pagination<GenreEntity>['data']> {
     return paginate(
       await Genre.query()
         .preload('thematicWords')
@@ -28,7 +28,7 @@ export class GenrePersistence implements GenresRepository {
     }
   }
 
-  async findAll(page?: number, limit?: number): Promise<Pagination<GenreEntity>> {
+  async findAll(page?: number, limit?: number): Promise<Pagination<GenreEntity>['data']> {
     return paginate(await Genre.query().paginate(page || 1, limit))
   }
 
@@ -61,5 +61,20 @@ export class GenrePersistence implements GenresRepository {
 
   async wordAlreadyInGenre(word: string, genreId: GenreEntity['id']): Promise<boolean> {
     return !!(await ThematicWord.query().where('text', word).where('genreId', genreId).first())
+  }
+
+  async getThematicWords(genre: Genre|Genre['id']): Promise<ThematicWordEntity[]> {
+    if(typeof genre === 'number') {
+      const genreModel = await Genre.find(genre)
+      if (!genreModel) {
+        return []
+      } else {
+        await genreModel.load('thematicWords')
+        return genreModel.thematicWords
+      }
+    } else {
+      await genre.load('thematicWords')
+      return genre.thematicWords
+    }
   }
 }

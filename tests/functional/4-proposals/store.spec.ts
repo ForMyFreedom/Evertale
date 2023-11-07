@@ -3,10 +3,10 @@ import { TestContext } from '@japa/runner'
 import { BASE_URL, SAMPLE_PROPOSAL, WRONG_SAMPLE_PROPOSAL } from './_data'
 import { testPOSTUnauthenticated } from '../_utils/basic-tests/unauthenticated'
 import { testPOSTUnacceptedBody } from '../_utils/basic-tests/unaccepted-body'
-import { ConnectionType, testPOSTAccepted } from '../_utils/basic-tests/accepted'
+import { testPOSTAccepted } from '../_utils/basic-tests/accepted'
 import { postPrompt } from '../3-prompts/_data'
 import { ApiClient } from '@japa/api-client/build/src/client'
-import { ExceptionContract, postWithAuth } from '../_utils/basic-auth-requests'
+import { ConnectionType, ExceptionContract, postWithAuth } from '../_utils/basic-auth-requests'
 
 async function testProposalStore({ client }: TestContext): Promise<void> {
   await testPOSTUnauthenticated(client, BASE_URL, SAMPLE_PROPOSAL)
@@ -24,7 +24,7 @@ async function testProposalStore({ client }: TestContext): Promise<void> {
 async function testWriteNotDefined(
   client: ApiClient, url: string, body: object
 ): Promise<void> {
-  let response = await postWithAuth(url, client, true, body)
+  let response = await postWithAuth(url, client, ConnectionType.Admin, body)
   response.assertStatus(HTTP.NOT_FOUND)
   response.assertBodyContains({ error: ExceptionContract.UndefinedWrite })
 }

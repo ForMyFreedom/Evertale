@@ -7,4 +7,5 @@ export default function routes(){
   }).middleware('auth')
 
   Route.resource('/prompt', 'PromptsController').apiOnly().only(['index', 'show'])
+  Route.get('/prompt/author/:id', 'PromptsController.indexByAuthor')
 }

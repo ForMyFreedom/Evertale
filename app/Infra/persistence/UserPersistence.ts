@@ -1,10 +1,14 @@
-import { AuthWrapper, Pagination, PasswordInsert, UserEntity, UserRepository } from "@ioc:forfabledomain"
+import { AuthWrapper, Pagination, PasswordInsert, PromptEntityWithWrite, ProposalEntityWithWrite, UserEntity, UserRepository, WriteEntity } from "@ioc:forfabledomain"
 import User from 'App/Models/User'
 import { schema, validator } from '@ioc:Adonis/Core/Validator'
 import Env from '@ioc:Adonis/Core/Env'
 import { PasswordSchema } from "App/Utils/secure"
 import { AuthContract } from "@ioc:Adonis/Addons/Auth"
 import { paginate } from "./utils"
+import { softDelete } from "App/Utils/soft-delete"
+import Write from "App/Models/Write"
+import Proposal from "App/Models/Proposal"
+import Prompt from "App/Models/Prompt"
 
 export class UserPersistence implements UserRepository {
   public static instance = new UserPersistence()
@@ -22,7 +26,7 @@ export class UserPersistence implements UserRepository {
     return await User.find(entityId)
   }
 
-  async findAll(page?: number, limit?: number): Promise<Pagination<UserEntity>> {
+  async findAll(page?: number, limit?: number): Promise<Pagination<UserEntity>['data']> {
     const toIgnoreId = String(Env.get('TO_IGNORE_USER_ID'))
 
     return paginate(
@@ -72,6 +76,40 @@ export class UserPersistence implements UserRepository {
     if (userByName) { return userByName }
     return null
   }
+
+  async softDelete(userId: number): Promise<UserEntity | null> {
+    const user = await User.find(userId)
+    if(user){
+      softDelete(user)
+      return user
+    } else {
+      return null
+    }
+  }
+
+
+  async indexWritesByAuthor(authorId: number, page?: number, limit?: number): Promise<Pagination<PromptEntityWithWrite | ProposalEntityWithWrite>['data']> {
+    const query = await Write.query().orderBy('created_at', 'desc').where('author_id', authorId).paginate(page || 1, limit)
+    const paginatedQuery = paginate<WriteEntity>(query)
+    if(!paginatedQuery) { return paginatedQuery }
+    const { all, meta } = paginatedQuery
+  
+    let proposalQuery = await Proposal.query()
+      .whereIn('write_id', all.map(write => write.id))
+      .join('writes', 'proposals.write_id', '=', 'writes.id')
+
+    let promptQuery = await Prompt.query()
+      .whereIn('write_id', all.map(write => write.id))
+      .join('writes', 'prompts.write_id', '=', 'writes.id')
+
+    return {
+      all: [
+        ...promptQuery,
+        ...proposalQuery
+      ],
+      meta: meta
+    }
+  }
 }
 
 function getMessageFromError(e: { messages: any }): string[] {
@@ -87,6 +125,7 @@ function getMessageFromError(e: { messages: any }): string[] {
 
   return messages
 }
+
 
 export class AdonisAuthWrapper implements AuthWrapper {
   constructor(private readonly auth: AuthContract) { }

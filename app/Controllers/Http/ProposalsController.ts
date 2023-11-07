@@ -36,4 +36,12 @@ export default class ProposalsAdonisController implements UsesUsecase<ProposalsC
     const userId = auth?.user?.id
     await ProposalsProvider(ctx).destroy(userId, params.id)
   }
+
+  async indexByAuthor(ctx: HttpContextContract): Promise<any> {
+    const { params } = ctx
+    const { page, limit } = ctx.request.qs()
+    await ProposalsProvider(ctx).indexByAuthor(
+      params.id, page, limit
+    )
+  }
 }

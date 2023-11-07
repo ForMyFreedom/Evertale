@@ -1,5 +1,5 @@
 import { GenreValidatorSchema } from 'App/Validators/GenreValidator'
-import { postWithAuth } from '../_utils/basic-auth-requests'
+import { ConnectionType, postWithAuth } from '../_utils/basic-auth-requests'
 import { ApiClient } from '@japa/api-client/build/src/client'
 import Genre from 'App/Models/Genre'
 
@@ -25,6 +25,6 @@ export const WRONG_SAMPLE_GENRE = {
 }
 
 export const postGenre = async (client: ApiClient) => {
-  const response = await postWithAuth(BASE_URL, client, true, SAMPLE_GENRE)
+  const response = await postWithAuth(BASE_URL, client, ConnectionType.Admin, SAMPLE_GENRE)
   return response.body().data as Genre
 }

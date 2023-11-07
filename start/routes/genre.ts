@@ -8,5 +8,5 @@ export default function routes(){
 
   Route.group(() => {
     Route.resource('/genre', 'GenresController').apiOnly().only(['index', 'show'])
-  }).middleware('auth')
+  })
 }

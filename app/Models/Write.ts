@@ -3,7 +3,7 @@ import { BelongsTo, HasMany, belongsTo, column, hasMany } from '@ioc:Adonis/Luci
 import User from './User'
 import { WriteReaction } from './Reaction'
 import { BOOLEAN_SERIAL, BaseAdonisModel } from './_Base'
-import { WriteReactionEntity, WriteEntity } from '@ioc:forfabledomain'
+import { WriteEntity } from '@ioc:forfabledomain'
 
 export default class Write extends BaseAdonisModel implements WriteEntity {
   @column({ isPrimary: true })
@@ -30,12 +30,8 @@ export default class Write extends BaseAdonisModel implements WriteEntity {
   @hasMany(() => WriteReaction)
   public reactions: HasMany<typeof WriteReaction>
 
-  public async getAuthor(this: Write): Promise<User> {
+  async getAuthor(this: Write): Promise<User> {
     await this.load('author')
     return this.author
-  }
-  public async getReactions(this: Write): Promise<WriteReactionEntity[]> {
-    await this.load('reactions')
-    return this.reactions
   }
 }

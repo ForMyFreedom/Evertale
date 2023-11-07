@@ -1,5 +1,5 @@
 import { CommentReactionValidatorSchema } from 'App/Validators/CommentReactionValidator'
-import { postWithAuth } from '../_utils/basic-auth-requests'
+import { ConnectionType, postWithAuth } from '../_utils/basic-auth-requests'
 import { ApiClient } from '@japa/api-client/build/src/client'
 import { CommentReaction } from 'App/Models/Reaction'
 import { postComment } from '../5-comments/_data'
@@ -27,8 +27,8 @@ export const WRONG_SAMPLE_REACT_COMMENT = {
 }
 
 export const postReactComment = async (client: ApiClient, isAdmin: boolean = true) => {
-  const comment = await postComment(client, !isAdmin)
+  const comment = await postComment(client, isAdmin ? ConnectionType.NonAdmin : ConnectionType.Admin)
   const body = {...SAMPLE_REACT_COMMENT, commentId: comment.id}
-  const response = await postWithAuth(BASE_URL, client, isAdmin, body)
+  const response = await postWithAuth(BASE_URL, client, isAdmin ? ConnectionType.Admin : ConnectionType.NonAdmin, body)
   return response.body().data as CommentReaction
 }

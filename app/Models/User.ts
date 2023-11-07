@@ -8,8 +8,7 @@ import {
   hasMany,
   HasMany,
 } from '@ioc:Adonis/Lucid/Orm'
-import { softDelete, softDeleteQuery } from 'App/Utils/soft-delete'
-import Constant from './Constant'
+import { softDeleteQuery } from 'App/Utils/soft-delete'
 import Token from './Token'
 import { BOOLEAN_SERIAL, BaseAdonisModel } from './_Base'
 import { UserEntity } from '@ioc:forfabledomain'
@@ -79,26 +78,10 @@ export default class User extends BaseAdonisModel implements UserEntity {
   @beforeFetch()
   public static softDeletesFetch = softDeleteQuery
 
-  public async softDelete(column?: string) {
-    await softDelete(this, column)
-  }
-
   @beforeSave()
   public static async hashPassword(user: User) {
     if (user.$dirty.password) {
       user.password = await Hash.make(user.password)
     }
-  }
-
-  public async interactionBanned(this: User) {
-    const config = await Constant.firstOrFail()
-    UserEntity.interactionBanned(this, config)
-    await this.save()
-    this.verifyBan()
-  }
-
-  async verifyBan(): Promise<void> {
-    const config = await Constant.firstOrFail()
-    UserEntity.verifyBan(this, config)
   }
 }

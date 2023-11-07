@@ -1,11 +1,11 @@
 import Mail from "@ioc:Adonis/Addons/Mail";
 import Env from '@ioc:Adonis/Core/Env'
-import { MailSender, TokenEntity, UserEntity } from "@ioc:forfabledomain";
+import { EmailSended, MailSender, TokenEntity, UserEntity } from "@ioc:forfabledomain";
 
 export class AdonisMailSender implements MailSender {
   public static instance = new AdonisMailSender()
   
-  async sendUserRequestPasswordMail(user: UserEntity, token: TokenEntity): Promise<void> {
+  async sendUserRequestPasswordMail(user: UserEntity, token: TokenEntity): Promise<EmailSended> {
     await Mail.sendLater((message) => {
         message
           .from(Env.get('SMTP_USERNAME'))
@@ -15,9 +15,10 @@ export class AdonisMailSender implements MailSender {
             url: `${Env.get('VIEW_URL')}/restart-password/${token.token}`,
           })
     })
+    return { sended: true }
   }
 
-  async sendUserVerificationMail(user: UserEntity, token: TokenEntity): Promise<void> {
+  async sendUserVerificationMail(user: UserEntity, token: TokenEntity): Promise<EmailSended> {
     await Mail.sendLater((message) => {
         message
           .from(Env.get('SMTP_USERNAME'))
@@ -28,5 +29,6 @@ export class AdonisMailSender implements MailSender {
             url: `${Env.get('API_URL')}/verify-email/${token.token}`,
           })
     })
+    return { sended: true }
   }
 }

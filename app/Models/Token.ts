@@ -1,7 +1,7 @@
 import { column, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
 import User from './User'
-import { TokenEntity } from '@ioc:forfabledomain'
 import { BaseAdonisModel } from './_Base'
+import { TokenEntity } from '@ioc:forfabledomain'
 
 export default class Token extends BaseAdonisModel implements TokenEntity {
   @column({ isPrimary: true })
@@ -18,9 +18,4 @@ export default class Token extends BaseAdonisModel implements TokenEntity {
 
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
-
-  public async getUser(this: Token): Promise<User> {
-    await this.load('user')
-    return this.user
-  }
 }

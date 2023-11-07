@@ -9,7 +9,7 @@ export class WritePersistence implements WriteRepository {
         return Write.find(writeId)
     }
 
-    async findAll(page?: number, limit?: number): Promise<Pagination<WriteEntity>> {
+    async findAll(page?: number, limit?: number): Promise<Pagination<WriteEntity>['data']> {
         return paginate(await Write.query().paginate(page || 1, limit))
     }
 

@@ -1,6 +1,6 @@
 import HTTP from "http-status-enum"
 import { ApiClient } from '@japa/api-client/build/src/client'
-import { RequestFunction, deleteWithAuth, putWithAuth } from "../basic-auth-requests"
+import { ConnectionType, RequestFunction, deleteWithAuth, putWithAuth } from "../basic-auth-requests"
 import { ExceptionContract } from "../basic-auth-requests"
 
 export async function testPUTOthersWrite(client: ApiClient, url: string, id: number, body: object): Promise<void> {
@@ -19,7 +19,7 @@ async function testREQUESTCantEditOthersWrite(
   requestFunction: RequestFunction, message: object,
   http: number, client: ApiClient, url: string, body?: object
 ): Promise<void> {
-  let response = await requestFunction(url, client, true, body)
+  let response = await requestFunction(url, client, ConnectionType.Admin, body)
   response.assertStatus(http)
   response.assertBody(message)
 }

@@ -37,7 +37,7 @@ export class ReactCommentPersistence implements ReactCommentRepository {
     return CommentReaction.find(entityId)
   }
 
-  async findAll(page?: number, limit?: number): Promise<Pagination<CommentReactionEntity>> {
+  async findAll(page?: number, limit?: number): Promise<Pagination<CommentReactionEntity>['data']> {
     return paginate(await CommentReaction.query().paginate(page || 1, limit))
   }
 

@@ -29,4 +29,8 @@ export class TokenPersistence implements TokenRepository {
       return null
     }
   }
+
+  async getUser(tokenId: number): Promise<UserEntity> {
+    throw new Error(`Method not implemented. ${tokenId}`)
+  }
 }

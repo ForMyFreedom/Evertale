@@ -1,4 +1,4 @@
-import { Pagination, ProposalEntity, ProposalInsert, ProposalRepository, ReactionType } from "@ioc:forfabledomain"
+import { Pagination, ProposalEntity, ProposalInsert, ProposalRepository, ReactionType, WriteEntity } from "@ioc:forfabledomain"
 import Proposal from "App/Models/Proposal"
 import Write from "App/Models/Write"
 import { paginate } from "./utils"
@@ -6,14 +6,28 @@ import { paginate } from "./utils"
 export class ProposalPersistence implements ProposalRepository {
   public static instance = new ProposalPersistence()
 
-  async getProposalsByPrompt(promptId: number): Promise<ProposalEntity[]> {
-    return await Proposal.query().where('promptId', '=', promptId)
+  async getProposalsByPrompt(promptId: number, page?: number, limit?: number): Promise<Pagination<ProposalEntity>['data']> {
+    return paginate<ProposalEntity>(
+      await Proposal.query().where('promptId', '=', promptId).paginate(page || 1, limit)
+    )
   }
 
-  async getIndexedProposalsByPrompt(promptId: number, index: number): Promise<ProposalEntity[]> {
-    return await Proposal.query()
-      .where('promptId', '=', promptId)
-      .where('orderInHistory', '=', index)
+  async getIndexedProposalsByPrompt(promptId: number, index: number, page?: number, limit?: number): Promise<Pagination<ProposalEntity>['data']> {
+    return paginate(
+      await Proposal.query()
+        .where('promptId', '=', promptId)
+        .where('orderInHistory', '=', index)
+        .paginate(page ?? 1, limit)
+    )
+  }
+
+  async getProposalsByAuthor(authorId: number, page?: number | undefined, limit?: number | undefined): Promise<Pagination<ProposalEntity>['data']> {
+    return paginate(
+      await Proposal.query()
+        .join('writes', 'writes.id', '=', 'proposals.write_id')
+        .where('writes.author_id', '=', authorId)
+        .paginate(page || 1, limit)
+    )
   }
 
   async find(entityId: number): Promise<ProposalEntity | null> {
@@ -31,7 +45,7 @@ export class ProposalPersistence implements ProposalRepository {
     return proposal
   }
 
-  async findAll(page?: number, limit?: number): Promise<Pagination<ProposalEntity>> {
+  async findAll(page?: number, limit?: number): Promise<Pagination<ProposalEntity>['data']> {
     return paginate(await Proposal.query().paginate(page || 1, limit))
   }
 
@@ -89,5 +103,10 @@ export class ProposalPersistence implements ProposalRepository {
       .count('* as total')
 
     return response[0].$extras.total
+  }
+
+  async getWrite(proposal: Proposal): Promise<WriteEntity> {
+    await proposal.load('write')
+    return proposal.write
   }
 }

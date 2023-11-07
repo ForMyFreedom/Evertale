@@ -2,10 +2,10 @@ import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { MyValidator } from './MyValidator'
 import { PasswordSchema, SchemaTyper } from 'App/Utils/secure'
-import AdonisExceptionHandler from 'App/Exceptions/Handler'
+import AdonisResponseHandler from 'App/Exceptions/Handler'
 import { PasswordInsert } from '@ioc:forfabledomain'
 
-const langContract = AdonisExceptionHandler.contract
+const langContract = AdonisResponseHandler.contract
 const RestartPasswordSchema: SchemaTyper<PasswordInsert> = schema.create(PasswordSchema)
 
 export default class RestartPasswordValidator extends MyValidator<typeof RestartPasswordSchema> {

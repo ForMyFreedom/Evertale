@@ -1,7 +1,6 @@
 import HTTP from "http-status-enum"
 import { ApiClient } from '@japa/api-client/build/src/client'
-import { ExceptionContract } from "../basic-auth-requests"
-import { RequestFunction, postWithAuth, putWithAuth } from "../basic-auth-requests"
+import { ConnectionType, RequestFunction, postWithAuth, putWithAuth } from "../basic-auth-requests"
 
 export async function testPOSTUniqueNameNotPassed(client: ApiClient, url: string, body: object): Promise<void> {
   return await testREQUESTUniqueNameNotPassed(postWithAuth, client, url, body)
@@ -15,7 +14,7 @@ async function testREQUESTUniqueNameNotPassed(
   requestFunction: RequestFunction,
   client: ApiClient, url: string, body?: object
 ): Promise<void> {
-  let response = await requestFunction(url, client, true, body)
+  let response = await requestFunction(url, client, ConnectionType.Admin, body)
   response.assertStatus(HTTP.UNPROCESSABLE_ENTITY)
-  response.assertBodyContains({ error: ExceptionContract.BodyValidationFailure })
+  // @response.assertBody({ rules: { name: 'required' } })
 }

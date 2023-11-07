@@ -1,7 +1,7 @@
 import { ApiClient } from '@japa/api-client/build/src/client'
 import { PromptValidatorSchema } from 'App/Validators/PromptValidator'
 import { postGenre } from '../2-genres/_data'
-import { postWithAuth } from '../_utils/basic-auth-requests'
+import { ConnectionType, postWithAuth } from '../_utils/basic-auth-requests'
 import Prompt from 'App/Models/Prompt'
 import { reverseSerializate } from '../_utils/serializer'
 
@@ -28,8 +28,8 @@ export const WRONG_SAMPLE_PROMPT = {
 	concluded: undefined
 }
 
-export const postPrompt = async (client: ApiClient, isAdmin: boolean = true) => {
+export const postPrompt = async (client: ApiClient, connectionType: ConnectionType = ConnectionType.Admin) => {
   await postGenre(client)
-  const toUseResponse = await postWithAuth(BASE_URL, client, isAdmin, SAMPLE_PROMPT)
+  const toUseResponse = await postWithAuth(BASE_URL, client, connectionType, SAMPLE_PROMPT)
   return reverseSerializate(toUseResponse.body().data) as Prompt
 }

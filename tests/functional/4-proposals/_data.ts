@@ -1,6 +1,6 @@
 import { ApiClient } from '@japa/api-client/build/src/client'
 import { ProposalValidatorSchema } from 'App/Validators/ProposalValidator'
-import { postWithAuth } from '../_utils/basic-auth-requests'
+import { ConnectionType, postWithAuth } from '../_utils/basic-auth-requests'
 import Proposal from 'App/Models/Proposal'
 import { postPrompt } from '../3-prompts/_data'
 import { reverseSerializate } from '../_utils/serializer'
@@ -20,8 +20,8 @@ export const WRONG_SAMPLE_PROPOSAL = {
 	title: 'hello'
 }
 
-export const postProposal = async (client: ApiClient, isAdmin: boolean = true) => {
+export const postProposal = async (client: ApiClient, connectionType: ConnectionType = ConnectionType.Admin) => {
   await postPrompt(client)
-  const toUseResponse = await postWithAuth(BASE_URL, client, isAdmin, SAMPLE_PROPOSAL)
+  const toUseResponse = await postWithAuth(BASE_URL, client, connectionType, SAMPLE_PROPOSAL)
   return reverseSerializate(toUseResponse.body().data) as Proposal
 }

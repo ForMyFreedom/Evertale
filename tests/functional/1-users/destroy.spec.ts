@@ -1,11 +1,10 @@
 import { TestContext } from '@japa/runner'
-import { ExceptionContract, deleteWithAuth, requestWithUser } from '../_utils/basic-auth-requests'
+import { ConnectionType, ExceptionContract, deleteWithAuth, requestWithUser } from '../_utils/basic-auth-requests'
 import HTTP from 'http-status-enum'
 import { BASE_URL, ADMIN_USER_SAMPLE, NON_ADMIN_USER_SAMPLE, postUser } from './_data'
 import { ApiClient } from '@japa/api-client/build/src/client'
 import { testDELETEUnauthenticated } from '../_utils/basic-tests/unauthenticated'
 import { testDELETEUndefinedId } from '../_utils/basic-tests/undefined-id'
-import { ConnectionType } from '../_utils/basic-tests/accepted'
 import User from 'App/Models/User'
 
 async function testUserDestroy({ client }: TestContext): Promise<void> {
@@ -25,9 +24,9 @@ async function testUserDestroy({ client }: TestContext): Promise<void> {
 }
 
 async function testBlockWithoutAuthorship(
-  client: ApiClient, id: number, isAdmin: ConnectionType
+  client: ApiClient, id: number, connectionType: ConnectionType
 ): Promise<void> {
-  let response = await deleteWithAuth(`${BASE_URL}/${id}`, client, Boolean(isAdmin))
+  let response = await deleteWithAuth(`${BASE_URL}/${id}`, client, connectionType)
   response.assertStatus(HTTP.UNAUTHORIZED)
   response.assertBodyContains({error: ExceptionContract.CantDeleteOtherUser})
 }

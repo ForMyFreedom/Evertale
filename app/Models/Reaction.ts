@@ -6,7 +6,7 @@ import Write from './Write'
 import Constant from './Constant'
 import Prompt from './Prompt'
 import Proposal from './Proposal'
-import { InteractionEntity, CommentReactionEntity, WriteReactionEntity, CommentEntity, UserEntity, WriteEntity, ReactionType, ReactionEntity } from '@ioc:forfabledomain'
+import { InteractionEntity, CommentEntity, UserEntity, WriteEntity, ReactionType, CommentReactionEntity, WriteReactionEntity, ReactionEntity } from '@ioc:forfabledomain'
 import { BaseAdonisModel } from './_Base'
 
 export class CommentReaction extends BaseAdonisModel implements CommentReactionEntity {
@@ -37,17 +37,19 @@ export class CommentReaction extends BaseAdonisModel implements CommentReactionE
   async removeScoreAlterationInTarget(reaction: CommentReaction): Promise<void> {
     const config = await Constant.firstOrFail()
     await reaction.load('comment')
-    await reaction.comment.load('author')
-    ReactionEntity.removeScoreAlterationInTarget<Comment>(reaction, reaction.comment, config)
+    await reaction.comment.getAuthor()
+    await reaction.comment.getAuthor()
+    ReactionEntity.removeScoreAlterationInTarget(reaction, reaction.comment.author, config)
     await reaction.comment.author.save()
   }
 
   async addScoreAlterationInTarget(reaction: CommentReaction): Promise<void> {
     const config = await Constant.firstOrFail()
     await reaction.load('comment')
-    await reaction.comment.load('author')
-    ReactionEntity.addScoreAlterationInTarget(reaction, reaction.comment, config)
-    await (await reaction.comment.getAuthor()).save()
+    await reaction.comment.getAuthor()
+    await reaction.comment.getAuthor()
+    ReactionEntity.addScoreAlterationInTarget(reaction, reaction.comment.author, config)
+    await reaction.comment.author.save()
   }
 
   @beforeDelete()
@@ -66,12 +68,17 @@ export class CommentReaction extends BaseAdonisModel implements CommentReactionE
     await reaction.load('comment')
     await reaction.comment.load('reactions')
     await reaction.comment.load('write')
-    await ReactionEntity.verifyInteractionBan(
-      reaction,
-      reaction.comment,
+    const toBan = await ReactionEntity.verifyInteractionBan(
+      reaction.comment.reactions,
       await getStoryFromWrite(reaction.comment.write),
       config
     )
+    if(toBan){
+      await reaction.comment.getAuthor()
+      await reaction.comment.getAuthor()
+      UserEntity.interactionBanned(reaction.comment.author, config);
+      await reaction.comment.delete()
+    }
   }
 
   public async getComment(this: CommentReaction): Promise<CommentEntity> {
@@ -119,17 +126,19 @@ export class WriteReaction extends BaseAdonisModel implements WriteReactionEntit
   async removeScoreAlterationInTarget(reaction: WriteReaction): Promise<void> {
     const config = await Constant.firstOrFail()
     await reaction.load('write')
-    await reaction.write.load('author')
-    ReactionEntity.removeScoreAlterationInTarget(reaction, reaction.write, config)
+    await reaction.write.getAuthor()
+    await reaction.write.getAuthor()
+    ReactionEntity.removeScoreAlterationInTarget(reaction, reaction.write.author, config)
     await reaction.write.author.save()
   }
 
   async addScoreAlterationInTarget(reaction: WriteReaction): Promise<void> {
     const config = await Constant.firstOrFail()
     await reaction.load('write')
-    await reaction.write.load('author')
-    ReactionEntity.addScoreAlterationInTarget(reaction, reaction.write, config)
-    await (await reaction.write.getAuthor()).save()
+    await reaction.write.getAuthor()
+    await reaction.write.getAuthor()
+    ReactionEntity.addScoreAlterationInTarget(reaction, reaction.write.author, config)
+    await reaction.write.author.save()
   }
 
   @beforeDelete()
@@ -147,12 +156,18 @@ export class WriteReaction extends BaseAdonisModel implements WriteReactionEntit
     const config = await Constant.firstOrFail()
     await reaction.load('write')
     await reaction.write.load('reactions')
-    await ReactionEntity.verifyInteractionBan(
-      reaction,
-      reaction.write,
+
+    const toBan = await ReactionEntity.verifyInteractionBan(
+      reaction.write.reactions,
       await getStoryFromWrite(reaction.write),
       config
     )
+    if(toBan){
+      await reaction.write.getAuthor()
+      await reaction.write.getAuthor()
+      UserEntity.interactionBanned(reaction.write.author, config);
+      await reaction.write.delete()
+    }
   }
 
   public async getWrite(this: WriteReaction): Promise<WriteEntity> {

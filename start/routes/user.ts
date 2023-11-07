@@ -13,6 +13,7 @@ export default function routes(){
   Route.resource('/user', 'UsersController').apiOnly().only(['index', 'show'])
 
   Route.post('/user', 'UsersController.storeUser')
+  Route.get('/user/:id/writes', 'UsersController.indexWritesByAuthor')
   Route.post('/login', 'LoginController.loginByCredential')
 
   Route.get('/verify-email/:token', 'UsersController.verifyEmail')

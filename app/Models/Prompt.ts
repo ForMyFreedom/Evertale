@@ -18,7 +18,7 @@ import Write from './Write'
 import Proposal from './Proposal'
 import { removeDuplicate } from '@ioc:forfabledomain'
 import { BOOLEAN_SERIAL, BaseAdonisModel } from './_Base'
-import { GenreEntity, PromptEntity, ProposalEntity, UserEntity, WriteEntity } from '@ioc:forfabledomain'
+import { PromptEntity } from '@ioc:forfabledomain'
 
 export default class Prompt extends BaseAdonisModel implements PromptEntity {
   @column({ isPrimary: true })
@@ -83,36 +83,25 @@ export default class Prompt extends BaseAdonisModel implements PromptEntity {
     }
   }
 
+  @afterFetch()
+  public static async setAllHistoryText(promptArray: Prompt[]) {
+    for (const prompt of promptArray) {
+      await Prompt.setHistoryText(prompt)
+    }
+  }
+
   @afterFind()
   public static async setHistoryText(prompt: Prompt) {
     await prompt.load('proposals')
-    const definitiveProposals = prompt.proposals
+    const definitiveProposalsWrite: Write[] = await Promise.all(prompt.proposals
       .filter((proposal) => proposal.definitive)
       .sort((a, b) => b.orderInHistory - a.orderInHistory)
+      .map(async(proposal) => {await proposal.load('write'); return proposal.write})
+    )
 
-    await PromptEntity.setHistoryText(prompt, definitiveProposals)
+    await prompt.load('write')
+    PromptEntity.setHistoryText(prompt, prompt.write, definitiveProposalsWrite)
     delete prompt.$preloaded.proposals
-  }
-
-  async calculatePromptPopularity(prompt: PromptEntity, usersThatParticipated: UserEntity[]): Promise<void> {
-    await PromptEntity.calculatePromptPopularity(prompt, usersThatParticipated)
-  }
-
-  async setHistoryText(prompt: PromptEntity, proposalsInOrder: ProposalEntity[]): Promise<void> {
-    await PromptEntity.setHistoryText(prompt, proposalsInOrder)
-  }
-
-  public async getWrite(this: Prompt): Promise<WriteEntity> {
-    await this.load('write')
-    return this.write
-  }
-  public async getGenres(this: Prompt): Promise<GenreEntity[]> {
-    await this.load('genres')
-    return this.genres
-  }
-  public async getProposals(this: Prompt): Promise<ProposalEntity[]> {
-    await this.load('proposals')
-    return this.proposals
   }
 }
 
