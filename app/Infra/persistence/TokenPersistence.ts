@@ -30,7 +30,8 @@ export class TokenPersistence implements TokenRepository {
     }
   }
 
-  async getUser(tokenId: number): Promise<UserEntity> {
-    throw new Error(`Method not implemented. ${tokenId}`)
+  async getUser(token: Token): Promise<UserEntity | undefined> {
+    await token.load('user')
+    return token.user
   }
 }

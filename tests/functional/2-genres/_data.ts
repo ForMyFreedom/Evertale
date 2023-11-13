@@ -6,7 +6,7 @@ import Genre from 'App/Models/Genre'
 export const BASE_URL = '/api/genre'
 
 export const SAMPLE_GENRE: typeof GenreValidatorSchema.props = {
-	name: "Amor",
+	name: "Ammor",
 	imageUrl: "https://cdn-icons-png.flaticon.com/512/3773/3773795.png",
 	thematicWords: ["Beijo", "Felicidade", "Companheiro"]
 }
@@ -16,6 +16,7 @@ export const WORDS_SAMPLE = {
 }
 
 export const EDIT_SAMPLE_GENRE: Partial<typeof GenreValidatorSchema.props> = {
+  name: 'Amor',
   imageUrl: 'https://great-awesome-epic-incredible-image.wow/2',
 }
 

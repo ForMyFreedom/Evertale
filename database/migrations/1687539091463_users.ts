@@ -10,7 +10,7 @@ export default class extends BaseSchema {
       table.increments('id').primary()
       table.string('name', 125).notNullable().unique()
       table.string('email', 255).notNullable().unique()
-      table.string('nickname', 125).notNullable().defaultTo('')
+      table.string('nickname', 125).notNullable().defaultTo('Nickname')
       table.string('primary_color_hex', 7).notNullable().defaultTo('#000000')
       table.string('secondary_color_hex', 7).notNullable().defaultTo('#ffffff')
       table.string('image_url').nullable()
