@@ -1,6 +1,5 @@
-import { CommentsService, ConstantsService, DailyPromptsService, GenresService, MailService, PromptsService, ProposalsService, ReactCommentsService, ReactWritesService, StoryAdvanceService, UsersService } from "@ioc:forfabledomain"
+import { LoginService, CommentsService, ConstantsService, DailyPromptsService, GenresService, MailService, PromptsService, ProposalsService, ReactCommentsService, ReactWritesService, StoryAdvanceService, UsersService, ImageService } from "@ioc:forfabledomain"
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { LoginService } from "ForFable-Domain/services/LoginService"
 
 export default Services
 
@@ -19,4 +18,5 @@ interface Services {
   UsersService: ServiceHandler<UsersService>
   StoryAdvanceService: ServiceHandler<StoryAdvanceService>
   LoginService: ServiceHandler<LoginService>
+  ImageService: ServiceHandler<ImageService>
 }

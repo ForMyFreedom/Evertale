@@ -8,7 +8,6 @@ import { UserInsert } from '@ioc:forfabledomain'
 export const UserValidatorSchema: SchemaTyper<UserInsert> = schema.create({
   name: schema.string({}, [rules.unique({ table: 'users', column: 'name' })]),
   email: schema.string({}, [rules.email(), rules.unique({ table: 'users', column: 'email' })]),
-  imageUrl: schema.string({}, []),
   birthDate: schema.date({}, [rules.before(15, 'years')]),
   ...PasswordSchema,
 })

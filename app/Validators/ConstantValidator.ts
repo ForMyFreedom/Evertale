@@ -10,7 +10,8 @@ export const ConstantsValidatorSchema: SchemaTyper<ConstantInsert> = schema.crea
   deleteStrength: schema.number([rules.unsigned()]),
   completionPercentage: schema.number([rules.percentage()]),
   exclusionPercentage: schema.number([rules.percentage()]),
-  banLimit: schema.number([rules.negative()])
+  banLimit: schema.number([rules.negative()]),
+  maxImageBythesByNonPremium:  schema.number([rules.unsigned()])
 })
 
 export class ConstantsValidator extends MyValidator<typeof ConstantsValidatorSchema> {

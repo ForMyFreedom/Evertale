@@ -8,17 +8,20 @@ export default class Constant extends BaseAdonisModel implements ConstantEntity 
   public id: number
 
   @column()
-  strengthOfPositiveOpinion: number // For every positive reaction, it will gain this in the User Score
+  strengthOfPositiveOpinion: number
   @column()
-  strengthOfNegativeOpinion: number   // For each complaint, it will lose this in the User Score
+  strengthOfNegativeOpinion: number
   @column()
-  deleteStrength: number            // For every automatically deleted comment, it will lose that in the User Score [Probably remove]
+  deleteStrength: number
   @column()
-  completionPercentage: number      // When multiplied with the popularity of the story, if a proposal has more conclusive reactions than that, the story ends with it
+  completionPercentage: number
   @column()
-  exclusionPercentage:number        // When multiplied with the popularity of the story, if a comment/proposal has more complaints than that, the comment/proposal will be deleted [What about the prompt case, is genre popularity used]
+  exclusionPercentage:number
   @column()
-  banLimit: number                  // When a User Score reaches this negative value, the User will be automatically excluded from the system
+  banLimit: number
+  @column()
+  maxImageBythesByNonPremium: number
+
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime

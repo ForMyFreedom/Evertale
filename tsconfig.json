@@ -9,6 +9,7 @@
   ],
   "compilerOptions": {
     "outDir": "build",
+    "lib": ["dom", "es2015"],
     "rootDir": "./",
     "sourceMap": true,
     "paths": {

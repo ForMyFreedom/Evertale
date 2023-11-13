@@ -50,4 +50,6 @@ export default Env.rules({
   DEFAULT_CONST___BAN_LIMIT: Env.schema.number(),
   NEED_TO_VERIFY_EMAIL: Env.schema.boolean(),
   SESSION_DRIVER: Env.schema.string(),
+  IMAGE_HOSTER_URL: Env.schema.string(),
+  MB_MAX_ALLOWED_IMAGE_SIZE: Env.schema.number(),
 })

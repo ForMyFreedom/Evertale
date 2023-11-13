@@ -1,4 +1,4 @@
-import { CommentsService, ConstantsService, DailyPromptsService, ResponseHandler, GenresService, LoginService, MailService, PromptsService, ProposalsService, ReactCommentsService, ReactWritesService, StoryAdvanceService, UsersService } from '@ioc:forfabledomain';
+import { CommentsService, ConstantsService, DailyPromptsService, ResponseHandler, GenresService, LoginService, MailService, PromptsService, ProposalsService, ReactCommentsService, ReactWritesService, StoryAdvanceService, UsersService, ImageService } from '@ioc:forfabledomain';
 import { AdonisEventEmmiter, AdonisMailSender, CommentPersistence, ConstantsPersistence, GenrePersistence, PromptPersistence, ProposalPersistence, ThematicWordPersistence, WritePersistence } from 'App/Infra';
 import { ReactCommentPersistence } from 'App/Infra/persistence/ReactCommentPersistence';
 import { ReactWritePersistence } from 'App/Infra/persistence/ReactWritePersistence';
@@ -7,6 +7,7 @@ import { AdonisAuthWrapper, UserPersistence } from 'App/Infra/persistence/UserPe
 import Services, { ServiceHandler } from 'Config/services';
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import AdonisResponseHandler from 'App/Exceptions/Handler';
+import { AdonisImageWrapper } from 'App/Infra/persistence/ImagePersistence';
 
 export class ServicesHandlers implements Services {
   allHandlers: {[key in keyof Services]: ServiceHandler<any>} = {
@@ -22,6 +23,7 @@ export class ServicesHandlers implements Services {
     UsersService: this.UsersService.bind(this),
     StoryAdvanceService: this.StoryAdvanceService.bind(this),
     LoginService: this.LoginService.bind(this),
+    ImageService: this.ImageService.bind(this),
   }
 
   CommentsService(): (ctx: HttpContextContract) => CommentsService {
@@ -125,6 +127,16 @@ export class ServicesHandlers implements Services {
       return new LoginService(
         authWraper, UserPersistence.instance, Handler(ctx)
       );
+    }
+  }
+
+  ImageService(): (ctx: HttpContextContract) => ImageService {
+    return (ctx: HttpContextContract) => {
+      const imageWrapper = new AdonisImageWrapper(ctx)
+      return new ImageService(
+        imageWrapper, ConstantsPersistence.instance,
+        UserPersistence.instance, Handler(ctx)
+      )
     }
   }
 }

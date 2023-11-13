@@ -26,6 +26,7 @@ import ProposalRoutes from './routes/proposal'
 import CommentRoutes from './routes/comment'
 import ReactionRoutes from './routes/reactions'
 import ConstantRoutes from './routes/constants'
+import ImageRoutes from './routes/image'
 
 Route.where('id', Route.matchers.number())
 
@@ -41,6 +42,7 @@ Route.group(() => {
   CommentRoutes()
   ReactionRoutes()
   ConstantRoutes()
+  ImageRoutes()
 }).prefix(Env.get('BASE_ROUTE_PREFIX'))
 
 Route.get('/restart-password/:token', 'UsersController.restartPasswordView')

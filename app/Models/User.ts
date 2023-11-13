@@ -24,7 +24,7 @@ export default class User extends BaseAdonisModel implements UserEntity {
   public nickname: string
 
   @column()
-  public imageUrl: string
+  public imageUrl: string | null
 
   @column()
   public primaryColorHex: string

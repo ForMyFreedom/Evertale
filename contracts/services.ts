@@ -80,3 +80,10 @@ declare module '@ioc:Providers/LoginService' {
   const LoginProvider: (ctx: HttpContextContract) => LoginUsecase
   export default LoginProvider
 }
+
+declare module '@ioc:Providers/ImageService' {
+  import { ImagesUsecase } from "@ioc:forfabledomain"
+  import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+  const ImageProvider: (ctx: HttpContextContract) => ImagesUsecase
+  export default ImageProvider
+}

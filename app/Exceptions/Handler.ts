@@ -274,4 +274,9 @@ export default class AdonisResponseHandler extends HttpExceptionHandler implemen
     this.response.badRequest({ error: AdonisResponseHandler.contract.PasswordRegex })
     return { error: 'PasswordRegex' }
   }
+
+  public ImageToLarge<T>(_body?: T | null): ApiResponse<T> {
+    this.response.badRequest({ error: AdonisResponseHandler.contract.ImageToLarge })
+    return { error: 'ImageToLarge' }
+  }
 }

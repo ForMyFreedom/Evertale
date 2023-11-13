@@ -13,7 +13,7 @@ import Prompt from "App/Models/Prompt"
 export class UserPersistence implements UserRepository {
   public static instance = new UserPersistence()
 
-  async create(body: PasswordInsert & Pick<UserEntity, 'name' | 'email' | 'imageUrl' | 'birthDate'> & { isAdmin: boolean }): Promise<UserEntity> {
+  async create(body: PasswordInsert & Pick<UserEntity, 'name' | 'email' | 'birthDate'> & { isAdmin: boolean }): Promise<UserEntity> {
     const { repeatPassword, ...rest } = body
     return User.create(rest)
   }

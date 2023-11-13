@@ -6,9 +6,8 @@ import { UserUpdate } from '@ioc:forfabledomain'
 
 
 export const UserValidatorSchema: SchemaTyper<UserUpdate> = schema.create({
-  name: schema.string(),
+  name: schema.string([rules.unique({ table: 'users', column: 'name' })]),
   nickname: schema.string(),
-  imageUrl: schema.string({}, [rules.url()]),
   primaryColorHex: schema.string(),
   secondaryColorHex: schema.string(),
 })
@@ -23,6 +22,9 @@ export class UserUpdateValidator extends MyValidator<typeof UserValidatorSchema>
   }
 
   protected GetMessages(): CustomMessages {
-    return {}
+    return {
+      'name.unique': 'This name is already in use',
+      'imageUrl.url': 'The image url is not valid', 
+    }
   }
 }
