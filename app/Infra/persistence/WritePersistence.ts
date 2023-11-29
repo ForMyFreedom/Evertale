@@ -1,4 +1,4 @@
-import { Pagination, WriteEntity, WriteInsert, WriteRepository } from "@ioc:forfabledomain";
+import { PaginationData, WriteEntity, WriteInsert, WriteRepository } from "@ioc:forfabledomain";
 import Write from "App/Models/Write";
 import { paginate } from "./utils";
 
@@ -9,7 +9,7 @@ export class WritePersistence implements WriteRepository {
         return Write.find(writeId)
     }
 
-    async findAll(page?: number, limit?: number): Promise<Pagination<WriteEntity>['data']> {
+    async findAll(page?: number, limit?: number): Promise<PaginationData<WriteEntity>> {
         return paginate(await Write.query().paginate(page || 1, limit))
     }
 

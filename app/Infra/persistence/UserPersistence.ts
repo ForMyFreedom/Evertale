@@ -1,4 +1,4 @@
-import { AuthWrapper, Pagination, PasswordInsert, PromptEntityWithWrite, ProposalEntityWithWrite, UserEntity, UserRepository, WriteEntity } from "@ioc:forfabledomain"
+import { AuthWrapper, PaginationData, PasswordInsert, PromptEntityWithWrite, ProposalEntityWithWrite, UserEntity, UserRepository, WriteEntity } from "@ioc:forfabledomain"
 import User from 'App/Models/User'
 import { schema, validator } from '@ioc:Adonis/Core/Validator'
 import Env from '@ioc:Adonis/Core/Env'
@@ -26,7 +26,7 @@ export class UserPersistence implements UserRepository {
     return await User.find(entityId)
   }
 
-  async findAll(page?: number, limit?: number): Promise<Pagination<UserEntity>['data']> {
+  async findAll(page?: number, limit?: number): Promise<PaginationData<UserEntity>> {
     const toIgnoreId = String(Env.get('TO_IGNORE_USER_ID'))
 
     return paginate(
@@ -88,7 +88,7 @@ export class UserPersistence implements UserRepository {
   }
 
 
-  async indexWritesByAuthor(authorId: number, page?: number, limit?: number): Promise<Pagination<PromptEntityWithWrite | ProposalEntityWithWrite>['data']> {
+  async indexWritesByAuthor(authorId: number, page?: number, limit?: number): Promise<PaginationData<PromptEntityWithWrite | ProposalEntityWithWrite>> {
     const query = await Write.query().orderBy('created_at', 'desc').where('author_id', authorId).paginate(page || 1, limit)
     const paginatedQuery = paginate<WriteEntity>(query)
     if(!paginatedQuery) { return paginatedQuery }

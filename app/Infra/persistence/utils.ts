@@ -1,7 +1,7 @@
 import { ModelPaginatorContract } from "@ioc:Adonis/Lucid/Orm";
-import { Pagination } from "@ioc:forfabledomain";
+import { PaginationData } from "@ioc:forfabledomain";
 
-export function paginate<T>(response: ModelPaginatorContract<any>): Pagination<T>['data'] {
+export function paginate<T>(response: ModelPaginatorContract<any>): PaginationData<T> {
     const meta = response.getMeta()
     return {
         all: response.all(),
