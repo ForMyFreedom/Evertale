@@ -3,7 +3,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import AdonisResponseHandler from 'App/Exceptions/Handler'
 
 export default class AuthMiddleware {
-  protected async authenticate(
+  public static async authenticate(
     auth: HttpContextContract['auth'],
     response: HttpContextContract['response'],
     guards: (keyof GuardsList)[]
@@ -29,7 +29,7 @@ export default class AuthMiddleware {
     customGuards: (keyof GuardsList)[]
   ) {
     const guards = customGuards.length ? customGuards : [auth.name]
-    const sucess = await this.authenticate(auth, response, guards)
+    const sucess = await AuthMiddleware.authenticate(auth, response, guards)
     if (sucess) {
       await bouncer.authorize('userIsOk')
       await next()
