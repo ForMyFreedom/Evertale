@@ -6,7 +6,9 @@ import { ReactCommentsController } from '@ioc:forfabledomain'
 
 export default class ReactCommentsAdonisController implements UsesUsecase<ReactCommentsController> {
   public async show(ctx: HttpContextContract): Promise<void> {
-    await ReactCommentsProvider(ctx).show(ctx.params.id)
+    const {auth} = ctx
+    const userId = auth?.user?.id
+    await ReactCommentsProvider(ctx).show(userId, ctx.params.id)
   }
 
   public async store(ctx: HttpContextContract): Promise<void> {

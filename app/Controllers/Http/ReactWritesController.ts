@@ -6,7 +6,10 @@ import { ReactWritesController } from '@ioc:forfabledomain'
 
 export default class ReactWritesAdonisController implements UsesUsecase<ReactWritesController> {
   public async show(ctx: HttpContextContract): Promise<void> {
-    await ReactWritesProvider(ctx).show(ctx.params.id)
+    const {auth} = ctx
+    const userId = auth?.user?.id
+
+    await ReactWritesProvider(ctx).show(userId, ctx.params.id)
   }
 
   public async store(ctx: HttpContextContract): Promise<void> {
