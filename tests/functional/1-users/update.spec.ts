@@ -1,7 +1,7 @@
 import { TestContext } from '@japa/runner'
 import { ConnectionType, ExceptionContract, putWithAuth, requestWithUser } from '../_utils/basic-auth-requests'
 import HTTP from 'http-status-enum'
-import { ADMIN_USER_SAMPLE, BASE_URL, EDIT_NON_ADMIN_USER, NON_ADMIN_USER_SAMPLE, postUser } from './_data'
+import { ADMIN_USER_SAMPLE, BASE_URL, EDIT_NON_ADMIN_USER, EDIT_NON_ADMIN_USER_2, NON_ADMIN_USER_SAMPLE, postUser } from './_data'
 import { ApiClient } from '@japa/api-client/build/src/client'
 import { testPUTUnauthenticated } from '../_utils/basic-tests/unauthenticated'
 import { testPUTUndefinedId } from '../_utils/basic-tests/undefined-id'
@@ -15,7 +15,7 @@ async function testUserUpdate({ client }: TestContext): Promise<void> {
   await testBlockWithoutAuthorship(client, adminUser.id)
   await testPUTUndefinedId(client, BASE_URL, EDIT_NON_ADMIN_USER)
   await testEditUserAccepted(client, adminUser, EDIT_NON_ADMIN_USER)
-  await testEditUserAccepted(client, nonAdminUser, NON_ADMIN_USER_SAMPLE)
+  await testEditUserAccepted(client, nonAdminUser, EDIT_NON_ADMIN_USER_2)
 }
 
 async function testBlockWithoutAuthorship(client: ApiClient, id: number): Promise<void> {

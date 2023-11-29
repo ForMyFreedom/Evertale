@@ -29,6 +29,10 @@ export const EDIT_NON_ADMIN_USER: Partial<typeof UserValidatorSchema.props> = {
   name: 'other-name',
 }
 
+export const EDIT_NON_ADMIN_USER_2: Partial<typeof UserValidatorSchema.props> = {
+  name: 'other-other-name',
+}
+
 export const WRONG_USER_SAMPLE = {
   email: 'test@gmail.com',
   isAdmin: false,

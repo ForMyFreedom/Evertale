@@ -8,7 +8,8 @@ export const SAMPLE_CONFIG_1: typeof ConstantsValidatorSchema.props = {
   deleteStrength: 50,
   completionPercentage: 0.23,
   exclusionPercentage: 0.32,
-  banLimit: -2000
+  banLimit: -2000,
+  maxImageBythesByNonPremium: 2000000,
 }
 
 export const SAMPLE_CONFIG_2: Partial<typeof ConstantsValidatorSchema.props> = {
