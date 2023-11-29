@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id').primary()
       table.string('text')
 
-      table.integer('genre_id').unsigned().references('genres.id').onDelete('CASCADE')
+      table.integer('genre_id').unsigned().references('genres.id').defaultTo(null).onDelete('CASCADE')
 
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })

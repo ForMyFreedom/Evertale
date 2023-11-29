@@ -7,7 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('token')
-      table.integer('user_id').references('users.id').onDelete('CASCADE')
+      table.integer('user_id').references('users.id').defaultTo(null).onDelete('CASCADE')
       table.string('type')
 
       table.timestamp('created_at', { useTz: true })
