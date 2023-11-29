@@ -30,6 +30,9 @@ export default class Proposal extends BaseAdonisModel implements ProposalEntity 
   @column()
   public orderInHistory: number
 
+  @column()
+  public currentHistoryText: string
+
   @column(BOOLEAN_SERIAL)
   public definitive: boolean
 
