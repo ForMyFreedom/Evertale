@@ -96,11 +96,9 @@ export class UserPersistence implements UserRepository {
   
     let proposalQuery = await Proposal.query()
       .whereIn('write_id', all.map(write => write.id))
-      .join('writes', 'proposals.write_id', '=', 'writes.id')
 
     let promptQuery = await Prompt.query()
       .whereIn('write_id', all.map(write => write.id))
-      .join('writes', 'prompts.write_id', '=', 'writes.id')
 
     return {
       all: [

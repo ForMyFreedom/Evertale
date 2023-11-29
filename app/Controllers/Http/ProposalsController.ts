@@ -44,4 +44,8 @@ export default class ProposalsAdonisController implements UsesUsecase<ProposalsC
       params.id, page, limit
     )
   }
+
+  async getAuthor(ctx: HttpContextContract): Promise<any> {
+    await ProposalsProvider(ctx).getAuthor(ctx.params.id)
+  }
 }

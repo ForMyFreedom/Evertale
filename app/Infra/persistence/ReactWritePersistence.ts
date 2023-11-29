@@ -13,10 +13,6 @@ export class ReactWritePersistence implements ReactWriteRepository {
   async getBruteReactions(writeId: number): Promise<WriteReactionEntity[]> {
     const bruteReactions = await WriteReaction.query()
       .where('writeId', '=', writeId)
-      .select('type')
-      .countDistinct('id as id')
-      .count('* as total')
-      .groupBy('type')
 
     return bruteReactions
   }
@@ -65,5 +61,17 @@ export class ReactWritePersistence implements ReactWriteRepository {
   async getAuthor(reaction: WriteReaction): Promise<UserEntity> {
     await reaction.load('owner')
     return reaction.owner
+  }
+
+  async findByUserAndWrite(userId: number, writeId: number): Promise<WriteReactionEntity | null> {
+    const couldFind = await WriteReaction.query()
+      .where('userId', '=', userId)
+      .where('writeId', '=', writeId)
+    
+    if(couldFind.length > 0){
+      return couldFind[0]
+    } else {
+      return null
+    }
   }
 }

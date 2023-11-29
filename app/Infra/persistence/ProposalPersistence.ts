@@ -34,7 +34,7 @@ export class ProposalPersistence implements ProposalRepository {
     return Proposal.find(entityId)
   }
 
-  async fullFind(proposalId: number): Promise<ProposalEntity|null> {
+  async fullFind(proposalId: number): Promise<FullProposalEntity|null> {
     const proposal = await Proposal.find(proposalId)
     if(!proposal) {
       return null
@@ -71,7 +71,7 @@ export class ProposalPersistence implements ProposalRepository {
     const proposal = await Proposal.find(entityId)
     if (proposal) {
       const proposalWrite = proposal.write
-      proposalWrite.merge({text: text, edited: true})
+      proposalWrite.merge({text: text})
       if (definitive) {
         proposal.merge({ definitive: definitive })
         await proposal.save()
@@ -105,8 +105,30 @@ export class ProposalPersistence implements ProposalRepository {
     return response[0].$extras.total
   }
 
-  async getWrite(proposal: Proposal): Promise<WriteEntity> {
-    await proposal.load('write')
-    return proposal.write
+  async getWrite(proposal: number | Proposal): Promise<WriteEntity|undefined> {
+    let proposalData: Proposal
+    if (typeof proposal === 'number') {
+      const recover = await Proposal.find(proposal)
+      if (!recover) { return undefined }
+      proposalData = recover
+    } else {
+      proposalData = proposal
+    }
+    await proposalData.load('write')
+    return proposalData.write
+  }
+
+  async getAuthor(proposal: number | Proposal): Promise<UserEntity|undefined> {
+    let proposalData: Proposal
+    if (typeof proposal === 'number') {
+      const recover = await Proposal.find(proposal)
+      if (!recover) { return undefined }
+      proposalData = recover
+    } else {
+      proposalData = proposal
+    }
+    await proposalData.load('write')
+    await proposalData.write.load('author')
+    return proposalData.write.author
   }
 }

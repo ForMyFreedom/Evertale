@@ -9,10 +9,6 @@ export class ReactCommentPersistence implements ReactCommentRepository {
   async getBruteReactions(commentId: number): Promise<CommentReactionEntity[]> {
     const bruteReactions = await CommentReaction.query()
       .where('commentId', '=', commentId)
-      .select('type')
-      .countDistinct('id as id')
-      .count('* as total')
-      .groupBy('type')
   
     return bruteReactions
   }
@@ -57,6 +53,18 @@ export class ReactCommentPersistence implements ReactCommentRepository {
       reaction.merge(partialBody)
       await reaction.save()
       return reaction
+    } else {
+      return null
+    }
+  }
+
+  async findByUserAndComment(userId: number, commentId: number): Promise<CommentReactionEntity | null> {
+    const couldFind = await CommentReaction.query()
+      .where('userId', '=', userId)
+      .where('commentId', '=', commentId)
+    
+    if(couldFind.length > 0){
+      return couldFind[0]
     } else {
       return null
     }

@@ -8,9 +8,6 @@ import AdonisResponseHandler from 'App/Exceptions/Handler'
 import { UsesUsecase } from './_Conversor'
 import { UserUpdateValidator } from 'App/Validators/UserUpdateValidator'
 
-
-const langContract = AdonisResponseHandler.contract
-
 export default class UsersAdonisController implements UsesUsecase<UsersController> {
   public async index(ctx: HttpContextContract): Promise<any> {
     const { page, limit } = ctx.request.qs()
@@ -73,11 +70,11 @@ export default class UsersAdonisController implements UsesUsecase<UsersControlle
     const { request, response, session, view } = ctx
     const token = request.param('token')
     
-    const { error } = await UsersProvider(ctx).restartPassword(
-      langContract, token, request.body() as PasswordInsert
+    const restartPasswordResponse = await UsersProvider(ctx).restartPassword(
+      token, request.body() as PasswordInsert
     )
-    if (error) {
-      return redirectToPasswordChange(session, response, token, error as string)
+    if (restartPasswordResponse.state == 'Failure') {
+      return redirectToPasswordChange(session, response, token, restartPasswordResponse.error as string)
     } else {
       return await view.render('password-reset-sucess')
     }
