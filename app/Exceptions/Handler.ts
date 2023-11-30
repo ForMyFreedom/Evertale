@@ -3,7 +3,7 @@ import Logger from '@ioc:Adonis/Core/Logger'
 import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
 import type { ResponseContract } from '@ioc:Adonis/Core/Response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { ApiResponse, ExceptionContract, FailureApiResponse, GenericResponse, ResponseHandler } from '@ioc:forfabledomain'
+import { ApiResponse, ExceptionContract, FailureApiResponse, ResponseHandler } from '@ioc:forfabledomain'
 
 type ErrorTreater = { response: FailureApiResponse; errorTreater: (body: any) => void }
 type ErrorHandlers = { [key: string]: (error: any) => ErrorTreater }
@@ -37,7 +37,7 @@ export default class AdonisResponseHandler extends HttpExceptionHandler implemen
       errorTreater: this.response.badRequest.bind(this.response),
     }),
     E_VALIDATION_FAILURE: (error) => ({
-      response: { state: 'Failure', error: error },
+      response: { state: 'Failure', error: 'BodyValidationFailure', data: error.messages },
       errorTreater: this.response.unprocessableEntity.bind(this.response),
     }),
     E_AUTHORIZATION_FAILURE: (_error) => ({
