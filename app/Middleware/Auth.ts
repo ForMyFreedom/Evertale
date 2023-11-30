@@ -1,6 +1,5 @@
 import type { GuardsList } from '@ioc:Adonis/Addons/Auth'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import AdonisResponseHandler from 'App/Exceptions/Handler'
 
 export default class AuthMiddleware {
   public static async authenticate(
@@ -19,7 +18,7 @@ export default class AuthMiddleware {
       }
     }
 
-    response.unauthorized({ error: AdonisResponseHandler.contract.Unauthenticated })
+    response.unauthorized({ error: 'Unauthenticated' })
     return false
   }
 

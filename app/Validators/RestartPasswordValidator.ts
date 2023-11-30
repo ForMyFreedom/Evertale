@@ -2,10 +2,8 @@ import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { MyValidator } from './MyValidator'
 import { PasswordSchema, SchemaTyper } from 'App/Utils/secure'
-import AdonisResponseHandler from 'App/Exceptions/Handler'
 import { PasswordInsert } from '@ioc:forfabledomain'
 
-const langContract = AdonisResponseHandler.contract
 const RestartPasswordSchema: SchemaTyper<PasswordInsert> = schema.create(PasswordSchema)
 
 export default class RestartPasswordValidator extends MyValidator<typeof RestartPasswordSchema> {
@@ -19,9 +17,9 @@ export default class RestartPasswordValidator extends MyValidator<typeof Restart
 
   protected GetMessages(): CustomMessages {
     return {
-      required: langContract.PasswordRequired,
-      confirmed: langContract.PasswordsDontMatch,
-      regex: langContract.PasswordRegex
+      required: 'PasswordRequired',
+      confirmed: 'PasswordsDontMatch',
+      regex: 'PasswordRegex'
     }
   }
 }

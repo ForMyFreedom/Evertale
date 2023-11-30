@@ -5,7 +5,7 @@ import { ApiClient } from '@japa/api-client/build/src/client'
 import { testPUTUnauthenticated } from '../_utils/basic-tests/unauthenticated'
 import { testPUTUndefinedId } from '../_utils/basic-tests/undefined-id'
 import { testPUTAccepted } from '../_utils/basic-tests/accepted'
-import { ConnectionType, ExceptionContract, putWithAuth } from '../_utils/basic-auth-requests'
+import { ConnectionType, putWithAuth } from '../_utils/basic-auth-requests'
 
 async function testCommentUpdate({ client }: TestContext): Promise<void> {
   const adminComment = await postComment(client, ConnectionType.Admin)
@@ -24,7 +24,7 @@ async function testCommentUpdate({ client }: TestContext): Promise<void> {
 async function testPutOthersComment(client: ApiClient, url: string, commentId: number, body: object, connectionType: ConnectionType): Promise<void> {
   let response = await putWithAuth(`${url}/${commentId}`, client, connectionType, body)
   response.assertStatus(HTTP.UNAUTHORIZED)
-  response.assertBody({ error: ExceptionContract.CantEditOthersWrite })
+  response.assertBody({ error: 'CantEditOthersWrite' })
 }
 
 export default testCommentUpdate

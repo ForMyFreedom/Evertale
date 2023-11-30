@@ -1,7 +1,6 @@
 import HTTP from "http-status-enum"
 import { ApiClient } from '@japa/api-client/build/src/client'
 import { ConnectionType, RequestFunction, deleteWithAuth, getWithAuth, postWithAuth, putWithAuth } from "../basic-auth-requests"
-import { ExceptionContract } from "../basic-auth-requests"
 
 export async function testGETNotFound(client: ApiClient, url: string): Promise<void> {
   return await testREQUESTNotFound(getWithAuth, client, url)
@@ -24,5 +23,5 @@ async function testREQUESTNotFound(
 ): Promise<void> {
   let response = await requestFunction(url, client, ConnectionType.Admin, body)
   response.assertStatus(HTTP.NOT_FOUND)
-  response.assertBodyContains({ error: ExceptionContract.NotFound })
+  response.assertBodyContains({ error: 'NotFound' })
 }

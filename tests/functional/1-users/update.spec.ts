@@ -1,5 +1,5 @@
 import { TestContext } from '@japa/runner'
-import { ConnectionType, ExceptionContract, putWithAuth, requestWithUser } from '../_utils/basic-auth-requests'
+import { ConnectionType, putWithAuth, requestWithUser } from '../_utils/basic-auth-requests'
 import HTTP from 'http-status-enum'
 import { ADMIN_USER_SAMPLE, BASE_URL, EDIT_NON_ADMIN_USER, EDIT_NON_ADMIN_USER_2, NON_ADMIN_USER_SAMPLE, postUser } from './_data'
 import { ApiClient } from '@japa/api-client/build/src/client'
@@ -21,7 +21,7 @@ async function testUserUpdate({ client }: TestContext): Promise<void> {
 async function testBlockWithoutAuthorship(client: ApiClient, id: number): Promise<void> {
   let response = await putWithAuth(`${BASE_URL}/${id}`, client, ConnectionType.Admin, EDIT_NON_ADMIN_USER)
   response.assertStatus(HTTP.UNAUTHORIZED)
-  response.assertBodyContains({error: ExceptionContract.CantEditOtherUser})
+  response.assertBodyContains({error: 'CantEditOtherUser'})
 }
 
 async function testEditUserAccepted(client: ApiClient, user: User, body: object): Promise<void> {
@@ -30,7 +30,7 @@ async function testEditUserAccepted(client: ApiClient, user: User, body: object)
     user, body
   )
   response.assertStatus(HTTP.ACCEPTED)
-  response.assertBodyContains({message: ExceptionContract.SucessfullyUpdated})
+  response.assertBodyContains({message: 'SucessfullyUpdated'})
 }
 
 export default testUserUpdate

@@ -1,6 +1,5 @@
 import HTTP from "http-status-enum"
 import { ApiClient } from '@japa/api-client/build/src/client'
-import { ExceptionContract } from "../basic-auth-requests"
 import { BasicRequestFunction } from "../basic-auth-requests"
 
 export async function testGETUnauthenticated(client: ApiClient, url: string): Promise<void> {
@@ -24,5 +23,5 @@ async function testREQUESTUnauthenticated(
 ): Promise<void> {
   let response = await requestFunction(url).json(body ?? {})
   response.assertStatus(HTTP.UNAUTHORIZED)
-  response.assertBodyContains({ error: ExceptionContract.Unauthenticated })
+  response.assertBodyContains({ error: 'Unauthenticated' })
 }

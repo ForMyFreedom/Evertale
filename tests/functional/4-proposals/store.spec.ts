@@ -6,7 +6,7 @@ import { testPOSTUnacceptedBody } from '../_utils/basic-tests/unaccepted-body'
 import { testPOSTAccepted } from '../_utils/basic-tests/accepted'
 import { postPrompt } from '../3-prompts/_data'
 import { ApiClient } from '@japa/api-client/build/src/client'
-import { ConnectionType, ExceptionContract, postWithAuth } from '../_utils/basic-auth-requests'
+import { ConnectionType, postWithAuth } from '../_utils/basic-auth-requests'
 
 async function testProposalStore({ client }: TestContext): Promise<void> {
   await testPOSTUnauthenticated(client, BASE_URL, SAMPLE_PROPOSAL)
@@ -26,7 +26,7 @@ async function testWriteNotDefined(
 ): Promise<void> {
   let response = await postWithAuth(url, client, ConnectionType.Admin, body)
   response.assertStatus(HTTP.NOT_FOUND)
-  response.assertBodyContains({ error: ExceptionContract.UndefinedWrite })
+  response.assertBodyContains({ error: 'UndefinedWrite' })
 }
 
 export default testProposalStore

@@ -5,7 +5,7 @@ import { ApiClient } from '@japa/api-client/build/src/client'
 import { testDELETEUnauthenticated } from '../_utils/basic-tests/unauthenticated'
 import { testDELETEUndefinedId } from '../_utils/basic-tests/undefined-id'
 import { testDELETEAccepted } from '../_utils/basic-tests/accepted'
-import { ConnectionType, ExceptionContract, deleteWithAuth } from '../_utils/basic-auth-requests'
+import { ConnectionType, deleteWithAuth } from '../_utils/basic-auth-requests'
 
 async function testCommentUpdate({ client }: TestContext): Promise<void> {
   const adminComment = await postComment(client, ConnectionType.Admin)
@@ -24,7 +24,7 @@ async function testCommentUpdate({ client }: TestContext): Promise<void> {
 async function testPutOthersComment(client: ApiClient, url: string, commentId: number, connectionType: ConnectionType): Promise<void> {
   let response = await deleteWithAuth(`${url}/${commentId}`, client, connectionType)
   response.assertStatus(HTTP.UNAUTHORIZED)
-  response.assertBody({ error: ExceptionContract.CantDeleteOthersWrite })
+  response.assertBody({ error: 'CantDeleteOthersWrite' })
 }
 
 export default testCommentUpdate

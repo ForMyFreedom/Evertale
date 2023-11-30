@@ -1,8 +1,5 @@
 import { ConstantEntity, ConstantsRepository } from "@ioc:forfabledomain";
-import AdonisResponseHandler from "App/Exceptions/Handler";
 import Constant from "App/Models/Constant";
-
-const langContract = AdonisResponseHandler.contract
 
 export class ConstantsPersistence implements ConstantsRepository {
   public static instance = new ConstantsPersistence()
@@ -12,7 +9,7 @@ export class ConstantsPersistence implements ConstantsRepository {
     if (config) {
       return config
     } else {
-      throw Error(langContract.ServerMisconfigured);
+      throw Error('ServerMisconfigured');
     }
   }
 

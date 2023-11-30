@@ -6,7 +6,7 @@ import { testPOSTUnauthenticated } from '../_utils/basic-tests/unauthenticated'
 import { testPOSTAccepted } from '../_utils/basic-tests/accepted'
 import { testPOSTUnacceptedBody } from '../_utils/basic-tests/unaccepted-body'
 import { postPrompt } from '../3-prompts/_data'
-import { ConnectionType, ExceptionContract, postWithAuth } from '../_utils/basic-auth-requests'
+import { ConnectionType, postWithAuth } from '../_utils/basic-auth-requests'
 
 async function testCommentStore({ client }: TestContext): Promise<void> {
   const write = await postPrompt(client)
@@ -29,7 +29,7 @@ async function testWriteNotDefined(
 ): Promise<void> {
   let response = await postWithAuth(url, client, connectionType, body)
   response.assertStatus(HTTP.NOT_FOUND)
-  response.assertBodyContains({error: ExceptionContract.UndefinedWrite})
+  response.assertBodyContains({error: 'UndefinedWrite'})
 }
 
 async function testCommentNotDefined(
@@ -37,7 +37,7 @@ async function testCommentNotDefined(
 ): Promise<void> {
   let response = await postWithAuth(url, client, connectionType, body)
   response.assertStatus(HTTP.NOT_FOUND)
-  response.assertBodyContains({error: ExceptionContract.UndefinedComment})
+  response.assertBodyContains({error: 'UndefinedComment'})
 }
 
 export default testCommentStore

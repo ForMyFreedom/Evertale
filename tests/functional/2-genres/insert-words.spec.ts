@@ -6,7 +6,7 @@ import { testPOSTUnauthenticated } from '../_utils/basic-tests/unauthenticated'
 import { testPOSTUnauthorized } from '../_utils/basic-tests/unauthorized'
 import { testPOSTUnacceptedBody } from '../_utils/basic-tests/unaccepted-body'
 import { testPOSTAccepted } from '../_utils/basic-tests/accepted'
-import { ConnectionType, ExceptionContract, postWithAuth } from '../_utils/basic-auth-requests'
+import { ConnectionType, postWithAuth } from '../_utils/basic-auth-requests'
 
 async function testGenreInsertWords({ client }: TestContext): Promise<void> {
   const genre = await postGenre(client)
@@ -23,7 +23,7 @@ async function testGenreInsertWords({ client }: TestContext): Promise<void> {
 async function testWORDUndefinedId(client: ApiClient, url: string, body: object): Promise<void> {
   let response = await postWithAuth(`${url}/99/word`, client, ConnectionType.Admin, body)
   response.assertStatus(HTTP.NOT_FOUND)
-  response.assertBody({error: ExceptionContract.UndefinedId})
+  response.assertBody({error: 'UndefinedId'})
 }
 
 

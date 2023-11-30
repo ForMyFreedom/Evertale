@@ -3,19 +3,18 @@ import Logger from '@ioc:Adonis/Core/Logger'
 import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
 import type { ResponseContract } from '@ioc:Adonis/Core/Response'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { ApiResponse, englishExceptionContract } from '@ioc:forfabledomain'
-import Env from '@ioc:Adonis/Core/Env'
-import { ExceptionContract, ResponseHandler } from '@ioc:forfabledomain'
+import { ApiResponse, ExceptionContract, FailureApiResponse, GenericResponse, ResponseHandler } from '@ioc:forfabledomain'
 
-type ErrorTreater = { response: object; errorTreater: (body: any) => void }
+type ErrorTreater = { response: FailureApiResponse; errorTreater: (body: any) => void }
 type ErrorHandlers = { [key: string]: (error: any) => ErrorTreater }
 
+/* // DEPRECATED
 const contractsList: {[key: string]: ExceptionContract} = {
   'en': englishExceptionContract
 }
+*/
 
 export default class AdonisResponseHandler extends HttpExceptionHandler implements ResponseHandler {
-  public static contract: ExceptionContract = contractsList[Env.get('I18N')]
   public response: ResponseContract
   
   constructor() {
@@ -30,11 +29,11 @@ export default class AdonisResponseHandler extends HttpExceptionHandler implemen
 
   private basicHandlers: ErrorHandlers = {
     E_ROUTE_NOT_FOUND: (_error) => ({
-      response: { state: 'Failure', error: AdonisResponseHandler.contract.RouteNotFounded },
+      response: { state: 'Failure', error: 'RouteNotFounded' },
       errorTreater: this.response.badRequest.bind(this.response),
     }),
     E_ROW_NOT_FOUND: (_error) => ({
-      response: { state: 'Failure', error: AdonisResponseHandler.contract.NotFound },
+      response: { state: 'Failure', error: 'NotFound' },
       errorTreater: this.response.badRequest.bind(this.response),
     }),
     E_VALIDATION_FAILURE: (error) => ({
@@ -42,7 +41,7 @@ export default class AdonisResponseHandler extends HttpExceptionHandler implemen
       errorTreater: this.response.unprocessableEntity.bind(this.response),
     }),
     E_AUTHORIZATION_FAILURE: (_error) => ({
-      response: { state: 'Failure', error: AdonisResponseHandler.contract.Unauthorized },
+      response: { state: 'Failure', error: 'Unauthorized' },
       errorTreater: this.response.unauthorized.bind(this.response),
     }),
   }
@@ -60,231 +59,275 @@ export default class AdonisResponseHandler extends HttpExceptionHandler implemen
     }
   }
 
-  private Error<T>(error: keyof ExceptionContract|object): ApiResponse<T>{
-    return { state: 'Failure', error: error }
+  private Error<T>(error: keyof ExceptionContract, data?: T|null): ApiResponse<T> {
+    return { state: 'Failure', error: error, data: data }
   }
 
-  private Sucess<T>(body: T|null|undefined): ApiResponse<T> {
-    return body ? { state: 'Sucess', data: body } : { state: 'Failure', error: 'InternalServerError' }
+  private Sucess<T>(message: keyof ExceptionContract, body: T|null|undefined): ApiResponse<T> {
+    return body ? { state: 'Sucess', message: message, data: body } : { state:'Failure', error: 'InternalServerError' }
   }
 
   public SucessfullyCreated<T>(body?: T|null): ApiResponse<T> {
-    this.response.created({ state: 'Sucess', message: AdonisResponseHandler.contract.SucessfullyCreated, data: body })
-    return this.Sucess(body)
+    const responseObject = this.Sucess<T>('SucessfullyCreated', body)
+    this.response.created(responseObject)
+    return responseObject
   }
 
   public SuccessfullyAuthenticated<T>(body?: T|null): ApiResponse<T> {
-    this.response.accepted({ state: 'Sucess', message: AdonisResponseHandler.contract.SuccessfullyAuthenticated, data: body })
-    return this.Sucess(body)
+    const responseObject = this.Sucess<T>('SuccessfullyAuthenticated', body)
+    this.response.accepted(responseObject)
+    return responseObject
   }
 
   public SucessfullyUpdated<T>(body?: T|null): ApiResponse<T> {
-    this.response.accepted({ state: 'Sucess', message: AdonisResponseHandler.contract.SucessfullyUpdated, data: body })
-    return this.Sucess(body)
+    const responseObject = this.Sucess<T>('SucessfullyUpdated', body)
+    this.response.accepted(responseObject)
+    return responseObject
   }
 
   public SucessfullyRecovered<T>(body?: T|null): ApiResponse<T> {
-    this.response.accepted({ state: 'Sucess', message: AdonisResponseHandler.contract.SucessfullyRecovered, data: body })
-    return this.Sucess(body)
+    const responseObject = this.Sucess<T>('SucessfullyRecovered', body)
+    this.response.accepted(responseObject)
+    return responseObject
   }
 
   public SucessfullyDestroyed<T>(body?: T|null): ApiResponse<T> {
-    this.response.accepted({ state: 'Sucess', message: AdonisResponseHandler.contract.SucessfullyDestroyed, data: body })
-    return this.Sucess(body)
+    const responseObject = this.Sucess<T>('SucessfullyDestroyed', body)
+    this.response.accepted(responseObject)
+    return responseObject
   }
 
   public InternalServerError<T>(body?: T|null): ApiResponse<T> {
-    this.response.internalServerError({ state: 'Failure', error: AdonisResponseHandler.contract.InternalServerError, data: body })
-    return this.Error({ error: 'InternalServerError' })
+    const responseObject = this.Error<T>('InternalServerError', body)
+    this.response.internalServerError(responseObject)
+    return responseObject
   }
 
   public UndefinedId<T>(_body?: T|null): ApiResponse<T> {
-    this.response.notFound({ state: 'Failure', error: AdonisResponseHandler.contract.UndefinedId })
-    return this.Error({ error: 'UndefinedId' })
+    const responseObject = this.Error<T>('UndefinedId')
+    this.response.notFound(responseObject)
+    return responseObject
   }
 
   public UndefinedWrite<T>(_body?: T|null): ApiResponse<T> {
-    this.response.notFound({ state: 'Failure', error: AdonisResponseHandler.contract.UndefinedWrite })
-    return this.Error({ error: 'UndefinedWrite' })
+    const responseObject = this.Error<T>('UndefinedWrite')
+    this.response.notFound(responseObject)
+    return responseObject
   }
 
   public UndefinedComment<T>(_body?: T|null): ApiResponse<T> {
-    this.response.notFound({ state: 'Failure', error: AdonisResponseHandler.contract.UndefinedComment })
-    return this.Error({ error: 'UndefinedComment' })
+    const responseObject = this.Error<T>('UndefinedComment')
+    this.response.notFound(responseObject)
+    return responseObject
   }
 
   public CantDeleteOthersWrite<T>(_body?: T|null): ApiResponse<T> {
-    this.response.unauthorized({ state: 'Failure', error: AdonisResponseHandler.contract.CantDeleteOthersWrite })
-    return this.Error({ error: 'CantDeleteOthersWrite' })
+    const responseObject = this.Error<T>('CantDeleteOthersWrite')
+    this.response.unauthorized(responseObject)
+    return responseObject
   }
 
   public CantEditOthersWrite<T>(_body?: T|null): ApiResponse<T> {
-    this.response.unauthorized({ state: 'Failure', error: AdonisResponseHandler.contract.CantEditOthersWrite })
-    return this.Error({ error: 'CantEditOthersWrite' })
+    const responseObject = this.Error<T>('CantEditOthersWrite')
+    this.response.unauthorized(responseObject)
+    return responseObject
   }
 
   public CantEditOtherUser<T>(_body?: T|null): ApiResponse<T> {
-    this.response.unauthorized({ state: 'Failure', error: AdonisResponseHandler.contract.CantEditOtherUser })
-    return this.Error({ error: 'CantEditOtherUser' })
+    const responseObject = this.Error<T>('CantEditOtherUser')
+    this.response.unauthorized(responseObject)
+    return responseObject
   }
 
   public CantDeleteOtherUser<T>(_body?: T|null): ApiResponse<T> {
-    this.response.unauthorized({ state: 'Failure', error: AdonisResponseHandler.contract.CantDeleteOtherUser })
-    return this.Error({ error: 'CantDeleteOtherUser' })
+    const responseObject = this.Error<T>('CantDeleteOtherUser')
+    this.response.unauthorized(responseObject)
+    return responseObject
   }
 
   public CantDeleteOthersReaction<T>(_body?: T|null): ApiResponse<T> {
-    this.response.unauthorized({ state: 'Failure', error: AdonisResponseHandler.contract.CantDeleteOthersReaction })
-    return this.Error({ error: 'CantDeleteOthersReaction' })
+    const responseObject = this.Error<T>('CantDeleteOthersReaction')
+    this.response.unauthorized(responseObject)
+    return responseObject
   }
 
   public ImageError<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ state: 'Failure', error: AdonisResponseHandler.contract.ImageError })
-    return this.Error({ error: 'ImageError' })
+    const responseObject = this.Error<T>('ImageError')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
   public Unauthenticated<T>(_body?: T|null): ApiResponse<T> {
-    this.response.proxyAuthenticationRequired({ state: 'Failure', error: AdonisResponseHandler.contract.Unauthenticated })
-    return this.Error({ error: 'Unauthenticated' })
+    const responseObject = this.Error<T>('Unauthenticated')
+    this.response.proxyAuthenticationRequired(responseObject)
+    return responseObject
   }
 
   public Unauthorized<T>(_body?: T|null): ApiResponse<T> {
-    this.response.unauthorized({ state: 'Failure', error: AdonisResponseHandler.contract.Unauthorized })
-    return this.Error({ error: 'Unauthorized' })
+    const responseObject = this.Error<T>('Unauthorized')
+    this.response.unauthorized(responseObject)
+    return responseObject
   }
 
   public InvalidUser<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ message: AdonisResponseHandler.contract.InvalidUser })
-    return this.Error({ error: 'InvalidUser' })
+    const responseObject = this.Error<T>('InvalidUser')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
   public InvalidGenre<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ message: AdonisResponseHandler.contract.InvalidGenre })
-    return this.Error({ error: 'InvalidGenre' })
+    const responseObject = this.Error<T>('InvalidGenre')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
   public FileNotFound<T>(_body?: T|null): ApiResponse<T> {
-    this.response.notFound({ state: 'Failure', error: AdonisResponseHandler.contract.FileNotFound })
-    return this.Error({ error: 'FileNotFound' })
+    const responseObject = this.Error<T>('FileNotFound')
+    this.response.notFound(responseObject)
+    return responseObject
   }
 
   public CantProposeToClosedHistory<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ state: 'Failure', error: AdonisResponseHandler.contract.CantProposeToClosedHistory })
-    return this.Error({ error: 'CantProposeToClosedHistory' })
+    const responseObject = this.Error<T>('CantProposeToClosedHistory')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
   public IncompatibleWriteAndAnswer<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ state: 'Failure', error: AdonisResponseHandler.contract.IncompatibleWriteAndAnswer })
-    return this.Error({ error: 'IncompatibleWriteAndAnswer' })
+    const responseObject = this.Error<T>('IncompatibleWriteAndAnswer')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
   public CantUseConclusiveReactionInComment<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ state: 'Failure', error: AdonisResponseHandler.contract.CantUseConclusiveReactionInComment })
-    return this.Error({ error: 'CantUseConclusiveReactionInComment' })
+    const responseObject = this.Error<T>('CantUseConclusiveReactionInComment')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
   public CantUseConclusiveReactionInPrompt<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ state: 'Failure', error: AdonisResponseHandler.contract.CantUseConclusiveReactionInPrompt })
-    return this.Error({ error: 'CantUseConclusiveReactionInPrompt' })
+    const responseObject = this.Error<T>('CantUseConclusiveReactionInPrompt')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
   public TextLengthHigherThanAllowed<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ state: 'Failure', error: AdonisResponseHandler.contract.TextLengthHigherThanAllowed })
-    return this.Error({ error: 'TextLengthHigherThanAllowed' })
+    const responseObject = this.Error<T>('TextLengthHigherThanAllowed')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
   public CantUseConclusiveReactionInConcludedHistory<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badGateway({ state: 'Failure', error: AdonisResponseHandler.contract.CantUseConclusiveReactionInConcludedHistory })
-    return this.Error({ error: 'CantUseConclusiveReactionInConcludedHistory' })
+    const responseObject = this.Error<T>('CantUseConclusiveReactionInConcludedHistory')
+    this.response.badGateway(responseObject)
+    return responseObject
   }
 
   public NotAppropriablePrompt<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ state: 'Failure', error: AdonisResponseHandler.contract.NotAppropriablePrompt })
-    return this.Error({ error: 'NotAppropriablePrompt' })
+    const responseObject = this.Error<T>('NotAppropriablePrompt')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
   public TextDontRespectPrompt<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ state: 'Failure', error: AdonisResponseHandler.contract.TextDontRespectPrompt })
-    return this.Error({ error: 'TextDontRespectPrompt' })
+    const responseObject = this.Error<T>('TextDontRespectPrompt')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
   public CantEditDailyPrompt<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ state: 'Failure', error: AdonisResponseHandler.contract.CantEditDailyPrompt })
-    return this.Error({ error: 'CantEditDailyPrompt' })
+    const responseObject = this.Error<T>('CantEditDailyPrompt')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
   public CantProposeToUnappropriatedPrompt<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ state: 'Failure', error: AdonisResponseHandler.contract.CantProposeToUnappropriatedPrompt })
-    return this.Error({ error: 'CantProposeToUnappropriatedPrompt' })
+    const responseObject = this.Error<T>('CantProposeToUnappropriatedPrompt')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
   public ServerMisconfigured<T>(_body?: T|null): ApiResponse<T> {
-    this.response.internalServerError({ state: 'Failure', error: AdonisResponseHandler.contract.ServerMisconfigured })
-    return this.Error({ error: 'ServerMisconfigured' })
+    const responseObject = this.Error<T>('ServerMisconfigured')
+    this.response.internalServerError(responseObject)
+    return responseObject
   }
 
   public CantReactYourself<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ state: 'Failure', error: AdonisResponseHandler.contract.CantReactYourself })
-    return this.Error({ error: 'CantReactYourself' })
+    const responseObject = this.Error<T>('CantReactYourself')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
   public BadRequest<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ state: 'Failure', error: AdonisResponseHandler.contract.BadRequest })
-    return this.Error({ error: 'BadRequest' })
+    const responseObject = this.Error<T>('BadRequest')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
-  public EmailSended<T>(_body?: T|null): ApiResponse<T> {
-    this.response.ok({ message: AdonisResponseHandler.contract.EmailSended })
-    return this.Error({ error: 'EmailSended' })
+  public EmailSended<T>(body?: T|null): ApiResponse<T> {
+    const responseObject = this.Sucess<T>('EmailSended', body)
+    this.response.ok(responseObject)
+    return responseObject
   }
 
   public CantComplaintToDailyWrite<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ message: AdonisResponseHandler.contract.CantComplaintToDailyWrite })
-    return this.Error({ error: 'CantComplaintToDailyWrite' })
+    const responseObject = this.Error<T>('CantComplaintToDailyWrite')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
   public RouteNotFounded<T>(_body?: T|null): ApiResponse<T> {
-    this.response.notFound({ state: 'Failure', error: AdonisResponseHandler.contract.NotFound })
-    return this.Error({ error: 'RouteNotFounded' })
+    const responseObject = this.Error<T>('RouteNotFounded')
+    this.response.notFound(responseObject)
+    return responseObject
   }
 
   public BodyValidationFailure<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ state: 'Failure', error: AdonisResponseHandler.contract.BodyValidationFailure })
-    return this.Error({ error: 'BodyValidationFailure' })
+    const responseObject = this.Error<T>('BodyValidationFailure')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
   public NotFound<T>(_body?: T|null): ApiResponse<T> {
-    this.response.notFound({ state: 'Failure', error: AdonisResponseHandler.contract.NotFound })
-    return this.Error({ error: 'NotFound' })
+    const responseObject = this.Error<T>('NotFound')
+    this.response.notFound(responseObject)
+    return responseObject
   }
 
   public UndefinedToken<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ state: 'Failure', error: AdonisResponseHandler.contract.UndefinedToken })
-    return this.Error({ error: 'UndefinedToken' })
+    const responseObject = this.Error<T>('UndefinedToken')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
   public PasswordsDontMatch<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ state: 'Failure', error: AdonisResponseHandler.contract.PasswordsDontMatch })
-    return this.Error({ error: 'PasswordsDontMatch' })
+    const responseObject = this.Error<T>('PasswordsDontMatch')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
   public TokenIsInvalid<T>(_body?: T|null): ApiResponse<T> {
-    this.response.unauthorized({ state: 'Failure', error: AdonisResponseHandler.contract.TokenIsInvalid })
-    return this.Error({ error: 'TokenIsInvalid' })
+    const responseObject = this.Error<T>('TokenIsInvalid')
+    this.response.unauthorized(responseObject)
+    return responseObject
   }
 
   public PasswordRequired<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ state: 'Failure', error: AdonisResponseHandler.contract.PasswordRequired })
-    return this.Error({ error: 'PasswordRequired' })
+    const responseObject = this.Error<T>('PasswordRequired')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
   public PasswordRegex<T>(_body?: T|null): ApiResponse<T> {
-    this.response.badRequest({ state: 'Failure', error: AdonisResponseHandler.contract.PasswordRegex })
-    return this.Error({ error: 'PasswordRegex' })
+    const responseObject = this.Error<T>('PasswordRegex')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 
   public ImageToLarge<T>(_body?: T | null): ApiResponse<T> {
-    this.response.badRequest({ state: 'Failure', error: AdonisResponseHandler.contract.ImageToLarge })
-    return this.Error({ error: 'ImageToLarge' })
+    const responseObject = this.Error<T>('ImageToLarge')
+    this.response.badRequest(responseObject)
+    return responseObject
   }
 }

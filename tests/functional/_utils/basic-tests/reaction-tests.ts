@@ -1,7 +1,6 @@
 import HTTP from "http-status-enum"
 import { ApiClient } from '@japa/api-client/build/src/client'
 import { ConnectionType, RequestFunction, deleteWithAuth, postWithAuth } from "../basic-auth-requests"
-import { ExceptionContract } from "../basic-auth-requests"
 import { ReactionType } from "@ioc:forfabledomain"
 
 export async function testOverReaction(client: ApiClient, url: string, id: number, firstBody: {type: ReactionType}, secondBody: {type: ReactionType}, connectionType: ConnectionType = ConnectionType.Admin) {
@@ -16,7 +15,7 @@ export async function testOverReaction(client: ApiClient, url: string, id: numbe
 export async function testDELETEOthersReaction(
   client: ApiClient, url: string, id: number, connectionType: ConnectionType = ConnectionType.Admin
 ): Promise<void> {
-  const message = { error: ExceptionContract.CantDeleteOthersReaction }
+  const message = { error: 'CantDeleteOthersReaction' }
   const http = HTTP.UNAUTHORIZED
   return await testREQUESTAccepted(deleteWithAuth, connectionType, message, http, client, `${url}/${id}`)
 }

@@ -5,7 +5,7 @@ import { BASE_URL, CONCLUSIVE_REACT_WRITE, OTHER_SAMPLE_REACT_WRITE, SAMPLE_REAC
 import { testPOSTUnauthenticated } from '../_utils/basic-tests/unauthenticated'
 import { testPOSTUnacceptedBody } from '../_utils/basic-tests/unaccepted-body'
 import { testPOSTAccepted } from '../_utils/basic-tests/accepted'
-import { ConnectionType, ExceptionContract, postWithAuth } from '../_utils/basic-auth-requests'
+import { ConnectionType, postWithAuth } from '../_utils/basic-auth-requests'
 import { testOverReaction } from '../_utils/basic-tests/reaction-tests'
 import { postProposal } from '../4-proposals/_data'
 import { postPrompt } from '../3-prompts/_data'
@@ -37,7 +37,7 @@ async function testCantUseConclusiveReactionInPrompt(
 ): Promise<void> {
   let response = await postWithAuth(url, client, connectionType, body)
   response.assertStatus(HTTP.BAD_REQUEST)
-  response.assertBodyContains({ error: ExceptionContract.CantUseConclusiveReactionInPrompt })
+  response.assertBodyContains({ error: 'CantUseConclusiveReactionInPrompt' })
 }
 
 async function testCantReactYourself(
@@ -45,7 +45,7 @@ async function testCantReactYourself(
 ): Promise<void> {
   let response = await postWithAuth(url, client, connectionType, body)
   response.assertStatus(HTTP.BAD_REQUEST)
-  response.assertBodyContains({ error: ExceptionContract.CantReactYourself })
+  response.assertBodyContains({ error: 'CantReactYourself' })
 }
 
 

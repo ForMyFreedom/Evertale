@@ -5,7 +5,7 @@ import { BASE_URL, SAMPLE_REACT_COMMENT, WRONG_SAMPLE_REACT_COMMENT, CONCLUSIVE_
 import { testPOSTUnauthenticated } from '../_utils/basic-tests/unauthenticated'
 import { testPOSTUnacceptedBody } from '../_utils/basic-tests/unaccepted-body'
 import { testPOSTAccepted } from '../_utils/basic-tests/accepted'
-import { ConnectionType, ExceptionContract, postWithAuth } from '../_utils/basic-auth-requests'
+import { ConnectionType, postWithAuth } from '../_utils/basic-auth-requests'
 import { testOverReaction } from '../_utils/basic-tests/reaction-tests'
 import { postComment } from '../5-comments/_data'
 
@@ -29,7 +29,7 @@ async function testCantUseConclusiveReactionInComment(
 ): Promise<void> {
   let response = await postWithAuth(url, client, connectionType, body)
   response.assertStatus(HTTP.BAD_REQUEST)
-  response.assertBodyContains({ error: ExceptionContract.CantUseConclusiveReactionInComment })
+  response.assertBodyContains({ error: 'CantUseConclusiveReactionInComment' })
 }
 
 async function testCantReactYourself(
@@ -37,7 +37,7 @@ async function testCantReactYourself(
 ): Promise<void> {
   let response = await postWithAuth(url, client, connectionType, body)
   response.assertStatus(HTTP.BAD_REQUEST)
-  response.assertBodyContains({ error: ExceptionContract.CantReactYourself })
+  response.assertBodyContains({ error: 'CantReactYourself' })
 }
 
 export default testReactCommentStore

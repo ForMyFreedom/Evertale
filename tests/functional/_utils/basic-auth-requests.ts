@@ -1,6 +1,5 @@
 import { ApiRequest } from '@japa/api-client/build/src/request'
 import { ApiClient } from '@japa/api-client/build/src/client'
-import AdonisResponseHandler from 'App/Exceptions/Handler'
 import { AdminCredentials, NonAdminCredentials } from './setup'
 import User from 'App/Models/User'
 
@@ -9,8 +8,6 @@ export enum ConnectionType {
   Admin = 1,
   NotConnected = 2
 }
-
-export const ExceptionContract =  AdonisResponseHandler.contract
 
 export type BasicRequestFunction = (path: string) => ApiRequest
 export type RequestFunction = (path: string, client: ApiClient, connectionType: ConnectionType, body?: object) => Promise<ApiRequest>
