@@ -1,4 +1,4 @@
-import { AuthWrapper, PaginationData, PasswordInsert, PromptEntityWithWrite, ProposalEntityWithWrite, UserEntity, UserRepository, WriteEntity } from "@ioc:forfabledomain"
+import { AuthWrapper, PaginationData, PasswordInsert, PromptEntityWithWrite, ProposalEntityWithWrite, UserEntity, UserRepository, UserWithToken, WriteEntity } from "@ioc:forfabledomain"
 import User from 'App/Models/User'
 import { schema, validator } from '@ioc:Adonis/Core/Validator'
 import Env from '@ioc:Adonis/Core/Env'
@@ -94,19 +94,34 @@ export class UserPersistence implements UserRepository {
     if(!paginatedQuery) { return paginatedQuery }
     const { all, meta } = paginatedQuery
   
-    let proposalQuery = await Proposal.query()
-      .whereIn('write_id', all.map(write => write.id))
-
     let promptQuery = await Prompt.query()
       .whereIn('write_id', all.map(write => write.id))
+
+    let proposalsWithPromptName = await Proposal.query()
+      .whereIn('proposals.write_id', all.map(write => write.id))
+      .join('prompts', 'proposals.prompt_id', '=', 'prompts.id')
+      .select('proposals.*', 'prompts.title')
+    
+      const finalResults: ProposalEntityWithWrite[] = proposalsWithPromptName.map(result => ({
+        ...result.toJSON(),
+        promptName: result.$extras.title,
+      })) as ProposalEntityWithWrite[]
+    
 
     return {
       all: [
         ...promptQuery,
-        ...proposalQuery
+        ...finalResults
       ],
       meta: meta
     }
+  }
+
+  putTokenInUser(user: User, token: string): UserWithToken {
+    return {
+      ...user.serialize(),
+      token: token
+    } as UserWithToken
   }
 }
 

@@ -1,5 +1,6 @@
 import type { GuardsList } from '@ioc:Adonis/Addons/Auth'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import AdonisResponseHandler from 'App/Exceptions/Handler'
 
 export default class AuthMiddleware {
   public static async authenticate(
@@ -7,18 +8,14 @@ export default class AuthMiddleware {
     response: HttpContextContract['response'],
     guards: (keyof GuardsList)[]
   ) {
-    let guardLastAttempted: string | undefined
-
     for (let guard of guards) {
-      guardLastAttempted = guard
-
       if (await auth.use(guard).check()) {
         auth.defaultGuard = guard
         return true
       }
     }
 
-    response.unauthorized({ error: 'Unauthenticated' })
+    AdonisResponseHandler.getInstance(response).Unauthorized()
     return false
   }
 

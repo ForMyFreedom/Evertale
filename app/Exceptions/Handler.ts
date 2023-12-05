@@ -159,7 +159,7 @@ export default class AdonisResponseHandler extends HttpExceptionHandler implemen
 
   public Unauthenticated<T>(_body?: T|null): ApiResponse<T> {
     const responseObject = this.Error<T>('Unauthenticated')
-    this.response.proxyAuthenticationRequired(responseObject)
+    this.response.badRequest(responseObject)
     return responseObject
   }
 

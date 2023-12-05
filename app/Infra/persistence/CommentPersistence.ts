@@ -1,4 +1,4 @@
-import { CommentEntity, CommentInsert, CommentRepository, PaginationData, UserEntity } from "@ioc:forfabledomain";
+import { CommentEntity, CommentInsert, CommentRepository, CommentWithReactions, PaginationData, UserEntity } from "@ioc:forfabledomain";
 import Comment from "App/Models/Comment";
 import User from "App/Models/User";
 import { paginate } from "./utils";
@@ -42,12 +42,13 @@ export class CommentPersistence implements CommentRepository {
     }
   }
 
-  async getByWrite(writeId: number, page?: number, limit?: number): Promise<PaginationData<CommentEntity>> {
-    return paginate(
-      await Comment.query()
-        .where('writeId', '=', writeId)
-        .paginate(page ?? 1, limit)
-    )
+  async getByWrite(writeId: number, page?: number, limit?: number): Promise<PaginationData<CommentWithReactions>> {
+    const bruteReactionQuery = await Comment.query()
+      .where('writeId', '=', writeId)
+      .preload('reactions')
+      .paginate(page ?? 1, limit)
+    
+    return paginate<Comment>(bruteReactionQuery)
   }
 
   async loadAuthors(commentsArray: CommentEntity[]): Promise<UserEntity[]> {

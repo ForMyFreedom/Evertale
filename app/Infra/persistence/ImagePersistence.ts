@@ -9,7 +9,7 @@ export class AdonisImageWrapper implements ImageRepository {
   constructor(private readonly ctx: HttpContextContract) { }
   
   async post(image: ImageInsert, folder: ImageFolders): Promise<string|undefined> {
-    const name = `${Date.now()}-${image.name}`
+    const name = `${Date.now()}-${image.name.replace(/ /g, '_')}`
     await image.move(Application.tmpPath(`uploads/${folder}`), name)
     const hosterURL = Env.get('IMAGE_HOSTER_URL')
     return `${hosterURL}/${folder}/${name}`

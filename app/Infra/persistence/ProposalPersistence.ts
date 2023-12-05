@@ -42,7 +42,11 @@ export class ProposalPersistence implements ProposalRepository {
     await proposal.load('prompt')
     await proposal.write.load('author')
     delete proposal.write.$attributes.authorId
-    return proposal
+    const fullProposal: FullProposalEntity = {
+      ...proposal.serialize(),
+      promptName: proposal.prompt.title,
+    } as FullProposalEntity
+    return fullProposal;
   }
 
   async findAll(page?: number, limit?: number): Promise<PaginationData<ProposalEntity>> {
