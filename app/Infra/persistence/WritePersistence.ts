@@ -37,4 +37,14 @@ export class WritePersistence implements WriteRepository {
             return null
         }
     }
+
+    async getAuthorName(writeId: number): Promise<string> {
+        const write = await Write.find(writeId)
+        if (write) {
+            await write.load('author')
+            return write.author.name
+        } else {
+            return ''
+        }
+    }
 }

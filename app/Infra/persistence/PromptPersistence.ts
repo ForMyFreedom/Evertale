@@ -1,9 +1,11 @@
-import { PaginationData, PromptEntity, PromptInsert, PromptRepository, ProposalEntity, WriteEntity } from "@ioc:forfabledomain"
+import { PaginationData, PromptEntity, PromptEntityWithWrite, PromptInsert, PromptRepository, ProposalWithWrite, UserEntity, WriteEntity } from "@ioc:forfabledomain"
 import Prompt from "App/Models/Prompt"
 import { paginate } from "./utils"
+import Write from "App/Models/Write"
 
 export class PromptPersistence implements PromptRepository {
   public static instance = new PromptPersistence()
+
   async create(body: Omit<PromptInsert, "text" | "genreIds">): Promise<PromptEntity> {
     const prompt = await Prompt.create(body)
     await prompt.load('write')
@@ -24,12 +26,11 @@ export class PromptPersistence implements PromptRepository {
     }
   }
 
-  async find(entityId: number): Promise<PromptEntity | null> {
+  async find(entityId: number): Promise<PromptEntityWithWrite | null> {
     const prompt = await Prompt.find(entityId)
     if (prompt) {
       await prompt.load('genres')
       await prompt.write.load('author')
-      delete prompt.write.$attributes.authorId
       return prompt
     } else {
       return null
@@ -93,7 +94,7 @@ export class PromptPersistence implements PromptRepository {
     return Prompt.query().where('isDaily', true)
   }
 
-  async getProposals(prompt: Prompt|Prompt['id']): Promise<ProposalEntity[]> {
+  async getProposals(prompt: Prompt|Prompt['id']): Promise<ProposalWithWrite[]> {
     if (typeof prompt === 'number') {
       const promptModel = await Prompt.find(prompt)
       if (promptModel) {
@@ -108,8 +109,26 @@ export class PromptPersistence implements PromptRepository {
     }
   }
 
-  async getWrite(prompt: Prompt): Promise<WriteEntity> {
-    await prompt.load('write')
-    return prompt.write
+  async getWrite(prompt: number | Prompt): Promise<WriteEntity|null> {
+    let finalPrompt: Prompt
+    if (typeof prompt === 'number') {
+      const req = await Prompt.find(prompt)
+      if(!req) { return null }
+      finalPrompt = req
+    } else {
+      finalPrompt = prompt
+    }
+
+    await finalPrompt.load('write')
+    return finalPrompt.write
+  }
+
+  async getAuthor(prompt: number | Prompt): Promise<UserEntity|null> {
+    const write = await this.getWrite(prompt) as Write
+    if(write){
+      await write.load('author')
+      return write.author
+    }
+    return null
   }
 }

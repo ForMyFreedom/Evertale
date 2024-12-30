@@ -1,4 +1,4 @@
-import { AuthWrapper, PaginationData, PasswordInsert, PromptEntityWithWrite, ProposalEntityWithWrite, UserEntity, UserRepository, UserWithToken, WriteEntity } from "@ioc:forfabledomain"
+import { AuthWrapper, PaginationData, PasswordInsert, PromptEntityWithWrite, ProposalWithPromptName, UserEntity, UserRepository, UserWithToken, WriteEntity } from "@ioc:forfabledomain"
 import User from 'App/Models/User'
 import { schema, validator } from '@ioc:Adonis/Core/Validator'
 import Env from '@ioc:Adonis/Core/Env'
@@ -88,7 +88,7 @@ export class UserPersistence implements UserRepository {
   }
 
 
-  async indexWritesByAuthor(authorId: number, page?: number, limit?: number): Promise<PaginationData<PromptEntityWithWrite | ProposalEntityWithWrite>> {
+  async indexWritesByAuthor(authorId: number, page?: number, limit?: number): Promise<PaginationData<PromptEntityWithWrite | ProposalWithPromptName>> {
     const query = await Write.query().orderBy('created_at', 'desc').where('author_id', authorId).paginate(page || 1, limit)
     const paginatedQuery = paginate<WriteEntity>(query)
     if(!paginatedQuery) { return paginatedQuery }
@@ -102,10 +102,10 @@ export class UserPersistence implements UserRepository {
       .join('prompts', 'proposals.prompt_id', '=', 'prompts.id')
       .select('proposals.*', 'prompts.title')
     
-      const finalResults: ProposalEntityWithWrite[] = proposalsWithPromptName.map(result => ({
+      const finalResults: ProposalWithPromptName[] = proposalsWithPromptName.map(result => ({
         ...result.toJSON(),
         promptName: result.$extras.title,
-      })) as ProposalEntityWithWrite[]
+      })) as ProposalWithPromptName[]
     
 
     return {

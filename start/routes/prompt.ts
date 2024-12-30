@@ -9,5 +9,7 @@ export default function routes(){
   Route.group(() => {
     Route.resource('/prompt', 'PromptsController').apiOnly().only(['index', 'show'])
     Route.get('/prompt/author/:id', 'PromptsController.indexByAuthor')
+    Route.get('/prompt/:id/author', 'PromptsController.getAuthor')
+    Route.get('/prompt/definitives/:id', 'PromptsController.trailDefinitives')
   }).middleware('noAuth')
 }

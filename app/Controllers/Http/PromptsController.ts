@@ -53,4 +53,12 @@ export default class PromptsAdonisController implements UsesUsecase<PromptsContr
       params.id, page, limit
     )
   }
+
+  public async getAuthor(ctx: HttpContextContract): Promise<void> {
+    await PromptsProvider(ctx).getAuthor(ctx.params.id)
+  }
+
+  public async trailDefinitives(ctx: HttpContextContract): Promise<void> {
+    await PromptsProvider(ctx).trailDefinitives(ctx.params.id)
+  }
 }
