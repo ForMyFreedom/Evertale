@@ -17,3 +17,10 @@ But despite the 'game', in which Users will interact and build their tales, the 
 
 But know that we do not close our eyes to the evil of the world... Through the social boycott of incidents `Reports`, Comments / Prompts / Proposals can be deleted by the hands of the community itself, what garants a `Flag` to that User... And as game theory says, it is more than inevitable that a majority of good actors will suffocate the public existence of bad actors...
 
+## How to start the project
+1. Download the source (recommendation: Github Desktop)
+2. Have Node.js installed
+3. Install the dependencies with `npm install`
+4. Create a template .env as in `.env.example`
+5. Run the migations with `node ace migration:run`
+6. Run with `npm run dev`
